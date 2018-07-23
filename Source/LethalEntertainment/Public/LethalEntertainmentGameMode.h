@@ -1,0 +1,17 @@
+// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+#pragma once
+#include "GameFramework/GameModeBase.h"
+#include "LethalEntertainmentGameMode.generated.h"
+
+UCLASS(minimalapi)
+class ALethalEntertainmentGameMode : public AGameModeBase
+{
+	GENERATED_BODY()
+
+public:
+	ALethalEntertainmentGameMode();
+
+};
+
+
+
