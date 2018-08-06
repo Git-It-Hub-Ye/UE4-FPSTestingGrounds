@@ -304,7 +304,7 @@ void AWeapons::OnFirePlayerBehaviour()
 
 		bHasRecoveredRecoil = false;
 		RecoilPitch = FMath::RandRange(WeaponData.RecoilPitch * 0.5, WeaponData.RecoilPitch) * -1;
-		RecoilYaw = FMath::RandRange(-.01f, .02);
+		RecoilYaw = FMath::RandRange(WeaponData.RecoilLeft, WeaponData.RecoilRight);
 		RecoveryTimeline->Stop();
 		RecoilTimeline->PlayFromStart();
 

@@ -54,7 +54,6 @@ void AInfiniteTerrainGameMode::SpawnTile()
 		TileToSpawn->SetPool(NavMeshPool);
 		SpawnTileTransform = TileToSpawn->GetAttachLocation();
 	}
-
 }
 
 void AInfiniteTerrainGameMode::PlayerConqueredTile()

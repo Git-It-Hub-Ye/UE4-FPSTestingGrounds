@@ -67,6 +67,7 @@ void AWeapon_InstantFire::ProcessInstantHit(const FHitResult & Impact, const FVe
 
 	AMannequin * HitActor = Cast<AMannequin>(Impact.GetActor());
 
+	if (CharacterPawn && HitActor && CharacterPawn->GetCharacterType() == HitActor->GetCharacterType()) { return; }
 	if (HitActor)
 	{
 		float ActualDamage = GetActualDamage(SurfaceType);
@@ -133,7 +134,7 @@ float AWeapon_InstantFire::GetCurrentSpread() const
 		{
 			FinalSpread = InstantWeaponConfig.MaxWeaponSpread;
 		}
-		else if (FinalSpread > InstantWeaponConfig.WeaponSpread)
+		else if (FinalSpread > InstantWeaponConfig.StandWhileStillMax)
 		{
 			FinalSpread = InstantWeaponConfig.StandWhileStillMax;
 		}

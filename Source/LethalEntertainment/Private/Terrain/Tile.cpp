@@ -14,11 +14,11 @@ ATile::ATile()
 
 	SpawnLocation = CreateDefaultSubobject<UArrowComponent>(TEXT("SpawnLocation"));
 	SpawnLocation->SetupAttachment(RootComponent);
-	SpawnLocation->SetRelativeLocation(FVector(4000.f, -3000.f, 0.f));
+	SpawnLocation->SetRelativeLocation(FVector(4000.f, -2900.f, 0.f));
 
-	NavMeshOffset = FVector(2000, -2000, 0);
-	MinExtent = FVector(300, -3700, 0);
-	MaxExtent = FVector(3700, 0, 0);
+	NavMeshOffset = FVector(2000, -1500, 0);
+	MinExtent = FVector(300, -1900, 0);
+	MaxExtent = FVector(3700, -100, 0);
 }
 
 void ATile::SetPool(class UActorPool * InPool)

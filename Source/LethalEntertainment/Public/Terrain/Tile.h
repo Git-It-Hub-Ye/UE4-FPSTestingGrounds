@@ -46,11 +46,11 @@ class LETHALENTERTAINMENT_API ATile : public AActor
 	GENERATED_BODY()
 	
 protected:
-	/** Min extent of nav mesh */
+	/** Min extent of spawned actors */
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	FVector MinExtent;
 
-	/** Max extent of nav mesh */
+	/** Max extent of spawned actors */
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	FVector MaxExtent;
 

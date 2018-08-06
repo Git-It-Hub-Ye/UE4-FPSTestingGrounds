@@ -50,6 +50,7 @@ public:
 	/** Performs game over behaviour */
 	void GameOver(APawn * PlayerPawn);
 
+	/** Get current player score */
 	UFUNCTION(BlueprintPure, Category = "Game")
 	int32 GetScore() const { return Score; }
 

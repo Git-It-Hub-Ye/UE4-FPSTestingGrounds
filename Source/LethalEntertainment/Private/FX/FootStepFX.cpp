@@ -1,19 +1,40 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LethalEntertainment.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "FootStepFX.h"
 
-USoundBase * AFootStepFX::GetImpactSound(TEnumAsByte<EPhysicalSurface> SurfaceType) const
+void AFootStepFX::PostInitializeComponents()
 {
-	USoundBase * ImpactSound = nullptr;
+	Super::PostInitializeComponents();
+
+	UPhysicalMaterial * HitPhysMat = SurfaceHit.PhysMaterial.Get();
+	EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitPhysMat);
+
+	/** Spawn impact sound */
+	USoundBase * ImpactSound = GetFootStepSound(HitSurfaceType);
+	if (ImpactSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	}
+
+	// Destroy actor
+	Destroy();
+}
+
+USoundBase * AFootStepFX::GetFootStepSound(TEnumAsByte<EPhysicalSurface> SurfaceType) const
+{
+	USoundBase * FootStepSound = nullptr;
+
 	switch (SurfaceType)
 	{
-	case SURFACE_DIRT:	ImpactSound = DirtSound; break;
-	case SURFACE_METAL: ImpactSound = MetalSound; break;
-	case SURFACE_ROCK:	ImpactSound = RockSound; break;
-	case SURFACE_SAND:	ImpactSound = SandSound; break;
-	default:			ImpactSound = DefaultSound; break;
+		case SURFACE_DIRT:    FootStepSound = DirtSound;	break;
+		case SURFACE_METAL:	  FootStepSound = MetalSound;	break;
+		case SURFACE_ROCK:    FootStepSound = RockSound;	break;
+		case SURFACE_SAND:    FootStepSound = SandBagSound; break;
+		default:              FootStepSound = DefaultSound; break;
 	}
-	return ImpactSound;
+
+	return FootStepSound;
 }
 

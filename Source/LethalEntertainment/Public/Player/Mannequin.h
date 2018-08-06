@@ -7,10 +7,15 @@
 #include "Components/TimelineComponent.h"
 #include "Mannequin.generated.h"
 
-
 class AWeapons;
 class AFootStepFX;
 class ATile;
+
+UENUM()
+enum class ECharacterType : uint8 {
+	EPlayer			UMETA(DisplayName = "Player"),
+	EAIBot			UMETA(DisplayName = "AIBot"),
+};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMannequinDelegate);
 
@@ -53,13 +58,17 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Mesh")
 	USkeletalMeshComponent * FPMesh;
 
+	/** Who controls the character */
+	UPROPERTY(EditDefaultsOnly, Category = "Config")
+	ECharacterType CharacterType;
+
 	/** Locations on character which can be seen by ai */
 	UPROPERTY(EditDefaultsOnly, Category = "Config")
 	TArray<FName> BodySockets;
 
 	/** Location from where weapon is gripped to end of muzzle (Used to detect collision) */
 	UPROPERTY(VisibleDefaultsOnly, Category = "Mesh")
-	class USceneComponent * MuzzleEndLocation;
+	USceneComponent * MuzzleEndLocation;
 
 	/** Current tile character is on */
 	ATile * CurrentTile;
@@ -182,8 +191,8 @@ public:
 	/** Checks if sockets on player mesh can be seen by AI */
 	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;
 
-	/** Get Socket which can be seen by ai */
-	USceneComponent * GetSeenSocket() const { return nullptr; }
+	/** Return who controls the character */
+	ECharacterType GetCharacterType() const { return CharacterType; }
 
 	/** Return 1st person mesh for weapon attachment */
 	USkeletalMeshComponent * GetFPMesh() const { return FPMesh; }

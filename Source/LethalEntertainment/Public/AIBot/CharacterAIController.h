@@ -109,6 +109,9 @@ public:
 	/** Aim down weapon sight */
 	void AimWeapon(bool bAimWeapon);
 
+	/** Is enemy set */
+	bool EnemyInSight() const;
+
 protected:
 	/** sets the ai controlled pawn */
 	virtual void SetPawn(APawn * InPawn) override;

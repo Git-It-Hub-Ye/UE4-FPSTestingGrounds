@@ -116,8 +116,15 @@ void ACharacterAIController::SenseStuff(AActor * SensedActor, FAIStimulus Stimul
 		if (BlackboardToUse && BB->GetValueAsObject(EnemyKeyId)) { return; }
 		if (AttitudeTowards == ETeamAttitude::Hostile && BlackboardToUse)
 		{
-			BB->SetValueAsObject(EnemyKeyId, SensedActor);
-			SetFocus(SensedActor);
+			if (Stimulus.Type == UAISense::GetSenseID<UAISenseConfig_Sight>())
+			{
+				BB->SetValueAsObject(EnemyKeyId, SensedActor);
+				SetFocus(SensedActor);
+			}
+			else
+			{
+				BB->SetValueAsVector(LastKnownLocationKeyId, SensedActor->GetActorLocation());
+			}
 		}
 	}
 	else
@@ -134,13 +141,18 @@ void ACharacterAIController::ShootEnemy()
 	AAIBot * AIBot = Cast<AAIBot>(GetPawn());
 
 	bool bCanShoot = false;
+	bool bHasLOS = true;
 	AMannequin * Enemy = Cast<AMannequin>(BB->GetValueAsObject(EnemyKeyId));
 
 	if (Enemy)
 	{
-		if (!AIBot->GetIsBlocked() &&  LineOfSightTo(Enemy, AIBot->GetActorLocation()))
+		if (!AIBot->GetIsBlocked())
 		{
 			bCanShoot = true;
+		}
+		if (!LineOfSightTo(Enemy, GetPawn()->GetActorLocation()))
+		{
+			bHasLOS = false;
 		}
 	}
 
@@ -152,6 +164,10 @@ void ACharacterAIController::ShootEnemy()
 	else
 	{
 		AIBot->ReleaseTrigger();
+	}
+
+	if (!bHasLOS)
+	{
 		BB->SetValueAsBool(CanShootKeyId, false);
 	}
 }

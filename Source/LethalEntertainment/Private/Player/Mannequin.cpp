@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "FPSCharacterMovement.h"
 #include "CharacterPlayerController.h"
+#include "AIBot/CharacterAIController.h"
 #include "Perception/AISense_Hearing.h"
 #include "Perception/AISense_Damage.h"
 #include "FX/FootStepFX.h"
@@ -126,7 +127,7 @@ bool AMannequin::CanBeSeenFrom(const FVector & ObserverLocation, FVector & OutSe
 	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
 
 	FHitResult HitResult;
-
+	
 	const bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, GetActorLocation()
 		, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
 		, FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
@@ -137,6 +138,7 @@ bool AMannequin::CanBeSeenFrom(const FVector & ObserverLocation, FVector & OutSe
 	{
 		OutSeenLocation = GetActorLocation();
 		OutSightStrength = 1;
+
 		return true;
 	}
 
@@ -154,6 +156,7 @@ bool AMannequin::CanBeSeenFrom(const FVector & ObserverLocation, FVector & OutSe
 		{
 			OutSeenLocation = SocketLocation;
 			OutSightStrength = 1;
+
 			return true;
 		}
 	}
@@ -539,7 +542,8 @@ FRotator AMannequin::GetAimOffset() const
 {
 	const FVector AimDirWS = GetBaseAimRotation().Vector();
 	const FVector AimDirLS = ActorToWorld().InverseTransformVectorNoScale(AimDirWS);
-	const FRotator AimRotLS = AimDirLS.Rotation();
+	FRotator AimRotLS = AimDirLS.Rotation();
+
 	return AimRotLS;
 }
 

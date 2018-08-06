@@ -1,19 +1,39 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LethalEntertainment.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "ExplosionFX.h"
 
-
-UParticleSystem * AExplosionFX::GetImpactFX(TEnumAsByte<EPhysicalSurface> SurfaceType) const
+void AExplosionFX::PostInitializeComponents()
 {
-	UParticleSystem * ImpactFX = nullptr;
-	switch (SurfaceType)
+	Super::PostInitializeComponents();
+
+	UPhysicalMaterial * HitPhysMat = SurfaceHit.PhysMaterial.Get();
+	EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitPhysMat);
+
+	/** Spawn impact fx */
+	UParticleSystem * ImpactFX = GetExplosionFX(HitSurfaceType);
+	if (ImpactFX)
 	{
-	case SURFACE_METAL:			ImpactFX = MetalFX; break;
-	case SURFACE_DIRT:			ImpactFX = DirtFX; break;
-	default:					ImpactFX = DefaultFX; break;
+		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactFX, GetActorLocation(), GetActorRotation());
 	}
 
-	return ImpactFX;
+	// Destroy actor
+	Destroy();
+}
+
+UParticleSystem * AExplosionFX::GetExplosionFX(TEnumAsByte<EPhysicalSurface> SurfaceType) const
+{
+	UParticleSystem * ExplosionFX = nullptr;
+
+	switch (SurfaceType)
+	{
+	case SURFACE_SOFTMETAL:
+	case SURFACE_METAL:            ExplosionFX = MetalFX; break;
+	case SURFACE_DIRT:			   ExplosionFX = DirtFX; break;
+	default:                       ExplosionFX = DefaultFX; break;
+	}
+
+	return ExplosionFX;
 }
 
