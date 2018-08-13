@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+// Copyright 2018 Stuart McDonald.
 
 #ifndef __LETHALENTERTAINMENT_H__
 #define __LETHALENTERTAINMENT_H__

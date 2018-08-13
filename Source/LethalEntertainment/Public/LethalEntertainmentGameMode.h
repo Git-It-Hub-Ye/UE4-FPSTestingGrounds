@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+// Copyright 2018 Stuart McDonald.
 #pragma once
 #include "GameFramework/GameModeBase.h"
 #include "LethalEntertainmentGameMode.generated.h"
