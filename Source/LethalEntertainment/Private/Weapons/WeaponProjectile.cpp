@@ -24,6 +24,7 @@ AWeaponProjectile::AWeaponProjectile()
 	ProjectileMovement->MaxSpeed = 3000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
+	ProjectileMovement->bAutoActivate = false;
 
 	ParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(FName("Projectile FX"));
 	ParticleComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
@@ -38,18 +39,13 @@ void AWeaponProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	InitialLifeSpan = ProjectileData.DestroyTimer;
-
-	FTimerHandle TimerDetonate;
-
-	GetWorld()->GetTimerManager().SetTimer(TimerDetonate, this, &AWeaponProjectile::OnDetonate, ProjectileData.DetonateTimer, false);
 }
 
-void AWeaponProjectile::InitVelocity(float InitVelocity)
+void AWeaponProjectile::LaunchProjectile(float Speed)
 {
-	if (ProjectileMovement)
-	{
-		ProjectileMovement->InitialSpeed = InitVelocity;
-	}
+	ProjectileMovement->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
+	ProjectileMovement->Activate();
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AWeaponProjectile::OnDetonate, ProjectileData.DetonateTimer, false);
 }
 
 void AWeaponProjectile::ProjectileSurfaceTrace()
@@ -126,13 +122,12 @@ void AWeaponProjectile::OnDetonate()
 	{
 		UGameplayStatics::PlayWorldCameraShake(this, ExplosionCameraShakeBP, GetActorLocation(), 300.f, 1000.f, 1.f);
 	}
-
-	FTimerHandle TimerDestroy;
-	GetWorld()->GetTimerManager().SetTimer(TimerDestroy, this, &AWeaponProjectile::OnDestroy, ProjectileData.DestroyTimer, false);
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AWeaponProjectile::OnDestroy, ProjectileData.DestroyTimer, false);
 }
 
 void AWeaponProjectile::OnDestroy()
 {
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 	Destroy();
 }
 

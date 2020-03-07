@@ -111,12 +111,17 @@ private:
 	/** Projectile movement component */
 	UPROPERTY(VisibleDefaultsOnly, Category = "Movement")
 	UProjectileMovementComponent * ProjectileMovement;
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Timers
+
+	FTimerHandle Timer;
 	
 public:
 	AWeaponProjectile();
 
-	/** setup velocity */
-	void InitVelocity(float InitVelocity);
+	void LaunchProjectile(float Speed);
 
 protected:
 	virtual void BeginPlay() override;

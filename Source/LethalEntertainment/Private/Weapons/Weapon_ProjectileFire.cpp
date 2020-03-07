@@ -33,9 +33,8 @@ void AWeapon_ProjectileFire::FireProjectile(FVector & Origin, FVector & AimDir)
 	{
 		Projectile->Instigator = Instigator;
 		Projectile->SetOwner(this);
-		Projectile->InitVelocity(FireVelocity);
-		
 		UGameplayStatics::FinishSpawningActor(Projectile, SpawnT);
+		Projectile->LaunchProjectile(FireVelocity);
 	}
 }
 
