@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "LethalEntertainmentGameMode.h"
+#include "GameFramework/GameModeBase.h"
 #include "InfiniteTerrainGameMode.generated.h"
 
 class ATile;
 
 UCLASS()
-class LETHALENTERTAINMENT_API AInfiniteTerrainGameMode : public ALethalEntertainmentGameMode
+class LETHALENTERTAINMENT_API AInfiniteTerrainGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
