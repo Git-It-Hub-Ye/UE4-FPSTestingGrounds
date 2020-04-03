@@ -42,10 +42,8 @@ bool UMainMenuWidget::Initialize()
 
 void UMainMenuWidget::PlayGame()
 {
-	if (MenuInterface)
-	{
-		MenuInterface->PlayGame();
-	}
+	if (!MenuInterface) { return; }
+	MenuInterface->PlayGame();
 }
 
 void UMainMenuWidget::WantsToQuit()
@@ -56,7 +54,8 @@ void UMainMenuWidget::WantsToQuit()
 
 void UMainMenuWidget::QuitGame()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Quit"))
+	if (!MenuInterface) { return; }
+	MenuInterface->OuitGame();
 }
 
 void UMainMenuWidget::CancelQuit()

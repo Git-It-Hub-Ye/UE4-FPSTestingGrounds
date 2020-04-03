@@ -36,4 +36,5 @@ void ULethalGameInstance::PlayGame()
 
 void ULethalGameInstance::OuitGame()
 {
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetFirstLocalPlayerController(), EQuitPreference::Quit);
 }
