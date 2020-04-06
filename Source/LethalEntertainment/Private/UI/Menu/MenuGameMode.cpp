@@ -9,7 +9,8 @@ AMenuGameMode::AMenuGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	PlayerControllerClass = AMenuPlayerController::StaticClass();
+	static ConstructorHelpers::FClassFinder<APlayerController> PlayerConClassFinder(TEXT("/Game/Dynamic/UI/BP_Menu_PC"));
+	PlayerControllerClass = PlayerConClassFinder.Class;
 }
 
 void AMenuGameMode::PostLogin(APlayerController * NewPlayer)

@@ -1,17 +1,19 @@
-// Copyright 2018 Stuart McDonald.
+// Copyright 2018 - 2020 Stuart McDonald.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UI/Menu/MenuWidget.h"
+#include "UserWidgetInterface.h"
 #include "MainMenuWidget.generated.h"
 
 class UButton;
 class UPanelWidget;
 class UWidgetSwitcher;
+class UControlsWidget;
 
 UCLASS()
-class LETHALENTERTAINMENT_API UMainMenuWidget : public UMenuWidget
+class LETHALENTERTAINMENT_API UMainMenuWidget : public UMenuWidget, public IUserWidgetInterface
 {
 	GENERATED_BODY()
 	
@@ -60,34 +62,41 @@ private:
 	////////////////////////////////////////////////////////////////////////////////
 	// Controls panel
 
-	/** First panel that will be visible to user */
+	/** Controls Panel */
 	UPROPERTY(meta = (BindWidget))
-	UPanelWidget * ControlsPanel;
-
-	/** Allows user return to previous menu */
-	UPROPERTY(meta = (BindWidget))
-	UButton * Button_Return;
+	UControlsWidget * ControlsPanel;
 
 protected:
 	virtual bool Initialize() override;
 
+	/** Updates widget anytime it is constructed or edited */
+	virtual void NativePreConstruct() override;
+
+	/** Switches widget back to main menu from child C++ widget (Called through IUserWidgetInterface) */
+	virtual void RequestReturnToParentWidget() override;
+
 private:
+	/** Starts game */
 	UFUNCTION()
 	void PlayGame();
 
+	/** Opens quit menu */
 	UFUNCTION()
 	void WantsToQuit();
 
+	/** Quits game */
 	UFUNCTION()
 	void QuitGame();
 
-	UFUNCTION()
-	void CancelQuit();
-
+	/** Opens controls panel */
 	UFUNCTION()
 	void ViewControls();
 
+	/** Returns back to main menu */
 	UFUNCTION()
-	void ReturnToPrevious();
+	void ReturnToMainMenu();
+
+	/** Shows or hides quit button */
+	void ShowOrHideQuitButton(bool bShowButton);
 
 };

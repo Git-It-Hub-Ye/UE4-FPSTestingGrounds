@@ -1,6 +1,7 @@
 // Copyright 2018 Stuart McDonald.
 
 #include "LethalEntertainment.h"
+#include "ControlsWidget.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
 #include "MainMenuWidget.h"
@@ -24,20 +25,27 @@ bool UMainMenuWidget::Initialize()
 		}
 		if (Button_CancelQuit)
 		{
-			Button_CancelQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::CancelQuit);
+			Button_CancelQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::ReturnToMainMenu);
 		}
 	}
 	if (Button_Controls)
 	{
 		Button_Controls->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
-
-		if (Button_Return)
-		{
-			Button_Return->OnClicked.AddDynamic(this, &UMainMenuWidget::ReturnToPrevious);
-		}
 	}
 
 	return true;
+}
+
+void UMainMenuWidget::NativePreConstruct()
+{
+	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing")) return; }
+
+	ControlsPanel->SetWidgetInterface(this);
+}
+
+void UMainMenuWidget::RequestReturnToParentWidget()
+{
+	ReturnToMainMenu();
 }
 
 void UMainMenuWidget::PlayGame()
@@ -58,21 +66,31 @@ void UMainMenuWidget::QuitGame()
 	MenuInterface->OuitGame();
 }
 
-void UMainMenuWidget::CancelQuit()
-{
-	if (!WidgetSwitcher || !MainMenu) { return; }
-	WidgetSwitcher->SetActiveWidget(MainMenu);
-}
-
 void UMainMenuWidget::ViewControls()
 {
 	if (!WidgetSwitcher || !ControlsPanel) { return; }
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
+	ShowOrHideQuitButton(false);
 }
 
-void UMainMenuWidget::ReturnToPrevious()
+void UMainMenuWidget::ReturnToMainMenu()
 {
 	if (!WidgetSwitcher || !MainMenu) { return; }
 	WidgetSwitcher->SetActiveWidget(MainMenu);
+	ShowOrHideQuitButton(true);
+}
+
+void UMainMenuWidget::ShowOrHideQuitButton(bool bShowButton)
+{
+	if (!Button_Quit) { return; }
+
+	if (bShowButton)
+	{
+		Button_Quit->SetVisibility(ESlateVisibility::Visible);
+	}
+	else if (!bShowButton)
+	{
+		Button_Quit->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
