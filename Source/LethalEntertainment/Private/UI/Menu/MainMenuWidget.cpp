@@ -13,7 +13,7 @@ bool UMainMenuWidget::Initialize()
 	{
 		Button_Play->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
 	}
-	else { return false; }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from Main Menu Widget")) return false; }
 
 	if (Button_Quit)
 	{
@@ -23,22 +23,28 @@ bool UMainMenuWidget::Initialize()
 		{
 			Button_ConfirmQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame);
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmQuit is missing from Main Menu Widget")) return false; }
+
 		if (Button_CancelQuit)
 		{
 			Button_CancelQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::ReturnToMainMenu);
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from Main Menu Widget")) return false; }
 	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Quit is missing from Main Menu Widget")) return false; }
+
 	if (Button_Controls)
 	{
 		Button_Controls->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
 	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from Main Menu Widget")) }
 
 	return true;
 }
 
 void UMainMenuWidget::NativePreConstruct()
 {
-	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing")) return; }
+	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from Main Menu Widget")) return; }
 
 	ControlsPanel->SetWidgetInterface(this);
 }
@@ -50,47 +56,31 @@ void UMainMenuWidget::RequestReturnToParentWidget()
 
 void UMainMenuWidget::PlayGame()
 {
-	if (!MenuInterface) { return; }
+	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for MainMenu Widget")) return; }
 	MenuInterface->PlayGame();
 }
 
 void UMainMenuWidget::WantsToQuit()
 {
-	if (!WidgetSwitcher || !QuitMenu) { return; }
+	if (!WidgetSwitcher || !QuitMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to QuitMenu in Main Menu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(QuitMenu);
 }
 
 void UMainMenuWidget::QuitGame()
 {
-	if (!MenuInterface) { return; }
+	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for MainMenu Widget")) return; }
 	MenuInterface->OuitGame();
 }
 
 void UMainMenuWidget::ViewControls()
 {
-	if (!WidgetSwitcher || !ControlsPanel) { return; }
+	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to ControlsPanel in Main Menu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
-	ShowOrHideQuitButton(false);
 }
 
 void UMainMenuWidget::ReturnToMainMenu()
 {
-	if (!WidgetSwitcher || !MainMenu) { return; }
+	if (!WidgetSwitcher || !MainMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to MainMenu in Main Menu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(MainMenu);
-	ShowOrHideQuitButton(true);
-}
-
-void UMainMenuWidget::ShowOrHideQuitButton(bool bShowButton)
-{
-	if (!Button_Quit) { return; }
-
-	if (bShowButton)
-	{
-		Button_Quit->SetVisibility(ESlateVisibility::Visible);
-	}
-	else if (!bShowButton)
-	{
-		Button_Quit->SetVisibility(ESlateVisibility::Hidden);
-	}
 }
 

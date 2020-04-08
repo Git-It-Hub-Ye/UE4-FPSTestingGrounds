@@ -1,6 +1,7 @@
 // Copyright 2018 Stuart McDonald.
 
 #include "LethalEntertainment.h"
+#include "LethalGameInstance.h"
 #include "InfiniteTerrainGameMode.h"
 #include "LethalEntertainmentHUD.h"
 #include "Mannequin.h"
@@ -87,16 +88,16 @@ ALethalEntertainmentHUD * ACharacterPlayerController::GetPlayerHud() const
 
 void ACharacterPlayerController::PauseGameMenu()
 {
-	AMannequin * MyPawn = Cast<AMannequin>(GetPawn());
-	ALethalEntertainmentHUD * Hud = GetPlayerHud();
+	ULethalGameInstance * GI = GetWorld() ? Cast<ULethalGameInstance>(GetWorld()->GetGameInstance()) : nullptr;
+	AMannequin * MyPawn = GetPawn() ? Cast<AMannequin>(GetPawn()) : nullptr;
 
-	if (MyPawn && !MyPawn->IsDead() && Hud)
+	if (MyPawn && !MyPawn->IsDead())
 	{
-		if (!IsPaused())
+		if (GI)
 		{
+			GI->ToggleInGameMenu();
 			MyPawn->ResetInputOnPause();
 		}
-		Hud->DrawPauseUI();
 	}
 }
 

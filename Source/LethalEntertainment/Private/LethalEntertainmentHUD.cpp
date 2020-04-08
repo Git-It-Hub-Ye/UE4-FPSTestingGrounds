@@ -65,17 +65,6 @@ void ALethalEntertainmentHUD::DrawCrosshair()
 	}
 }
 
-void ALethalEntertainmentHUD::DrawPauseUI()
-{
-	ACharacterPlayerController * PC = Cast<ACharacterPlayerController>(PlayerOwner);
-
-	if (PC)
-	{
-		PC->IsPaused() ? PC->SetPause(false) : PC->SetPause(true);
-		DrawPauseMenu(PC->IsPaused());
-	}
-}
-
 void ALethalEntertainmentHUD::DrawGameOverUI()
 {
 	DrawGameOverMenu();

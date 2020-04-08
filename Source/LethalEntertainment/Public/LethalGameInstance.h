@@ -7,6 +7,9 @@
 #include "MenuInterface.h"
 #include "LethalGameInstance.generated.h"
 
+class UUserWidget;
+class UMenuWidget;
+
 UCLASS()
 class LETHALENTERTAINMENT_API ULethalGameInstance : public UGameInstance, public IMenuInterface
 {
@@ -14,12 +17,13 @@ class LETHALENTERTAINMENT_API ULethalGameInstance : public UGameInstance, public
 	
 private:
 	/** BP widget for main menu */
-	TSubclassOf<class UUserWidget> MainMenuWidget;
+	TSubclassOf<UUserWidget> MainMenuWidget;
 
 	/** BP widget for in game menu */
-	TSubclassOf<class UUserWidget> InGameMenuWidget;
+	TSubclassOf<UUserWidget> InGameMenuWidget;
 
-	class UMenuWidget * InGameMenu;
+	UPROPERTY()
+	UMenuWidget * InGameMenu;
 
 public:
 	ULethalGameInstance(const FObjectInitializer & ObjectInitializer);
@@ -27,12 +31,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadMenu();
 
-	void CleanupSessionOnReturnToMenu();
+	void ToggleInGameMenu();
 
 protected:
 	virtual void PlayGame() override;
 
+	virtual void ReturnToMainMenu() override;
+
 	virtual void OuitGame() override;
+
+	virtual void PauseGame() override;
+
+	virtual void RestartGame() override;
 	
+	void LoadInGameMenu();
 	
 };

@@ -30,9 +30,6 @@ public:
 	/** Draws game over menu on screen */
 	void DrawGameOverUI();
 
-	/** Draws pause menu on screen */
-	void DrawPauseUI();
-
 protected:
 	/** Show crosshair widget blueprint */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Hud")

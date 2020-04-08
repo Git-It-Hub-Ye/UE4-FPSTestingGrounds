@@ -28,6 +28,7 @@ void UIconsWidget::SetupBase()
 		{
 			Base_Image->SetBrushFromTexture(Base_Circle_Tex, true);
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("No Base_Image in Icons Widget")) }
 
 		Base_Image->SetColorAndOpacity(Base_Colour);
 	}
@@ -51,6 +52,7 @@ void UIconsWidget::SetupBaseMask()
 		{
 			Base_Mask->SetBrushFromTexture(Circle_Mask_Tex, true);
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("No Base_Mask in Icons Widget")) }
 
 		Base_Mask->SetColorAndOpacity(Base_MaskColour);
 	}
@@ -68,6 +70,7 @@ void UIconsWidget::SetupIcon()
 		{
 			Icon_Image->SetBrushFromTexture(Icon_Tex, true);
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("No Icon_Image in Icons Widget")) }
 
 		Icon_Image->SetColorAndOpacity(Icon_Colour);
 		Icon_Image->SetRenderTranslation(FVector2D(Icon_TranslationX, Icon_TranslationY));
@@ -83,7 +86,7 @@ void UIconsWidget::SetupText()
 {
 	if (bDisplayText == true)
 	{
-		if (!Text_Block->IsValidLowLevel()) { return; }
+		if (!Text_Block->IsValidLowLevel()) { UE_LOG(LogTemp, Warning, TEXT("Text_Block invalid in Icons Widget")) return; }
 	
 		Text_Block->SetText(Text_Edit);
 		Text_Block->SetColorAndOpacity(Text_Colour);
@@ -106,6 +109,7 @@ void UIconsWidget::SetupOutline1()
 			{
 				Outline_1_Image->SetBrushFromTexture(Outline_Square_1, true);
 			}
+			else { UE_LOG(LogTemp, Warning, TEXT("No Outline_Square_1 in Icons Widget")) }
 		}
 		else if (EBase == EBaseShape::ECircle)
 		{
@@ -113,6 +117,7 @@ void UIconsWidget::SetupOutline1()
 			{
 				Outline_1_Image->SetBrushFromTexture(Outline_Circle_1, true);
 			}
+			else { UE_LOG(LogTemp, Warning, TEXT("No Outline_Circle_1 in Icons Widget")) }
 		}
 
 		Outline_1_Image->SetColorAndOpacity(Outline_1_Colour);
@@ -133,6 +138,7 @@ void UIconsWidget::SetupOutline2()
 			{
 				Outline_2_Image->SetBrushFromTexture(Outline_Square_2, true);
 			}
+			else { UE_LOG(LogTemp, Warning, TEXT("No Outline_Square_2 in Icons Widget")) }
 		}
 		else if (EBase == EBaseShape::ECircle)
 		{
@@ -140,6 +146,7 @@ void UIconsWidget::SetupOutline2()
 			{
 				Outline_2_Image->SetBrushFromTexture(Outline_Circle_2, true);
 			}
+			else { UE_LOG(LogTemp, Warning, TEXT("No Outline_Circle_2 in Icons Widget")) }
 		}
 
 		Outline_2_Image->SetColorAndOpacity(Outline_2_Colour);
@@ -164,6 +171,7 @@ void UIconsWidget::SetupGlass()
 			{
 				Glass_Image->SetBrushFromTexture(Glass_Square_2, true);
 			}
+			else { UE_LOG(LogTemp, Warning, TEXT("No Square Glass_Image in Icons Widget")) }
 		}
 		else if (EBase == EBaseShape::ECircle)
 		{
@@ -175,6 +183,7 @@ void UIconsWidget::SetupGlass()
 			{
 				Glass_Image->SetBrushFromTexture(Glass_Circle_2, true);
 			}
+			else { UE_LOG(LogTemp, Warning, TEXT("No Circle Glass_Image in Icons Widget")) }
 		}
 
 		Glass_Image->SetColorAndOpacity(Glass_Colour);

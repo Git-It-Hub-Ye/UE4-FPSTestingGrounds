@@ -34,7 +34,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton * Button_Play;
 
-	/** Allows user return to open controls panel */
+	/** Allows user to open controls panel */
 	UPROPERTY(meta = (BindWidget))
 	UButton * Button_Controls;
 
@@ -95,8 +95,5 @@ private:
 	/** Returns back to main menu */
 	UFUNCTION()
 	void ReturnToMainMenu();
-
-	/** Shows or hides quit button */
-	void ShowOrHideQuitButton(bool bShowButton);
 
 };

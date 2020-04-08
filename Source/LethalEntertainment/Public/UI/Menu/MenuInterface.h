@@ -24,6 +24,12 @@ class LETHALENTERTAINMENT_API IMenuInterface
 public:
 	virtual void PlayGame() = 0;
 
+	virtual void ReturnToMainMenu() = 0;
+
 	virtual void OuitGame() = 0;
+
+	virtual void PauseGame() = 0;
+
+	virtual void RestartGame() = 0;
 	
 };

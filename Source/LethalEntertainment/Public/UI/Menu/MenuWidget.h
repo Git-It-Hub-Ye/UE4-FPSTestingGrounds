@@ -18,7 +18,7 @@ protected:
 
 public:
 	/** Sets input mode */
-	void Setup();
+	virtual void Setup();
 
 	/** Remove widget from veiwport and return input to controller */
 	void TearDown();
