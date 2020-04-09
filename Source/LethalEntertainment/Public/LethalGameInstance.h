@@ -16,11 +16,18 @@ class LETHALENTERTAINMENT_API ULethalGameInstance : public UGameInstance, public
 	GENERATED_BODY()
 	
 private:
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Widget Variables
+
 	/** BP widget for main menu */
 	TSubclassOf<UUserWidget> MainMenuWidget;
 
 	/** BP widget for in game menu */
 	TSubclassOf<UUserWidget> InGameMenuWidget;
+
+	/** BP widget for game over menu */
+	TSubclassOf<UUserWidget> GameOverWidget;
 
 	UPROPERTY()
 	UMenuWidget * InGameMenu;
@@ -28,12 +35,20 @@ private:
 public:
 	ULethalGameInstance(const FObjectInitializer & ObjectInitializer);
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Display widget request functions
+
 	UFUNCTION(BlueprintCallable)
-	void LoadMenu();
+	void DisplayMainMenu();
 
 	void ToggleInGameMenu();
 
+	void DisplayGameOverMenu();
+
 protected:
+	////////////////////////////////////////////////////////////////////////////////
+	// Game action functions (Accessed through Menu interface)
+
 	virtual void PlayGame() override;
 
 	virtual void ReturnToMainMenu() override;
@@ -43,7 +58,15 @@ protected:
 	virtual void PauseGame() override;
 
 	virtual void RestartGame() override;
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Load widget functions
 	
 	void LoadInGameMenu();
+
+	void LoadGameOverMenu();
+
+	void LoadMainMenu();
 	
 };

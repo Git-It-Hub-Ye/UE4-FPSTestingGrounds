@@ -6,6 +6,7 @@
 #include "ActorPool.h"
 #include "Terrain/Tile.h"
 #include "Player/CharacterPlayerController.h"
+#include "LethalGameInstance.h"
 #include "LethalEntertainmentHUD.h"
 #include "InfiniteTerrainGameMode.h"
 
@@ -69,13 +70,14 @@ void AInfiniteTerrainGameMode::PlayerConqueredTile()
 	Score++;
 }
 
-void AInfiniteTerrainGameMode::GameOver(APawn * PlayerPawn)
+void AInfiniteTerrainGameMode::GameOver(APlayerController * PC)
 {
-	ACharacterPlayerController * PC = PlayerPawn ? Cast<ACharacterPlayerController>(PlayerPawn->GetController()) : nullptr;
-	ALethalEntertainmentHUD * Hud = PC ? Cast<ALethalEntertainmentHUD>(PC->GetPlayerHud()) : nullptr;
-	if (Hud)
+	if (!PC) { return; }
+	ULethalGameInstance * GI = Cast<ULethalGameInstance>(GetGameInstance());
+
+	if (GI)
 	{
-		Hud->DrawGameOverUI();
+		GI->DisplayGameOverMenu();
 	}
 }
 

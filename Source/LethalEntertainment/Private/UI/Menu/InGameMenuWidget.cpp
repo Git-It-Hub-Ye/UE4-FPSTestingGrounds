@@ -14,13 +14,13 @@ bool UInGameMenuWidget::Initialize()
 	{
 		Button_Resume->OnClicked.AddDynamic(this, &UInGameMenuWidget::ResumeGame);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from In Game Menu Widget")) return false; }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return false; }
 
 	if (Button_Controls)
 	{
 		Button_Controls->OnClicked.AddDynamic(this, &UInGameMenuWidget::ViewControls);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from In Game Menu Widget")) }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from InGameMenu Widget")) }
 
 	if (Button_Restart)
 	{
@@ -30,15 +30,15 @@ bool UInGameMenuWidget::Initialize()
 		{
 			Button_ConfirmRestart->OnClicked.AddDynamic(this, &UInGameMenuWidget::RestartGame);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmRestart is missing from In Game Menu Widget")) }
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmRestart is missing from InGameMenu Widget")) }
 
 		if (Button_CancelRestart)
 		{
 			Button_CancelRestart->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelRestart is missing from In Game Menu Widget")) return false; }
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelRestart is missing from InGameMenu Widget")) return false; }
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Restart is missing from In Game Menu Widget")) }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Restart is missing from InGameMenu Widget")) }
 
 	if (Button_MainMenu)
 	{
@@ -48,22 +48,22 @@ bool UInGameMenuWidget::Initialize()
 		{
 			Button_ConfirmReturn->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToMainMenu);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmReturn is missing from In Game Menu Widget")) }
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmReturn is missing from InGameMenu Widget")) return false; }
 
 		if (Button_CancelReturn)
 		{
 			Button_CancelReturn->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelReturn is missing from In Game Menu Widget")) return false; }
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelReturn is missing from InGameMenu Widget")) return false; }
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_MainMenu is missing from In Game Menu Widget")) }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_MainMenu is missing from InGameMenu Widget")) return false; }
 
 	return true;
 }
 
 void UInGameMenuWidget::NativePreConstruct()
 {
-	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from In Game Menu Widget")) return; }
+	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from InGameMenu Widget")) return; }
 
 	ControlsPanel->SetWidgetInterface(this);
 }
@@ -82,13 +82,13 @@ void UInGameMenuWidget::ResumeGame()
 
 void UInGameMenuWidget::ViewControls()
 {
-	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ControlsPanel within In Game Menu Widget")) return; }
+	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ControlsPanel within InGameMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
 }
 
 void UInGameMenuWidget::WantsToRestart()
 {
-	if (!WidgetSwitcher || !RestartPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to RestartPanel within In Game Menu Widget")) return; }
+	if (!WidgetSwitcher || !RestartPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to RestartPanel within InGameMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(RestartPanel);
 }
 
@@ -100,7 +100,7 @@ void UInGameMenuWidget::RestartGame()
 
 void UInGameMenuWidget::WantsToReturn()
 {
-	if (!WidgetSwitcher || !ReturnMenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ReturnMenuPanel within In Game Menu Widget")) return; }
+	if (!WidgetSwitcher || !ReturnMenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ReturnMenuPanel within InGameMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(ReturnMenuPanel);
 }
 
@@ -112,7 +112,7 @@ void UInGameMenuWidget::ReturnToMainMenu()
 
 void UInGameMenuWidget::ReturnToInGameMenu()
 {
-	if (!WidgetSwitcher || !PausePanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to PausePanel within In Game Menu Widget")) return; }
+	if (!WidgetSwitcher || !PausePanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to PausePanel within InGameMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(PausePanel);
 }
 

@@ -107,7 +107,7 @@ void ACharacterPlayerController::OnPossessedCharacterDeath()
 
 	if (GM)
 	{
-		GM->GameOver(GetPawn());
+		GM->GameOver(this);
 	}
 
 	FVector DeathLocation = GetPawn()->GetActorLocation();

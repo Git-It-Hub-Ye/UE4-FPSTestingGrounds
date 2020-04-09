@@ -48,7 +48,7 @@ public:
 	void PlayerConqueredTile();
 
 	/** Performs game over behaviour */
-	void GameOver(APawn * PlayerPawn);
+	void GameOver(APlayerController * PC);
 
 	/** Get current player score */
 	UFUNCTION(BlueprintPure, Category = "Game")

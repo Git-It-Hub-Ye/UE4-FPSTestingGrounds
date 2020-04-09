@@ -19,29 +19,21 @@ ULethalGameInstance::ULethalGameInstance(const FObjectInitializer & ObjectInitia
 	{
 		InGameMenuWidget = DefaultInGameMenuWidget.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultGameOverWidget(TEXT("/Game/Dynamic/UI/WBP_GameOverMenu"));
+	if (DefaultGameOverWidget.Class)
+	{
+		GameOverWidget = DefaultGameOverWidget.Class;
+	}
 }
 
-void ULethalGameInstance::LoadMenu()
+
+////////////////////////////////////////////////////////////////////////////////
+// Display widget request functions
+
+void ULethalGameInstance::DisplayMainMenu()
 {
-	if (!MainMenuWidget) { UE_LOG(LogTemp, Warning, TEXT("Cant't find Default Main Menu in Game Instance")) return; }
-	UMenuWidget * Menu = CreateWidget<UMenuWidget>(this, MainMenuWidget);
-
-	if (!Menu) { UE_LOG(LogTemp, Warning, TEXT("Cant't find Main Menu Widget in Game Instance")) return; }
-	// Instance implements menu interface
-	Menu->SetMenuInterface(this);
-	Menu->Setup();
-}
-
-void ULethalGameInstance::LoadInGameMenu()
-{
-	if (!InGameMenuWidget) { UE_LOG(LogTemp, Warning, TEXT("Cant't find Default In Game Menu in Game Instance")) return; }
-	InGameMenu = CreateWidget<UMenuWidget>(this, InGameMenuWidget);
-
-	if (!InGameMenu) { UE_LOG(LogTemp, Warning, TEXT("Cant't find In Game Menu Widget in Game Instance")) return; }
-	// Instance implements menu interface
-	InGameMenu->SetMenuInterface(this);
-	PauseGame();
-	InGameMenu->Setup();
+	LoadMainMenu();
 }
 
 void ULethalGameInstance::ToggleInGameMenu()
@@ -56,6 +48,53 @@ void ULethalGameInstance::ToggleInGameMenu()
 		LoadInGameMenu();
 	}
 }
+
+void ULethalGameInstance::DisplayGameOverMenu()
+{
+	LoadGameOverMenu();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Load widget functions
+
+void ULethalGameInstance::LoadMainMenu()
+{
+	if (!MainMenuWidget) { UE_LOG(LogTemp, Warning, TEXT("Cant't find Default MainMenu in Game Instance")) return; }
+	UMenuWidget * Menu = CreateWidget<UMenuWidget>(this, MainMenuWidget);
+
+	if (!Menu) { UE_LOG(LogTemp, Warning, TEXT("Cant't find MainMenu Widget in Game Instance")) return; }
+	// Instance implements menu interface
+	Menu->SetMenuInterface(this);
+	Menu->Setup();
+}
+
+void ULethalGameInstance::LoadInGameMenu()
+{
+	if (!InGameMenuWidget) { UE_LOG(LogTemp, Warning, TEXT("Cant't find Default InGameMenu in Game Instance")) return; }
+	InGameMenu = CreateWidget<UMenuWidget>(this, InGameMenuWidget);
+
+	if (!InGameMenu) { UE_LOG(LogTemp, Warning, TEXT("Cant't find InGameMen Widget in Game Instance")) return; }
+	// Instance implements menu interface
+	InGameMenu->SetMenuInterface(this);
+	PauseGame();
+	InGameMenu->Setup();
+}
+
+void ULethalGameInstance::LoadGameOverMenu()
+{
+	if (!GameOverWidget) { UE_LOG(LogTemp, Warning, TEXT("Cant't find Default GameOverMenu in Game Instance")) return; }
+	UMenuWidget * Menu = CreateWidget<UMenuWidget>(this, GameOverWidget);
+
+	if (!Menu) { UE_LOG(LogTemp, Warning, TEXT("Cant't find GameOverMenu in Game Instance")) return; }
+	// Instance implements menu interface
+	Menu->SetMenuInterface(this);
+	Menu->Setup();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Game action functions (Accessed through Menu interface)
 
 void ULethalGameInstance::PauseGame()
 {

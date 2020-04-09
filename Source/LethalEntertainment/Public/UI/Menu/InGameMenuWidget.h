@@ -45,7 +45,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton * Button_Restart;
 
-	/**  Allows user to return to main menu */
+	/** Allows user to return to main menu */
 	UPROPERTY(meta = (BindWidget))
 	UButton * Button_MainMenu;
 
