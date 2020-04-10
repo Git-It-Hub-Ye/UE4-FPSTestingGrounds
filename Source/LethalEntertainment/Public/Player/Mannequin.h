@@ -150,6 +150,15 @@ private:
 	/** Amount to modifiy by while aiming */
 	float AimingSpeedModifier;
 
+	/** Current actor rotaion */
+	FRotator LastYawRot;
+
+	/** Amount to modifiy by while aiming */
+	float LastRotaion;
+
+	/** Current turn rate, used to lean FP arms animation */
+	float LeanRate;
+
 	/** Standing height of capsule */
 	float StandHeight;
 
@@ -269,6 +278,10 @@ public:
 
 	/** Returns character movement speed modifier while crouching */
 	float GetCrouchingSpeedModifier() const { return CrouchingSpeedModifier; }
+
+	/** Returns character movement turn rate */
+	UFUNCTION(BlueprintPure, Category = "Animation")
+	float GetLeanRate() const { return LeanRate; }
 
 	/** Is character crouching */
 	bool IsCrouching() const { return bIsCrouching; }
