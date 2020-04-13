@@ -12,11 +12,10 @@ void UMenuWidget::Setup()
 {
 	this->AddToViewport();
 
-	APlayerController * PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	APlayerController * PC = GetLocalPlayerController();
 	if (!PC) { return; }
 
 	FInputModeGameAndUI InputMode;
-	InputMode.SetWidgetToFocus(this->TakeWidget());
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
 	PC->SetInputMode(InputMode);
@@ -27,7 +26,7 @@ void UMenuWidget::TearDown()
 {
 	this->RemoveFromViewport();
 
-	APlayerController * PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	APlayerController * PC = GetLocalPlayerController();
 	if (!PC) { return; }
 
 	PC->SetInputMode(FInputModeGameOnly());
@@ -38,5 +37,17 @@ void UMenuWidget::OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld)
 {
 	Super::OnLevelRemovedFromWorld(InLevel, InWorld);
 	TearDown();
+}
+
+APlayerController * UMenuWidget::GetLocalPlayerController()
+{
+	APlayerController * PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	return PC;
+}
+
+void UMenuWidget::SetWidgetToFocus(FName Name_Button)
+{
+	if (!GetWidgetFromName(Name_Button)) { UE_LOG(LogTemp, Warning, TEXT("Unable to focus on UButton with this name in UWidget")) return; }
+	GetWidgetFromName(Name_Button)->SetKeyboardFocus();
 }
 

@@ -3,19 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/Menu/MenuWidget.h"
 #include "UserWidgetInterface.h"
 #include "ControlsWidget.generated.h"
 
 class UPanelWidget;
 class UWidgetSwitcher;
 class UButton;
+class UScrollBox;
 
 /**
  * Displays mouse/key bindings and gamepad controls
  */
 UCLASS()
-class LETHALENTERTAINMENT_API UControlsWidget : public UUserWidget
+class LETHALENTERTAINMENT_API UControlsWidget : public UMenuWidget
 {
 	GENERATED_BODY()
 
@@ -58,6 +59,14 @@ private:
 
 
 	////////////////////////////////////////////////////////////////////////////////
+	// Mouse and Keyboard Panel
+
+	/** Allows user to return to previous panel */
+	UPROPERTY(meta = (BindWidget))
+	UScrollBox * Scroll_MouseKey;
+
+
+	////////////////////////////////////////////////////////////////////////////////
 	// GamePad Panel
 
 	/** Switches between different menu layouts */
@@ -84,15 +93,25 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton * Button_XB;
 
+	/** Stores name of last button clicked (Used to set button to focus on when returning to previous menu layouts) */
+	FName Name_LastGamepadButton;
+
 public:
 	/** Sets user widget interface variable */
 	void SetWidgetInterface(IUserWidgetInterface * UserWidgetInt);
 
+	void SetFocus();
+
 protected:
-	/** Updates widget anytime it is constructed or edited */
-	virtual void NativePreConstruct() override;
+	virtual bool Initialize() override;
+
+	virtual FReply NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent) override;
 
 private:
+
+	////////////////////////////////////////////////////////////////////////////////
+	// On clicked
+
 	/** Shows mouse and keyboard inputs */
 	UFUNCTION()
 	void ViewMouseKeyInputs();
@@ -101,16 +120,6 @@ private:
 	UFUNCTION()
 	void ViewControllerInputs();
 
-	/** Returns to previous menu layout */
-	UFUNCTION()
-	void ReturnToPrevious();
-
-	/** Returns to previous menu layout on gamepad panel */
-	void ReturnToGamepad();
-
-	/** Returns to previous menu layout on main menu */
-	void ReturnToMainMenu();
-
 	/** Shows PS controls */
 	UFUNCTION()
 	void ShowPSControls();
@@ -118,5 +127,15 @@ private:
 	/** Shows XB controls */
 	UFUNCTION()
 	void ShowXBControls();
+
+	/** Returns to previous menu layout */
+	UFUNCTION()
+	void ReturnToPrevious();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Inputs
+
+	void ScrollBoxDown();
 
 };

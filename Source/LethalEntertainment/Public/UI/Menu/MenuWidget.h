@@ -16,6 +16,9 @@ protected:
 	/** Calls interface functions (These functions should be overriden by game instance) */
 	IMenuInterface * MenuInterface;
 
+	/** Stores name of last button clicked (Used to set button to focus on when returning to previous menu layouts) */
+	FName Name_LastButton = "None";
+
 public:
 	/** Sets input mode */
 	virtual void Setup();
@@ -28,6 +31,12 @@ public:
 
 protected:
 	virtual void OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld) override;
+
+	/** Gets the player controller for this widget */
+	APlayerController * GetLocalPlayerController();
+
+	/** Sets a widget to focus on for player controller */
+	void SetWidgetToFocus(FName Name_Widget);
 	
 	
 };

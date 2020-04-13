@@ -389,7 +389,6 @@ void AMannequin::TurnRate(float Value)
 	FRotator NewYawRot = GetActorRotation();
 	LeanRate = FMath::FindDeltaAngleDegrees(NewYawRot.Yaw, LastYawRot.Yaw);
 	LastYawRot = NewYawRot;
-	UE_LOG(LogTemp, Warning, TEXT("%f"), LeanRate);
 }
 
 void AMannequin::ToggleCrouch()

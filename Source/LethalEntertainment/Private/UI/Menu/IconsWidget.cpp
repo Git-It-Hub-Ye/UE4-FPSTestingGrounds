@@ -8,6 +8,7 @@
 
 void UIconsWidget::NativePreConstruct()
 {
+	Super::NativePreConstruct();
 	SetupBase();
 	SetupIcon();
 	SetupText();

@@ -72,6 +72,9 @@ protected:
 	/** Updates widget anytime it is constructed or edited */
 	virtual void NativePreConstruct() override;
 
+	/** Any behavior after Super is carried out after construction */
+	virtual void NativeConstruct() override;
+
 	/** Switches widget back to main menu from child C++ widget (Called through IUserWidgetInterface) */
 	virtual void RequestReturnToParentWidget() override;
 

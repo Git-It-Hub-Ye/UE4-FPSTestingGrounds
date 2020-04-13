@@ -13,7 +13,7 @@ bool UMainMenuWidget::Initialize()
 	{
 		Button_Play->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from Main Menu Widget")) return false; }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return false; }
 
 	if (Button_Quit)
 	{
@@ -23,30 +23,38 @@ bool UMainMenuWidget::Initialize()
 		{
 			Button_ConfirmQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmQuit is missing from Main Menu Widget")) return false; }
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmQuit is missing from MainMenu Widget")) return false; }
 
 		if (Button_CancelQuit)
 		{
 			Button_CancelQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::ReturnToMainMenu);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from Main Menu Widget")) return false; }
+		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from MainMenu Widget")) return false; }
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Quit is missing from Main Menu Widget")) return false; }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Quit is missing from MainMenu Widget")) return false; }
 
 	if (Button_Controls)
 	{
 		Button_Controls->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from Main Menu Widget")) }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from MainMenu Widget")) }
 
 	return true;
 }
 
 void UMainMenuWidget::NativePreConstruct()
 {
-	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from Main Menu Widget")) return; }
+	Super::NativePreConstruct();
+	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from MainMenu Widget")) return; }
 
 	ControlsPanel->SetWidgetInterface(this);
+}
+
+void UMainMenuWidget::NativeConstruct()
+{
+	Super::NativePreConstruct();
+	if (!Button_Play) { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return; }
+	Button_Play->SetKeyboardFocus();
 }
 
 void UMainMenuWidget::RequestReturnToParentWidget()
@@ -62,8 +70,12 @@ void UMainMenuWidget::PlayGame()
 
 void UMainMenuWidget::WantsToQuit()
 {
-	if (!WidgetSwitcher || !QuitMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to QuitMenu in Main Menu Widget")) return; }
+	if (!WidgetSwitcher || !QuitMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to QuitMenu in MainMenu Widget")) return; }
+	Name_LastButton = *Button_Quit->GetName();
 	WidgetSwitcher->SetActiveWidget(QuitMenu);
+
+	if (!Button_CancelQuit) { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from MainMenu Widget")) return; }
+	Button_CancelQuit->SetKeyboardFocus();
 }
 
 void UMainMenuWidget::QuitGame()
@@ -74,13 +86,16 @@ void UMainMenuWidget::QuitGame()
 
 void UMainMenuWidget::ViewControls()
 {
-	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to ControlsPanel in Main Menu Widget")) return; }
+	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to ControlsPanel in MainMenu Widget")) return; }
+	Name_LastButton = *Button_Controls->GetName();
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
+	ControlsPanel->SetFocus();
 }
 
 void UMainMenuWidget::ReturnToMainMenu()
 {
-	if (!WidgetSwitcher || !MainMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to MainMenu in Main Menu Widget")) return; }
+	if (!WidgetSwitcher || !MainMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to MainMenu in MainMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(MainMenu);
+	SetWidgetToFocus(Name_LastButton);
 }
 

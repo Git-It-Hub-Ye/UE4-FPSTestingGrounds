@@ -63,9 +63,16 @@ bool UInGameMenuWidget::Initialize()
 
 void UInGameMenuWidget::NativePreConstruct()
 {
-	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from InGameMenu Widget")) return; }
-
+	Super::NativePreConstruct();
+	if (!ControlsPanel){ UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from InGameMenu Widget")) return; }
 	ControlsPanel->SetWidgetInterface(this);
+}
+
+void UInGameMenuWidget::NativeConstruct()
+{
+	Super::NativePreConstruct();
+	if (!Button_Resume) { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return; }
+	Button_Resume->SetKeyboardFocus();
 }
 
 void UInGameMenuWidget::RequestReturnToParentWidget()
@@ -83,13 +90,19 @@ void UInGameMenuWidget::ResumeGame()
 void UInGameMenuWidget::ViewControls()
 {
 	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ControlsPanel within InGameMenu Widget")) return; }
+	Name_LastButton = *Button_Controls->GetName();
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
+	ControlsPanel->SetFocus();
 }
 
 void UInGameMenuWidget::WantsToRestart()
 {
 	if (!WidgetSwitcher || !RestartPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to RestartPanel within InGameMenu Widget")) return; }
+	Name_LastButton = *Button_Restart->GetName();
 	WidgetSwitcher->SetActiveWidget(RestartPanel);
+
+	if (!Button_CancelRestart) { UE_LOG(LogTemp, Warning, TEXT("Button_CancelRestart is missing from InGameMenu Widget")) return; }
+	Button_CancelRestart->SetKeyboardFocus();
 }
 
 void UInGameMenuWidget::RestartGame()
@@ -101,7 +114,11 @@ void UInGameMenuWidget::RestartGame()
 void UInGameMenuWidget::WantsToReturn()
 {
 	if (!WidgetSwitcher || !ReturnMenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ReturnMenuPanel within InGameMenu Widget")) return; }
+	Name_LastButton = *Button_MainMenu->GetName();
 	WidgetSwitcher->SetActiveWidget(ReturnMenuPanel);
+
+	if (!Button_CancelReturn) { UE_LOG(LogTemp, Warning, TEXT("Button_CancelReturn is missing from InGameMenu Widget")) return; }
+	Button_CancelReturn->SetKeyboardFocus();
 }
 
 void UInGameMenuWidget::ReturnToMainMenu()
@@ -114,5 +131,6 @@ void UInGameMenuWidget::ReturnToInGameMenu()
 {
 	if (!WidgetSwitcher || !PausePanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to PausePanel within InGameMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(PausePanel);
+	SetWidgetToFocus(Name_LastButton);
 }
 
