@@ -1,6 +1,7 @@
 // Copyright 2018 Stuart McDonald.
 
 #include "LethalEntertainment.h"
+#include "MenuButtonsWidget.h"
 #include "MenuWidget.h"
 
 void UMenuWidget::SetMenuInterface(IMenuInterface * MenuInt)
@@ -18,6 +19,7 @@ void UMenuWidget::Setup()
 	FInputModeGameAndUI InputMode;
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
+	SetUserFocus(PC);
 	PC->SetInputMode(InputMode);
 	PC->bShowMouseCursor = true;
 }
@@ -45,9 +47,10 @@ APlayerController * UMenuWidget::GetLocalPlayerController()
 	return PC;
 }
 
-void UMenuWidget::SetWidgetToFocus(FName Name_Button)
+void UMenuWidget::SetWidgetToFocus(FName Name_ButtonWidget)
 {
-	if (!GetWidgetFromName(Name_Button)) { UE_LOG(LogTemp, Warning, TEXT("Unable to focus on UButton with this name in UWidget")) return; }
-	GetWidgetFromName(Name_Button)->SetKeyboardFocus();
+	UMenuButtonsWidget * Button = GetWidgetFromName(Name_ButtonWidget) ? Cast<UMenuButtonsWidget>(GetWidgetFromName(Name_ButtonWidget)) : nullptr;
+	if (!Button) { UE_LOG(LogTemp, Warning, TEXT("Unable to focus on button Widget with this name in UMenuWidget")) return; }
+	Button->SetFocusToButton();
 }
 

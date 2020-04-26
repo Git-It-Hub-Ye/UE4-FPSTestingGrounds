@@ -7,7 +7,7 @@
 #include "UserWidgetInterface.h"
 #include "MainMenuWidget.generated.h"
 
-class UButton;
+class UMenuButtonsWidget;
 class UPanelWidget;
 class UWidgetSwitcher;
 class UControlsWidget;
@@ -32,15 +32,15 @@ private:
 
 	/** Allows user to start game */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_Play;
+	UMenuButtonsWidget * Button_Play;
 
 	/** Allows user to open controls panel */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_Controls;
+	UMenuButtonsWidget * Button_Controls;
 
 	/** Opens quit panel to confirm quit game */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_Quit;
+	UMenuButtonsWidget * Button_Quit;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -52,11 +52,11 @@ private:
 
 	/** Allows user quit game */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_ConfirmQuit;
+	UMenuButtonsWidget * Button_ConfirmQuit;
 
 	/** Allows user to return to main menu */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_CancelQuit;
+	UMenuButtonsWidget * Button_CancelQuit;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,9 @@ protected:
 	virtual void RequestReturnToParentWidget() override;
 
 private:
+	////////////////////////////////////////////////////////////////////////////////
+	// Button Clicked
+
 	/** Starts game */
 	UFUNCTION()
 	void PlayGame();
@@ -98,5 +101,45 @@ private:
 	/** Returns back to main menu */
 	UFUNCTION()
 	void ReturnToMainMenu();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Button Hover
+
+	/** Sets focus on Button_Play */
+	UFUNCTION()
+	void ButtonPlayOnHover();
+
+	/** Sets focus on Button_Controls */
+	UFUNCTION()
+	void ButtonControlsOnHover();
+
+	/** Sets focus on Button_Quit */
+	UFUNCTION()
+	void ButtonOuitOnHover();
+
+	/** Sets focus on Button_ConfirmQuit */
+	UFUNCTION()
+	void ButtonConfirmQuitOnHover();
+
+	/** Sets focus on Button_CancelQuit */
+	UFUNCTION()
+	void ButtonCancelQuitOnHover();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Navigation Functions
+
+	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
+	UFUNCTION(BlueprintCallable)
+	void OnNavigatedToButtonPlay();
+
+	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
+	UFUNCTION(BlueprintCallable)
+	void OnNavigatedToButtonControls();
+
+	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
+	UFUNCTION(BlueprintCallable)
+	void OnNavigatedToButtonQuit();
 
 };

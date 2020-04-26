@@ -6,7 +6,7 @@
 #include "UI/Menu/MenuWidget.h"
 #include "GameOverWidget.generated.h"
 
-class UButton;
+class UMenuButtonsWidget;
 class UPanelWidget;
 class UWidgetSwitcher;
 
@@ -33,11 +33,11 @@ private:
 
 	/** Allows user to restart game */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_Restart;
+	UMenuButtonsWidget * Button_Restart;
 
 	/** Allows user to return to main menu */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_MainMenu;
+	UMenuButtonsWidget * Button_MainMenu;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -49,16 +49,21 @@ private:
 
 	/** Allows user to return to main menu */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_ConfirmReturn;
+		UMenuButtonsWidget * Button_ConfirmReturn;
 
 	/** Allows user to stay in game */
 	UPROPERTY(meta = (BindWidget))
-	UButton * Button_CancelReturn;
+		UMenuButtonsWidget * Button_CancelReturn;
 
 private:
 	virtual bool Initialize() override;
 
+	virtual void NativeConstruct() override;
+
 private:
+	////////////////////////////////////////////////////////////////////////////////
+	// Button Clicked
+
 	/** Restarts game */
 	UFUNCTION()
 	void RestartGame();
@@ -74,5 +79,25 @@ private:
 	/** Returns back to main menu */
 	UFUNCTION()
 	void ReturnToMainMenu();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Button Hover
+
+	/** Sets focus on Button_Resume */
+	UFUNCTION()
+	void ButtonRestartOnHover();
+
+	/** Sets focus on Button_MainMenu */
+	UFUNCTION()
+	void ButtonMainMenuOnHover();
+
+	/** Sets focus on Button_ConfirmReturn */
+	UFUNCTION()
+	void ButtonConfirmReturnOnHover();
+
+	/** Sets focus on Button_CancelReturn */
+	UFUNCTION()
+	void ButtonCancelReturnOnHover();
 	
 };

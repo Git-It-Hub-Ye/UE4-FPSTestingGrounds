@@ -4,38 +4,44 @@
 #include "ControlsWidget.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
+#include "MenuButtonsWidget.h"
 #include "MainMenuWidget.h"
 
 bool UMainMenuWidget::Initialize()
 {
 	if (!Super::Initialize()) { return false; }
-	if (Button_Play)
+	if (Button_Play && Button_Play->GetButton())
 	{
-		Button_Play->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
+		Button_Play->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
+		Button_Play->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonPlayOnHover);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return false; }
 
-	if (Button_Quit)
+	if (Button_Quit && Button_Quit->GetButton())
 	{
-		Button_Quit->OnClicked.AddDynamic(this, &UMainMenuWidget::WantsToQuit);
+		Button_Quit->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::WantsToQuit);
+		Button_Quit->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonOuitOnHover);
 
-		if (Button_ConfirmQuit)
+		if (Button_ConfirmQuit && Button_ConfirmQuit->GetButton())
 		{
-			Button_ConfirmQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame);
+			Button_ConfirmQuit->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame);
+			Button_ConfirmQuit->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonConfirmQuitOnHover);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmQuit is missing from MainMenu Widget")) return false; }
 
-		if (Button_CancelQuit)
+		if (Button_CancelQuit && Button_CancelQuit->GetButton())
 		{
-			Button_CancelQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::ReturnToMainMenu);
+			Button_CancelQuit->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::ReturnToMainMenu);
+			Button_CancelQuit->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonCancelQuitOnHover);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from MainMenu Widget")) return false; }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Quit is missing from MainMenu Widget")) return false; }
 
-	if (Button_Controls)
+	if (Button_Controls && Button_Controls->GetButton())
 	{
-		Button_Controls->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
+		Button_Controls->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
+		Button_Controls->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonControlsOnHover);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from MainMenu Widget")) }
 
@@ -52,15 +58,19 @@ void UMainMenuWidget::NativePreConstruct()
 
 void UMainMenuWidget::NativeConstruct()
 {
-	Super::NativePreConstruct();
+	Super::NativeConstruct();
 	if (!Button_Play) { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return; }
-	Button_Play->SetKeyboardFocus();
+	Button_Play->SetFocusToButton();
 }
 
 void UMainMenuWidget::RequestReturnToParentWidget()
 {
 	ReturnToMainMenu();
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Button Clicked
 
 void UMainMenuWidget::PlayGame()
 {
@@ -75,7 +85,7 @@ void UMainMenuWidget::WantsToQuit()
 	WidgetSwitcher->SetActiveWidget(QuitMenu);
 
 	if (!Button_CancelQuit) { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from MainMenu Widget")) return; }
-	Button_CancelQuit->SetKeyboardFocus();
+	Button_CancelQuit->SetFocusToButton();
 }
 
 void UMainMenuWidget::QuitGame()
@@ -97,5 +107,53 @@ void UMainMenuWidget::ReturnToMainMenu()
 	if (!WidgetSwitcher || !MainMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to MainMenu in MainMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(MainMenu);
 	SetWidgetToFocus(Name_LastButton);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Button Hover
+
+void UMainMenuWidget::ButtonPlayOnHover()
+{
+	Button_Play->SetFocusToButton();
+}
+
+void UMainMenuWidget::ButtonControlsOnHover()
+{
+	Button_Controls->SetFocusToButton();
+}
+
+void UMainMenuWidget::ButtonOuitOnHover()
+{
+	Button_Quit->SetFocusToButton();
+}
+
+void UMainMenuWidget::ButtonConfirmQuitOnHover()
+{
+	Button_ConfirmQuit->SetFocusToButton();
+}
+
+void UMainMenuWidget::ButtonCancelQuitOnHover()
+{
+	Button_CancelQuit->SetFocusToButton();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Navigation Functions
+
+void UMainMenuWidget::OnNavigatedToButtonPlay()
+{
+	ButtonPlayOnHover();
+}
+
+void UMainMenuWidget::OnNavigatedToButtonControls()
+{
+	ButtonControlsOnHover();
+}
+
+void UMainMenuWidget::OnNavigatedToButtonQuit()
+{
+	ButtonOuitOnHover();
 }
 

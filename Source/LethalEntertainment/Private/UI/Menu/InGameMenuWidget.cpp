@@ -4,55 +4,64 @@
 #include "ControlsWidget.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
+#include "MenuButtonsWidget.h"
 #include "InGameMenuWidget.h"
 
 bool UInGameMenuWidget::Initialize()
 {
 	if (!Super::Initialize()) { return false; }
 
-	if (Button_Resume)
+	if (Button_Resume && Button_Resume->GetButton())
 	{
-		Button_Resume->OnClicked.AddDynamic(this, &UInGameMenuWidget::ResumeGame);
+		Button_Resume->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ResumeGame);
+		Button_Resume->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonResumeOnHover);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return false; }
 
-	if (Button_Controls)
+	if (Button_Controls && Button_Controls->GetButton())
 	{
-		Button_Controls->OnClicked.AddDynamic(this, &UInGameMenuWidget::ViewControls);
+		Button_Controls->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ViewControls);
+		Button_Controls->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonControlsOnHover);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from InGameMenu Widget")) }
 
-	if (Button_Restart)
+	if (Button_Restart && Button_Restart->GetButton())
 	{
-		Button_Restart->OnClicked.AddDynamic(this, &UInGameMenuWidget::WantsToRestart);
+		Button_Restart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::WantsToRestart);
+		Button_Restart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonRestartOnHover);
 
-		if (Button_ConfirmRestart)
+		if (Button_ConfirmRestart && Button_ConfirmRestart->GetButton())
 		{
-			Button_ConfirmRestart->OnClicked.AddDynamic(this, &UInGameMenuWidget::RestartGame);
+			Button_ConfirmRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::RestartGame);
+			Button_ConfirmRestart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonConfirmRestartOnHover);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmRestart is missing from InGameMenu Widget")) }
 
-		if (Button_CancelRestart)
+		if (Button_CancelRestart && Button_CancelRestart->GetButton())
 		{
-			Button_CancelRestart->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
+			Button_CancelRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
+			Button_CancelRestart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonCancelRestartOnHover);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelRestart is missing from InGameMenu Widget")) return false; }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Restart is missing from InGameMenu Widget")) }
 
-	if (Button_MainMenu)
+	if (Button_MainMenu && Button_MainMenu->GetButton())
 	{
-		Button_MainMenu->OnClicked.AddDynamic(this, &UInGameMenuWidget::WantsToReturn);
+		Button_MainMenu->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::WantsToReturn);
+		Button_MainMenu->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonMainMenuOnHover);
 
-		if (Button_ConfirmReturn)
+		if (Button_ConfirmReturn && Button_ConfirmReturn->GetButton())
 		{
-			Button_ConfirmReturn->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToMainMenu);
+			Button_ConfirmReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToMainMenu);
+			Button_ConfirmReturn->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonConfirmReturnOnHover);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmReturn is missing from InGameMenu Widget")) return false; }
 
-		if (Button_CancelReturn)
+		if (Button_CancelReturn && Button_CancelReturn->GetButton())
 		{
-			Button_CancelReturn->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
+			Button_CancelReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
+			Button_CancelReturn->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonCancelReturnOnHover);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelReturn is missing from InGameMenu Widget")) return false; }
 	}
@@ -64,21 +73,25 @@ bool UInGameMenuWidget::Initialize()
 void UInGameMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	if (!ControlsPanel){ UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from InGameMenu Widget")) return; }
+	if (!ControlsPanel){ UE_LOG(LogTemp, Warning, TEXT("ControlsPpanel widget missing from InGameMenu Widget")) return; }
 	ControlsPanel->SetWidgetInterface(this);
 }
 
 void UInGameMenuWidget::NativeConstruct()
 {
-	Super::NativePreConstruct();
-	if (!Button_Resume) { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return; }
-	Button_Resume->SetKeyboardFocus();
+	Super::NativeConstruct();
+	if (!Button_Resume && Button_Resume->GetButton()) { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return; }
+	Button_Resume->SetFocusToButton();
 }
 
 void UInGameMenuWidget::RequestReturnToParentWidget()
 {
 	ReturnToInGameMenu();
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Button Clicked
 
 void UInGameMenuWidget::ResumeGame()
 {
@@ -102,7 +115,7 @@ void UInGameMenuWidget::WantsToRestart()
 	WidgetSwitcher->SetActiveWidget(RestartPanel);
 
 	if (!Button_CancelRestart) { UE_LOG(LogTemp, Warning, TEXT("Button_CancelRestart is missing from InGameMenu Widget")) return; }
-	Button_CancelRestart->SetKeyboardFocus();
+	Button_CancelRestart->SetFocusToButton();
 }
 
 void UInGameMenuWidget::RestartGame()
@@ -118,7 +131,7 @@ void UInGameMenuWidget::WantsToReturn()
 	WidgetSwitcher->SetActiveWidget(ReturnMenuPanel);
 
 	if (!Button_CancelReturn) { UE_LOG(LogTemp, Warning, TEXT("Button_CancelReturn is missing from InGameMenu Widget")) return; }
-	Button_CancelReturn->SetKeyboardFocus();
+	Button_CancelReturn->SetFocusToButton();
 }
 
 void UInGameMenuWidget::ReturnToMainMenu()
@@ -132,5 +145,49 @@ void UInGameMenuWidget::ReturnToInGameMenu()
 	if (!WidgetSwitcher || !PausePanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to PausePanel within InGameMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(PausePanel);
 	SetWidgetToFocus(Name_LastButton);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Button Hover
+
+void UInGameMenuWidget::ButtonResumeOnHover()
+{
+	Button_Resume->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonControlsOnHover()
+{
+	Button_Controls->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonRestartOnHover()
+{
+	Button_Restart->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonMainMenuOnHover()
+{
+	Button_MainMenu->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonConfirmRestartOnHover()
+{
+	Button_ConfirmRestart->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonCancelRestartOnHover()
+{
+	Button_CancelRestart->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonConfirmReturnOnHover()
+{
+	Button_ConfirmReturn->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonCancelReturnOnHover()
+{
+	Button_CancelReturn->SetFocusToButton();
 }
 

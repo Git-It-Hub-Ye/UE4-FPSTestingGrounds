@@ -125,3 +125,4 @@ void ULethalGameInstance::OuitGame()
 	if (!GetWorld()) { UE_LOG(LogTemp, Warning, TEXT("Can't find World in Game Instance")) return; }
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetFirstLocalPlayerController(), EQuitPreference::Quit);
 }
+

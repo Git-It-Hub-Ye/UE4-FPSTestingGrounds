@@ -5,6 +5,7 @@
 #include "InfiniteTerrainGameMode.h"
 #include "LethalEntertainmentHUD.h"
 #include "Mannequin.h"
+#include "GameFramework/InputSettings.h"
 #include "CharacterPlayerController.h"
 
 

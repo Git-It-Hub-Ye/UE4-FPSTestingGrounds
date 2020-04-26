@@ -19,6 +19,9 @@ protected:
 	/** Stores name of last button clicked (Used to set button to focus on when returning to previous menu layouts) */
 	FName Name_LastButton = "None";
 
+	/** Stores name of current widget with user focus (Used to reset focus on widget, whenever focus is lost) */
+	FName Name_CurrentFocusedWidget = "None";
+
 public:
 	/** Sets input mode */
 	virtual void Setup();
@@ -35,8 +38,7 @@ protected:
 	/** Gets the player controller for this widget */
 	APlayerController * GetLocalPlayerController();
 
-	/** Sets a widget to focus on for player controller */
-	void SetWidgetToFocus(FName Name_Widget);
-	
+	/** Sets a button widget to focus on for player controller */
+	void SetWidgetToFocus(FName Name_ButtonWidget);
 	
 };

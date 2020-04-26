@@ -84,7 +84,6 @@ void AMannequin::BeginPlay()
 		CrouchTimeline->SetTimelineFinishedFunc(CrouchTimelineFinished);
 		CrouchTimeline->SetLooping(false);
 	}
-
 	PlaySound(SpawnSound);
 }
 
