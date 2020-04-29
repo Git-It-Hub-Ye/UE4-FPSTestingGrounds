@@ -19,7 +19,6 @@ void UMenuWidget::Setup()
 	FInputModeGameAndUI InputMode;
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
-	SetUserFocus(PC);
 	PC->SetInputMode(InputMode);
 	PC->bShowMouseCursor = true;
 }

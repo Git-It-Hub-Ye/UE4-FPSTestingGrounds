@@ -144,16 +144,19 @@ void UMainMenuWidget::ButtonCancelQuitOnHover()
 
 void UMainMenuWidget::OnNavigatedToButtonPlay()
 {
+	if (!Button_Play) { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return; }
 	ButtonPlayOnHover();
 }
 
 void UMainMenuWidget::OnNavigatedToButtonControls()
 {
+	if (!Button_Controls) { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from MainMenu Widget")) return; }
 	ButtonControlsOnHover();
 }
 
 void UMainMenuWidget::OnNavigatedToButtonQuit()
 {
+	if (!Button_Quit) { UE_LOG(LogTemp, Warning, TEXT("Button_Quit is missing from MainMenu Widget")) return; }
 	ButtonOuitOnHover();
 }
 
