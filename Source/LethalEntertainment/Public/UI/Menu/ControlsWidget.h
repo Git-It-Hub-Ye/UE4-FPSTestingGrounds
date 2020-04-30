@@ -11,6 +11,7 @@ class UPanelWidget;
 class UWidgetSwitcher;
 class UMenuButtonsWidget;
 class UScrollBox;
+class UIconsWidget;
 
 /** Size data for scroll box */
 USTRUCT(BlueprintType)
@@ -65,6 +66,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher * WidgetSwitcher;
 
+	/** Switches between different menu icons depending on control type */
+	UPROPERTY(meta = (BindWidget))
+	UWidgetSwitcher * WidgetSwitcherIcons;
+
 	/** Allows user to return to previous panel */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_ControlType;
@@ -72,6 +77,18 @@ private:
 	/** Allows user to return to previous panel */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Back;
+
+	/** Back icon for keyboard */
+	UPROPERTY(meta = (BindWidget))
+	UIconsWidget * Icon_Key;
+
+	/** Back icon for PS controller */
+	UPROPERTY(meta = (BindWidget))
+	UIconsWidget * Icon_PS;
+
+	/** Back icon for XB Controller */
+	UPROPERTY(meta = (BindWidget))
+	UIconsWidget * Icon_XB;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -95,6 +112,9 @@ private:
 
 	/** Stores name of last button clicked (Used to set button to focus on when returning to previous menu layouts) */
 	FName Name_CurrentControlType;
+
+	/** True when ConTypePanel is in veiwport */
+	bool bDisableScrollInput = false;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -144,6 +164,8 @@ protected:
 
 private:
 
+	void SetControlTypeButton();
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Button Clicked
 
@@ -191,8 +213,15 @@ private:
 	UFUNCTION()
 	void ButtonXBOnHover();
 
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Menu Data
+
 	/** Resets all scroll menu bools to false */
 	void ResetLookAtBindings();
+
+	/** Displays correct icons for control type */
+	void SetControlsIcon(UIconsWidget * Icon);
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -201,11 +230,11 @@ private:
 	/** Scrolls through menus in given direction */
 	void MoveScrollBox(UScrollBox * ScrollBox, bool bShouldScrollUp);
 
-	/** True when scroll box is in veiwport */
-	bool GetIsScrollableMenu();
-
 	/** Sets the max scroll of current scroll box in viewport */
 	void SetMaxScrollLength(UScrollBox * ScrollBox, float SizeY_ScrollBox);
+
+	/** True when scroll box is in veiwport */
+	bool GetIsScrollableMenu();
 
 
 	////////////////////////////////////////////////////////////////////////////////

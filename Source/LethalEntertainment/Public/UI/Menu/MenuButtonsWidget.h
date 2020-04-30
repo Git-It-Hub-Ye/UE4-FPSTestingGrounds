@@ -57,6 +57,8 @@ private:
 public:
 	void SetFocusToButton();
 
+	UTextBlock * GetTextToCustomise() { return Button_Text; }
+
 	UButton * GetButton();
 
 protected:

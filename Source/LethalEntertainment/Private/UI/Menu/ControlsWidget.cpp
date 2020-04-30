@@ -4,9 +4,12 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
 #include "MenuButtonsWidget.h"
+#include "Components/TextBlock.h"
+#include "IconsWidget.h"
 #include "Components/ScrollBox.h"
-#include "Widgets/Layout/SScrollBox.h"
 #include "ControlsWidget.h"
+
+#define LOCTEXT_NAMESPACE "PlayerHud"
 
 bool UControlsWidget::Initialize()
 {
@@ -55,10 +58,14 @@ void UControlsWidget::NativeConstruct()
 	Super::NativeConstruct();
 	if (!ConTypePanel) { UE_LOG(LogTemp, Warning, TEXT("ConTypePanel is missing from GameOverMenu Widget")) return; }
 	ConTypePanel->SetVisibility(ESlateVisibility::Hidden);
+	SetControlTypeButton();
+}
 
-	if (Button_MouseKey) { Name_CurrentControlType = *Button_MouseKey->GetName(); bIsLookAtBindings_MouseKeys = true; }
-	else if (Button_PS) { Name_CurrentControlType = *Button_PS->GetName(); bIsLookAtBindings_PS = true; }
-	else if (Button_XB) { Name_CurrentControlType = *Button_XB->GetName(); bIsLookAtBindings_XB = true; }
+void UControlsWidget::SetControlTypeButton()
+{
+	if (Button_MouseKey) { ShowMouseKeyInputs(); }
+	else if (Button_PS) { ShowPSControls(); }
+	else if (Button_XB) { ShowXBControls(); }
 	else { UE_LOG(LogTemp, Warning, TEXT("Controller types selection is missing from Controls Widget")) }
 }
 
@@ -80,8 +87,17 @@ void UControlsWidget::SetFocus()
 void UControlsWidget::SelectControlType()
 {
 	if (!ConTypePanel) { UE_LOG(LogTemp, Warning, TEXT("ConTypePanel is missing from Controls Widget")) return; }
-	ConTypePanel->SetVisibility(ESlateVisibility::Visible);
-	SetWidgetToFocus(Name_CurrentControlType);
+	if (bDisableScrollInput)
+	{
+		ReturnToPrevious();
+	}
+	else
+	{
+		bDisableScrollInput = true;
+		ConTypePanel->SetVisibility(ESlateVisibility::Visible);
+		SetWidgetToFocus(Name_CurrentControlType);
+	}
+	
 }
 
 void UControlsWidget::ShowMouseKeyInputs()
@@ -94,6 +110,10 @@ void UControlsWidget::ShowMouseKeyInputs()
 	ResetLookAtBindings();
 	bIsLookAtBindings_MouseKeys = true;
 	WidgetSwitcher->SetActiveWidget(ScrollBox_MouseKey);
+	ScrollBox_MouseKey->SetScrollOffset(0.f);
+
+	Button_ControlType->GetTextToCustomise()->SetText(LOCTEXT("Control Type", "Mouse & Keyboard"));
+	SetControlsIcon(Icon_Key);
 }
 
 void UControlsWidget::ShowPSControls()
@@ -106,6 +126,10 @@ void UControlsWidget::ShowPSControls()
 	ResetLookAtBindings();
 	bIsLookAtBindings_PS = true;
 	WidgetSwitcher->SetActiveWidget(ScrollBox_PS);
+	ScrollBox_PS->SetScrollOffset(0.f);
+
+	Button_ControlType->GetTextToCustomise()->SetText(LOCTEXT("Control Type", "Playstation Controller"));
+	SetControlsIcon(Icon_PS);
 }
 
 void UControlsWidget::ShowXBControls()
@@ -118,6 +142,10 @@ void UControlsWidget::ShowXBControls()
 	ResetLookAtBindings();
 	bIsLookAtBindings_XB = true;
 	WidgetSwitcher->SetActiveWidget(ScrollBox_XB);
+	ScrollBox_XB->SetScrollOffset(0.f);
+
+	Button_ControlType->GetTextToCustomise()->SetText(LOCTEXT("Control Type", "Xbox Controller"));
+	SetControlsIcon(Icon_XB);
 }
 
 void UControlsWidget::ReturnToPrevious()
@@ -125,13 +153,14 @@ void UControlsWidget::ReturnToPrevious()
 	if (ConTypePanel && ConTypePanel->GetVisibility() == ESlateVisibility::Visible)
 	{
 		ConTypePanel->SetVisibility(ESlateVisibility::Hidden);
+		bDisableScrollInput = false;
 		SetFocus();
 	}
 	else if (UserWidgetInterface)
 	{
 		UserWidgetInterface->RequestReturnToParentWidget();
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Unable to Return in Controls Widget")) }
+	else { UE_LOG(LogTemp, Warning, TEXT("Unable to Return from Controls Widget")) }
 }
 
 
@@ -163,11 +192,22 @@ void UControlsWidget::ButtonXBOnHover()
 	Button_XB->SetFocusToButton();
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Scroll Inputs
+
 void UControlsWidget::ResetLookAtBindings()
 {
+	bDisableScrollInput = false;
 	bIsLookAtBindings_MouseKeys = false;
 	bIsLookAtBindings_PS = false;
 	bIsLookAtBindings_XB = false;
+}
+
+void UControlsWidget::SetControlsIcon(UIconsWidget * Icon)
+{
+	if (!WidgetSwitcherIcons || !Icon) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch Control Icons in Controls Widget")) }
+	WidgetSwitcherIcons->SetActiveWidget(Icon);
 }
 
 
@@ -207,11 +247,6 @@ void UControlsWidget::MoveScrollBox(UScrollBox * ScrollBox, bool bShouldScrollUp
 	ScrollBox->SetScrollOffset(FMath::Clamp<float>(ScrollOffset, 0.f, MaxScrollLength));
 }
 
-bool UControlsWidget::GetIsScrollableMenu()
-{
-	return bIsLookAtBindings_MouseKeys || bIsLookAtBindings_PS || bIsLookAtBindings_XB;
-}
-
 void UControlsWidget::SetMaxScrollLength(UScrollBox * ScrollBox, float SizeY_ScrollBox)
 {
 	// Get Y size of scroll box including all children
@@ -220,12 +255,17 @@ void UControlsWidget::SetMaxScrollLength(UScrollBox * ScrollBox, float SizeY_Scr
 	MaxScrollLength = ScrollBox->GetDesiredSize().Y - SizeY_ScrollBox;
 }
 
+bool UControlsWidget::GetIsScrollableMenu()
+{
+	return bIsLookAtBindings_MouseKeys || bIsLookAtBindings_PS || bIsLookAtBindings_XB;
+}
+
 FReply UControlsWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)
 {
 	FReply Result = FReply::Unhandled();
 	const FKey Key = InKeyEvent.GetKey();
 
-	if (GetIsScrollableMenu())
+	if (GetIsScrollableMenu() && !bDisableScrollInput)
 	{
 		if (Key == EKeys::Down)
 		{
@@ -276,4 +316,6 @@ void UControlsWidget::OnNavToBackButton()
 	if (!Button_Back) { UE_LOG(LogTemp, Warning, TEXT("Button_Back is missing from Controls Widget")) return; }
 	ButtonBackOnHover();
 }
+
+#undef LOCTEXT_NAMESPACE
 
