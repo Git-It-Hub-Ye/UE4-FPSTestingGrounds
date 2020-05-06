@@ -19,7 +19,17 @@ void UMenuButtonsWidget::NativePreConstruct()
 void UMenuButtonsWidget::SetupButton()
 {
 	if (!Button_Main) { UE_LOG(LogTemp, Warning, TEXT("Button_Main missing from Button Widget")) return; }
-	Button_Main->SetBackgroundColor(Button_Colour);
+	
+	// Set Normal & Hovered same colour. (Prevents mouse hovering from changing colour when player is using keyboard/gamepad)
+	Style_Default.SetNormal(Colour_Default);
+	Style_Default.SetHovered(Colour_Default);
+
+	// Set Normal & Hovered same colour. (Normal for Keyboard/Gamepad & Hovered for mouse interaction)
+	Style_Focused.SetNormal(Colour_Hover);
+	Style_Focused.SetHovered(Colour_Hover);
+	Style_Focused.SetPressed(Colour_Pressed);
+
+	Button_Main->SetStyle(Style_Default);
 }
 
 void UMenuButtonsWidget::SetupText()
@@ -52,16 +62,22 @@ void UMenuButtonsWidget::NativeOnRemovedFromFocusPath(const FFocusEvent & InFocu
 {
 	Super::NativeOnRemovedFromFocusPath(InFocusEvent);
 	SetUnhoverStyle();
+	
+	switch (InFocusEvent.GetCause())
+	{
+	case EFocusCause::Mouse: UE_LOG(LogTemp, Warning, TEXT("Mouse : %s"), *this->GetName())	break;
+	default:															break;
+	}
 }
 
 void UMenuButtonsWidget::SetOnHoverStyle()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hover : %s"), *this->GetName())
+	Button_Main->SetStyle(Style_Focused);
 }
 
 void UMenuButtonsWidget::SetUnhoverStyle()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Unhover : %s"), *this->GetName())
+	Button_Main->SetStyle(Style_Default);
 }
 
 

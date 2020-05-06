@@ -8,19 +8,19 @@
 
 ULethalGameInstance::ULethalGameInstance(const FObjectInitializer & ObjectInitializer)
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultMainMenuWidget(TEXT("/Game/Dynamic/UI/WBP_MainMenu"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultMainMenuWidget(TEXT("/Game/Dynamic/UI/Menus/WBP_MainMenu"));
 	if (DefaultMainMenuWidget.Class)
 	{
 		MainMenuWidget = DefaultMainMenuWidget.Class;
 	}
 	
-	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultInGameMenuWidget(TEXT("/Game/Dynamic/UI/WBP_InGameMenu"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultInGameMenuWidget(TEXT("/Game/Dynamic/UI/Menus/WBP_InGameMenu"));
 	if (DefaultInGameMenuWidget.Class)
 	{
 		InGameMenuWidget = DefaultInGameMenuWidget.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultGameOverWidget(TEXT("/Game/Dynamic/UI/WBP_GameOverMenu"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultGameOverWidget(TEXT("/Game/Dynamic/UI/Menus/WBP_GameOverMenu"));
 	if (DefaultGameOverWidget.Class)
 	{
 		GameOverWidget = DefaultGameOverWidget.Class;

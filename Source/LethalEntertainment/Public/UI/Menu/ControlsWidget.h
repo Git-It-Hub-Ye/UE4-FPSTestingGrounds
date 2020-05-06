@@ -10,7 +10,7 @@
 class UPanelWidget;
 class UWidgetSwitcher;
 class UMenuButtonsWidget;
-class UScrollBox;
+class UScrollBoxWidget;
 class UIconsWidget;
 
 /** Size data for scroll box */
@@ -43,7 +43,7 @@ struct FScrollBoxData {
  * Displays mouse/key bindings and gamepad controls
  */
 UCLASS()
-class LETHALENTERTAINMENT_API UControlsWidget : public UMenuWidget
+class LETHALENTERTAINMENT_API UControlsWidget : public UMenuWidget, public IUserWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -113,37 +113,25 @@ private:
 	/** Stores name of last button clicked (Used to set button to focus on when returning to previous menu layouts) */
 	FName Name_CurrentControlType;
 
-	/** True when ConTypePanel is in veiwport */
-	bool bDisableScrollInput = false;
-
 
 	////////////////////////////////////////////////////////////////////////////////
-	// Widget Switcher Controls
+	// Widget Switcher
 
 	/** Scroll to see all bindings */
 	UPROPERTY(meta = (BindWidget))
-	UScrollBox * ScrollBox_MouseKey;
+	UScrollBoxWidget * ScrollBox_MouseKey;
 
 	/** Scroll to see all bindings */
 	UPROPERTY(meta = (BindWidget))
-	UScrollBox * ScrollBox_PS;
+	UScrollBoxWidget * ScrollBox_PS;
 
 	/** Scroll to see all bindings */
 	UPROPERTY(meta = (BindWidget))
-	UScrollBox * ScrollBox_XB;
+	UScrollBoxWidget * ScrollBox_XB;
 
 	/** Contains data for scroll box input */
 	UPROPERTY(EditDefaultsOnly, DisplayName = "Scroll box data", Category = "Config")
 	FScrollBoxData ScrollBoxData;
-
-	/** True when ScrollBox_MouseKey is in veiwport */
-	bool bIsLookAtBindings_MouseKeys = false;
-
-	/** True when ScrollBox_PS is in veiwport */
-	bool bIsLookAtBindings_PS = false;
-
-	/** True when ScrollBox_XB is in veiwport */
-	bool bIsLookAtBindings_XB = false;
 
 public:
 	/** Sets user widget interface variable */
@@ -152,17 +140,30 @@ public:
 	/** Sets the widget that should recieve focus when menu is first in viewport */
 	void SetFocus();
 
-	/** Use scroll box (if bShouldScrollUp: true = Upwards scroll & false = Downwards scroll) */
-	void ScrollThroughMenu(bool bShouldScrollUp);
-
 protected:
 	virtual bool Initialize() override;
 
-	virtual FReply NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent) override;
-
 	virtual void NativeConstruct() override;
 
+
+	////////////////////////////////////////////////////////////////////////////////
+	// IUserWidgetInterface Functions (Called by child widgets)
+
+	/** Not needed for this class */
+	virtual void RequestReturnToParentWidget() override { return; }
+
+	/** Switch focus to widget above */
+	virtual void OnNavUpToParent() override;
+
+	/** Switch focus to widget below */
+	virtual void OnNavDownToParent() override;
+
 private:
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Setup
+
+	void SetScrollBoxInterface();
 
 	void SetControlTypeButton();
 
@@ -215,41 +216,27 @@ private:
 
 
 	////////////////////////////////////////////////////////////////////////////////
-	// Menu Data
-
-	/** Resets all scroll menu bools to false */
-	void ResetLookAtBindings();
-
-	/** Displays correct icons for control type */
-	void SetControlsIcon(UIconsWidget * Icon);
-
-
-	////////////////////////////////////////////////////////////////////////////////
-	// Scroll Inputs
-
-	/** Scrolls through menus in given direction */
-	void MoveScrollBox(UScrollBox * ScrollBox, bool bShouldScrollUp);
-
-	/** Sets the max scroll of current scroll box in viewport */
-	void SetMaxScrollLength(UScrollBox * ScrollBox, float SizeY_ScrollBox);
-
-	/** True when scroll box is in veiwport */
-	bool GetIsScrollableMenu();
-
-
-	////////////////////////////////////////////////////////////////////////////////
 	// Navigation Functions
 
 	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
 	UFUNCTION(BlueprintCallable)
 	void OnNavigatedToScrollMenu();
 
-	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
-	UFUNCTION(BlueprintCallable)
-	void OnNavToConTypeButton();
 
-	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
-	UFUNCTION(BlueprintCallable)
-	void OnNavToBackButton();
+	////////////////////////////////////////////////////////////////////////////////
+	// Display
+
+	/** Displays correct scroll box for control type */
+	void SetScrollMenu(UScrollBoxWidget * ScrollBox);
+
+	/** Displays correct icons for control type */
+	void SetControlsIcon(UIconsWidget * Icon);
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Menu Data
+
+	/** Get current scroll box displayed */
+	UScrollBoxWidget * GetCurrentScrollBox();
 
 };

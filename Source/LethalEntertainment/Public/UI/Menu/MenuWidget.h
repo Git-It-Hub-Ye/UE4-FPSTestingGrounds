@@ -33,7 +33,11 @@ public:
 	void SetMenuInterface(IMenuInterface * MenuInt);
 
 protected:
+	/** Called when level is removed and will remove widget from viewport */
 	virtual void OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld) override;
+
+	/** Tracks mouse clicks. (Used for UMenuButtonsWidget to track when focus is lost due to random mouse click) */
+	virtual FReply NativeOnMouseButtonDown(const FGeometry & InGeometry, const FPointerEvent & InMouseEvent) override;
 
 	/** Gets the player controller for this widget */
 	APlayerController * GetLocalPlayerController();

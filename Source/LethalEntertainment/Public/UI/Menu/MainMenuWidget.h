@@ -75,8 +75,16 @@ protected:
 	/** Any behavior after Super is carried out after construction */
 	virtual void NativeConstruct() override;
 
-	/** Switches widget back to main menu from child C++ widget (Called through IUserWidgetInterface) */
+
+	////////////////////////////////////////////////////////////////////////////////
+	// IUserWidgetInterface Functions (Called by child widgets)
+
+	/** Switches widget back to in game menu from child C++ widget */
 	virtual void RequestReturnToParentWidget() override;
+
+	virtual void OnNavUpToParent() override { return; }
+
+	virtual void OnNavDownToParent() override { return; }
 
 private:
 	////////////////////////////////////////////////////////////////////////////////

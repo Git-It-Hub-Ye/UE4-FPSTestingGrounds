@@ -24,6 +24,10 @@ class LETHALENTERTAINMENT_API IUserWidgetInterface
 public:
 
 	virtual void RequestReturnToParentWidget() = 0;
+
+	virtual void OnNavUpToParent() = 0;
+
+	virtual void OnNavDownToParent() = 0;
 	
 	
 };

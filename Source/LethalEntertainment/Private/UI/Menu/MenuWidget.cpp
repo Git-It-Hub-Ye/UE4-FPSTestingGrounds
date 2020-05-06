@@ -40,6 +40,12 @@ void UMenuWidget::OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld)
 	TearDown();
 }
 
+FReply UMenuWidget::NativeOnMouseButtonDown(const FGeometry & InGeometry, const FPointerEvent & InMouseEvent)
+{
+	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	return FReply::Handled();
+}
+
 APlayerController * UMenuWidget::GetLocalPlayerController()
 {
 	APlayerController * PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;

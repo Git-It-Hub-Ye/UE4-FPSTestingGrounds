@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Styling/SlateTypes.h"
 #include "Fonts/SlateFontInfo.h"
 #include "MenuButtonsWidget.generated.h"
 
@@ -26,9 +27,23 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton * Button_Main;
 
-	/** Button Colour */
-	UPROPERTY(EditAnywhere, DisplayName = "Button Colour", Category = "Button")
-	FLinearColor Button_Colour = FColor::Silver;
+	/** Buttons default colour */
+	UPROPERTY(EditAnywhere, DisplayName = "Default Colour", Category = "Button")
+	FSlateBrush Colour_Default;
+
+	/** Button on hover colour */
+	UPROPERTY(EditAnywhere, DisplayName = "Hover Colour", Category = "Button")
+	FSlateBrush Colour_Hover;
+
+	/** Button on hover colour */
+	UPROPERTY(EditAnywhere, DisplayName = "Pressed Colour", Category = "Button")
+	FSlateBrush Colour_Pressed;
+
+	/** Used to set style */
+	FButtonStyle Style_Default;
+
+	/** Used to set style */
+	FButtonStyle Style_Focused;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -55,10 +70,13 @@ private:
 	FLinearColor Text_Colour = FColor::White;
 
 public:
+	/** Sets focus to button widget */
 	void SetFocusToButton();
 
+	/** Returns text block */
 	UTextBlock * GetTextToCustomise() { return Button_Text; }
 
+	/** Returns button widget */
 	UButton * GetButton();
 
 protected:

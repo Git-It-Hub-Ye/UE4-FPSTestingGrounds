@@ -9,7 +9,7 @@ AMenuGameMode::AMenuGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerConClassFinder(TEXT("/Game/Dynamic/UI/BP_Menu_PC"));
+	static ConstructorHelpers::FClassFinder<APlayerController> PlayerConClassFinder(TEXT("/Game/Dynamic/Blueprints/BP_Menu_PC"));
 	PlayerControllerClass = PlayerConClassFinder.Class;
 }
 
