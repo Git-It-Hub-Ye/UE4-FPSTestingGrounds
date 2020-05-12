@@ -49,15 +49,17 @@ private:
 
 	/** Allows user to return to main menu */
 	UPROPERTY(meta = (BindWidget))
-		UMenuButtonsWidget * Button_ConfirmReturn;
+	UMenuButtonsWidget * Button_ConfirmReturn;
 
 	/** Allows user to stay in game */
 	UPROPERTY(meta = (BindWidget))
-		UMenuButtonsWidget * Button_CancelReturn;
+	UMenuButtonsWidget * Button_CancelReturn;
 
-private:
+protected:
+	/** Setup widget input functions */
 	virtual bool Initialize() override;
 
+	/** Any behavior after Super is carried out after construction */
 	virtual void NativeConstruct() override;
 
 private:

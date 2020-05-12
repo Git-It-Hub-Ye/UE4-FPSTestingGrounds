@@ -14,6 +14,7 @@ bool UMainMenuWidget::Initialize()
 	{
 		Button_Play->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
 		Button_Play->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonPlayOnHover);
+		Button_Play->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetCurrentFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return false; }
 
@@ -21,11 +22,13 @@ bool UMainMenuWidget::Initialize()
 	{
 		Button_Quit->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::WantsToQuit);
 		Button_Quit->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonOuitOnHover);
+		Button_Quit->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetCurrentFocusedWidgetName);
 
 		if (Button_ConfirmQuit && Button_ConfirmQuit->GetButton())
 		{
 			Button_ConfirmQuit->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame);
 			Button_ConfirmQuit->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonConfirmQuitOnHover);
+			Button_ConfirmQuit->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmQuit is missing from MainMenu Widget")) return false; }
 
@@ -33,6 +36,7 @@ bool UMainMenuWidget::Initialize()
 		{
 			Button_CancelQuit->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::ReturnToMainMenu);
 			Button_CancelQuit->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonCancelQuitOnHover);
+			Button_CancelQuit->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from MainMenu Widget")) return false; }
 	}
@@ -42,6 +46,7 @@ bool UMainMenuWidget::Initialize()
 	{
 		Button_Controls->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
 		Button_Controls->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonControlsOnHover);
+		Button_Controls->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetCurrentFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from MainMenu Widget")) }
 
@@ -52,7 +57,6 @@ void UMainMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from MainMenu Widget")) return; }
-
 	ControlsPanel->SetWidgetInterface(this);
 }
 

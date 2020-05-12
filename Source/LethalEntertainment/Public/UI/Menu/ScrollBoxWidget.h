@@ -9,6 +9,9 @@
 
 class UScrollBox;
 
+/** On Focused Event */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFocusScrollBoxDelegate, UWidget*, Widget);
+
 /**
 * Scroll Box for menus (Sets Bar Hover when focus is recieved)
 */
@@ -46,12 +49,21 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Setup
 
-	void SetUserWidgetInterface(IUserWidgetInterface * UserInterface);
+	/** Sets user widget interface variable */
+	void SetUserWidgetInterface(IUserWidgetInterface * UserWidgetInt);
 
+	/** Sets ScrollBoxSizeY */
 	void SetSizeYOfScrollBox(float SizeY);
 
-	/** Reset croll offset back to zero */
+	/** Reset scroll offset back to zero */
 	void ResetOffset();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Focus
+
+	/** Broadcasts to Menus */
+	FFocusScrollBoxDelegate OnWidgetFocused;
 
 protected:
 	////////////////////////////////////////////////////////////////////////////////
@@ -108,5 +120,9 @@ private:
 
 	/** Max offset of scroll bar */
 	void GetMaxScrollOffset(float SizeY);
+
+	/** Set focus when scrolled */
+	UFUNCTION()
+	void UserScrolled();
 	
 };

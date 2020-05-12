@@ -17,6 +17,7 @@ enum class ECharacterType : uint8 {
 	EAIBot			UMETA(DisplayName = "AIBot"),
 };
 
+/** On Death Event */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMannequinDelegate);
 
 UCLASS()

@@ -11,6 +11,9 @@
 class UButton;
 class UTextBlock;
 
+/** On Focused Event */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFocusButtonDelegate, UWidget*, Widget);
+
 /**
  * Button for menus (Sets Hover Image, Sound etc when focus is recieved)
  */
@@ -70,7 +73,7 @@ private:
 	FLinearColor Text_Colour = FColor::White;
 
 public:
-	/** Sets focus to button widget */
+	/** Sets focus to Button */
 	void SetFocusToButton();
 
 	/** Returns text block */
@@ -78,6 +81,9 @@ public:
 
 	/** Returns button widget */
 	UButton * GetButton();
+
+	/** Broadcasts to Menus */
+	FFocusButtonDelegate OnWidgetFocused;
 
 protected:
 	/** Updates widget anytime it is constructed or edited */

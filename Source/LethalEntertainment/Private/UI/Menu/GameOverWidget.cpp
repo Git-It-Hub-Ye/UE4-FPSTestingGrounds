@@ -14,6 +14,7 @@ bool UGameOverWidget::Initialize()
 	{
 		Button_Restart->GetButton()->OnClicked.AddDynamic(this, &UGameOverWidget::RestartGame);
 		Button_Restart->GetButton()->OnHovered.AddDynamic(this, &UGameOverWidget::ButtonRestartOnHover);
+		Button_Restart->OnWidgetFocused.AddUniqueDynamic(this, &UGameOverWidget::SetCurrentFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Restart is missing from GameOverMenu Widget")) return false; }
 
@@ -21,11 +22,13 @@ bool UGameOverWidget::Initialize()
 	{
 		Button_MainMenu->GetButton()->OnClicked.AddDynamic(this, &UGameOverWidget::WantsToReturn);
 		Button_MainMenu->GetButton()->OnHovered.AddDynamic(this, &UGameOverWidget::ButtonMainMenuOnHover);
+		Button_MainMenu->OnWidgetFocused.AddUniqueDynamic(this, &UGameOverWidget::SetCurrentFocusedWidgetName);
 
 		if (Button_ConfirmReturn && Button_ConfirmReturn->GetButton())
 		{
 			Button_ConfirmReturn->GetButton()->OnClicked.AddDynamic(this, &UGameOverWidget::ReturnToMainMenu);
 			Button_ConfirmReturn->GetButton()->OnHovered.AddDynamic(this, &UGameOverWidget::ButtonConfirmReturnOnHover);
+			Button_ConfirmReturn->OnWidgetFocused.AddUniqueDynamic(this, &UGameOverWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmReturn is missing from GameOverMenu Widget")) return false; }
 
@@ -33,6 +36,7 @@ bool UGameOverWidget::Initialize()
 		{
 			Button_CancelReturn->GetButton()->OnClicked.AddDynamic(this, &UGameOverWidget::CancelReturn);
 			Button_CancelReturn->GetButton()->OnHovered.AddDynamic(this, &UGameOverWidget::ButtonCancelReturnOnHover);
+			Button_CancelReturn->OnWidgetFocused.AddUniqueDynamic(this, &UGameOverWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelReturn is missing from GameOverMenu Widget")) return false; }
 

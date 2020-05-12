@@ -5,16 +5,16 @@
 #include "Components/TextBlock.h"
 #include "MenuButtonsWidget.h"
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Setup
+
 void UMenuButtonsWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	SetupButton();
 	SetupText();
 }
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Setup
 
 void UMenuButtonsWidget::SetupButton()
 {
@@ -55,6 +55,7 @@ void UMenuButtonsWidget::SetFocusToButton()
 void UMenuButtonsWidget::NativeOnAddedToFocusPath(const FFocusEvent & InFocusEvent)
 {
 	Super::NativeOnAddedToFocusPath(InFocusEvent);
+	OnWidgetFocused.Broadcast(this);
 	SetOnHoverStyle();	
 }
 
@@ -62,12 +63,6 @@ void UMenuButtonsWidget::NativeOnRemovedFromFocusPath(const FFocusEvent & InFocu
 {
 	Super::NativeOnRemovedFromFocusPath(InFocusEvent);
 	SetUnhoverStyle();
-	
-	switch (InFocusEvent.GetCause())
-	{
-	case EFocusCause::Mouse: UE_LOG(LogTemp, Warning, TEXT("Mouse : %s"), *this->GetName())	break;
-	default:															break;
-	}
 }
 
 void UMenuButtonsWidget::SetOnHoverStyle()

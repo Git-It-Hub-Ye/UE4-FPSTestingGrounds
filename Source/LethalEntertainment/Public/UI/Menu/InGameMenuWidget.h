@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UI/Menu/MenuWidget.h"
-#include "UserWidgetInterface.h"
 #include "InGameMenuWidget.generated.h"
 
 class UPanelWidget;
@@ -16,7 +15,7 @@ class UMenuButtonsWidget;
  * In game menu, can restart game or return to main menu from here
  */
 UCLASS()
-class LETHALENTERTAINMENT_API UInGameMenuWidget : public UMenuWidget, public IUserWidgetInterface
+class LETHALENTERTAINMENT_API UInGameMenuWidget : public UMenuWidget
 {
 	GENERATED_BODY()
 	
@@ -90,6 +89,7 @@ private:
 	UMenuButtonsWidget * Button_CancelReturn;
 
 protected:
+	/** Setup widget input functions */
 	virtual bool Initialize() override;
 
 	/** Updates widget anytime it is constructed or edited */
@@ -105,12 +105,7 @@ protected:
 	/** Switches widget back to in game menu from child C++ widget */
 	virtual void RequestReturnToParentWidget() override;
 
-	/** Not needed for this class */
-	virtual void OnNavUpToParent() override { return; }
-
-	/** Not needed for this class */
-	virtual void OnNavDownToParent() override { return; }
-
+	
 private:
 
 	////////////////////////////////////////////////////////////////////////////////

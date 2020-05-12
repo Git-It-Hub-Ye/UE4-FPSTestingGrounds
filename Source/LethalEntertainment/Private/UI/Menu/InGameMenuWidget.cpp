@@ -15,6 +15,7 @@ bool UInGameMenuWidget::Initialize()
 	{
 		Button_Resume->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ResumeGame);
 		Button_Resume->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonResumeOnHover);
+		Button_Resume->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return false; }
 
@@ -22,6 +23,7 @@ bool UInGameMenuWidget::Initialize()
 	{
 		Button_Controls->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ViewControls);
 		Button_Controls->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonControlsOnHover);
+		Button_Controls->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from InGameMenu Widget")) }
 
@@ -29,11 +31,13 @@ bool UInGameMenuWidget::Initialize()
 	{
 		Button_Restart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::WantsToRestart);
 		Button_Restart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonRestartOnHover);
+		Button_Restart->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 
 		if (Button_ConfirmRestart && Button_ConfirmRestart->GetButton())
 		{
 			Button_ConfirmRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::RestartGame);
 			Button_ConfirmRestart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonConfirmRestartOnHover);
+			Button_ConfirmRestart->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmRestart is missing from InGameMenu Widget")) }
 
@@ -41,6 +45,7 @@ bool UInGameMenuWidget::Initialize()
 		{
 			Button_CancelRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
 			Button_CancelRestart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonCancelRestartOnHover);
+			Button_CancelRestart->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelRestart is missing from InGameMenu Widget")) return false; }
 	}
@@ -50,11 +55,13 @@ bool UInGameMenuWidget::Initialize()
 	{
 		Button_MainMenu->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::WantsToReturn);
 		Button_MainMenu->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonMainMenuOnHover);
+		Button_MainMenu->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 
 		if (Button_ConfirmReturn && Button_ConfirmReturn->GetButton())
 		{
 			Button_ConfirmReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToMainMenu);
 			Button_ConfirmReturn->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonConfirmReturnOnHover);
+			Button_ConfirmReturn->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_ConfirmReturn is missing from InGameMenu Widget")) return false; }
 
@@ -62,6 +69,7 @@ bool UInGameMenuWidget::Initialize()
 		{
 			Button_CancelReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
 			Button_CancelReturn->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonCancelReturnOnHover);
+			Button_CancelReturn->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_CancelReturn is missing from InGameMenu Widget")) return false; }
 	}

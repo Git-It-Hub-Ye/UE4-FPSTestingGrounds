@@ -7,7 +7,6 @@
 #include "Components/TextBlock.h"
 #include "IconsWidget.h"
 #include "ScrollBoxWidget.h"
-#include "Components/ScrollBox.h"
 #include "ControlsWidget.h"
 
 #define LOCTEXT_NAMESPACE "PlayerHud"
@@ -15,11 +14,15 @@
 bool UControlsWidget::Initialize()
 {
 	if (!Super::Initialize()) { return false; }
+	
+	// Ensure this widget can be clicked on to monitor user focus
+	this->SetVisibility(ESlateVisibility::Visible);
 
 	if (Button_Back && Button_Back->GetButton())
 	{
 		Button_Back->GetButton()->OnClicked.AddDynamic(this, &UControlsWidget::ReturnToPrevious);
 		Button_Back->GetButton()->OnHovered.AddDynamic(this, &UControlsWidget::ButtonBackOnHover);
+		Button_Back->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Return is missing from Controls Widget")) return false; }
 
@@ -27,11 +30,13 @@ bool UControlsWidget::Initialize()
 	{
 		Button_ControlType->GetButton()->OnClicked.AddDynamic(this, &UControlsWidget::SelectControlType);
 		Button_ControlType->GetButton()->OnHovered.AddDynamic(this, &UControlsWidget::ButtonControlTypeOnHover);
+		Button_ControlType->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
 
 		if (Button_MouseKey && Button_MouseKey->GetButton())
 		{
 			Button_MouseKey->GetButton()->OnClicked.AddDynamic(this, &UControlsWidget::ShowMouseKeyInputs);
 			Button_MouseKey->GetButton()->OnHovered.AddDynamic(this, &UControlsWidget::ButtonMouseKeyOnHover);
+			Button_MouseKey->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_MouseKey is missing from Controls Widget")) }
 
@@ -39,6 +44,7 @@ bool UControlsWidget::Initialize()
 		{
 			Button_PS->GetButton()->OnClicked.AddDynamic(this, &UControlsWidget::ShowPSControls);
 			Button_PS->GetButton()->OnHovered.AddDynamic(this, &UControlsWidget::ButtonPSOnHover);
+			Button_PS->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_PS is missing from Controls Widget")) }
 
@@ -46,6 +52,7 @@ bool UControlsWidget::Initialize()
 		{
 			Button_XB->GetButton()->OnClicked.AddDynamic(this, &UControlsWidget::ShowXBControls);
 			Button_XB->GetButton()->OnHovered.AddDynamic(this, &UControlsWidget::ButtonXBOnHover);
+			Button_XB->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("Button_XB is missing from Controls Widget")) }
 	}
@@ -57,6 +64,7 @@ bool UControlsWidget::Initialize()
 void UControlsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
 	if (ConTypePanel)
 	{
 		ConTypePanel->SetVisibility(ESlateVisibility::Hidden);
@@ -72,13 +80,28 @@ void UControlsWidget::NativeConstruct()
 
 void UControlsWidget::SetScrollBoxInterface()
 {
-	if (ScrollBox_MouseKey) { ScrollBox_MouseKey->SetUserWidgetInterface(this), ScrollBox_MouseKey->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_MouseKey); }
+	if (ScrollBox_MouseKey) 
+	{
+		ScrollBox_MouseKey->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
+		ScrollBox_MouseKey->SetUserWidgetInterface(this);
+		ScrollBox_MouseKey->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_MouseKey);
+	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ScrollBox_MouseKey missing from Controls Widget")) }
 
-	if (ScrollBox_PS) { ScrollBox_PS->SetUserWidgetInterface(this), ScrollBox_PS->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_PS); }
+	if (ScrollBox_PS) 
+	{ 
+		ScrollBox_PS->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
+		ScrollBox_PS->SetUserWidgetInterface(this);
+		ScrollBox_PS->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_PS);
+	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ScrollBox_PS missing from Controls Widget")) }
 
-	if (ScrollBox_XB) { ScrollBox_XB->SetUserWidgetInterface(this), ScrollBox_XB->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_XB); }
+	if (ScrollBox_XB) 
+	{
+		ScrollBox_XB->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
+		ScrollBox_XB->SetUserWidgetInterface(this);
+		ScrollBox_XB->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_XB);
+	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ScrollBox_XB missing from Controls Widget")) }
 }
 
@@ -239,6 +262,23 @@ void UControlsWidget::SetControlsIcon(UIconsWidget * Icon)
 {
 	if (!WidgetSwitcherIcons || !Icon) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch Controls Icon in Controls Widget")) return; }
 	WidgetSwitcherIcons->SetActiveWidget(Icon);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Focus
+
+void UControlsWidget::ReassignFocus()
+{
+	if (ConTypePanel && ConTypePanel->GetVisibility() == ESlateVisibility::Visible)
+	{
+		ConTypePanel->SetVisibility(ESlateVisibility::Hidden);
+		SetFocus();
+	}
+	else
+	{
+		SetWidgetToFocus(Name_CurrentFocusedWidget);
+	}
 }
 
 

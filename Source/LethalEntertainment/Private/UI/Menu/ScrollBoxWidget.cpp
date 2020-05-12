@@ -41,10 +41,10 @@ void UScrollBoxWidget::ResetOffset()
 ////////////////////////////////////////////////////////////////////////////////
 // Focus
 
-
 void UScrollBoxWidget::NativeOnAddedToFocusPath(const FFocusEvent & InFocusEvent)
 {
 	Super::NativeOnAddedToFocusPath(InFocusEvent);
+	OnWidgetFocused.Broadcast(this);
 	SetFocusStyle();
 }
 
@@ -101,6 +101,14 @@ void UScrollBoxWidget::GetMaxScrollOffset(float SizeY)
 	// Minus Y size of actual scroll box visible (set in editor)
 	// Gives the end scroll offset of the scroll box
 	MaxScrollOffset = ScrollBox_Main->GetDesiredSize().Y - SizeY;
+}
+
+void UScrollBoxWidget::UserScrolled()
+{
+	if (!HasAnyUserFocus())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Scroll"))
+	}
 }
 
 FReply UScrollBoxWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)

@@ -43,7 +43,7 @@ struct FScrollBoxData {
  * Displays mouse/key bindings and gamepad controls
  */
 UCLASS()
-class LETHALENTERTAINMENT_API UControlsWidget : public UMenuWidget, public IUserWidgetInterface
+class LETHALENTERTAINMENT_API UControlsWidget : public UMenuWidget
 {
 	GENERATED_BODY()
 
@@ -51,12 +51,6 @@ private:
 
 	/** Calls interface functions (These functions should be overriden by parent widget) */
 	IUserWidgetInterface * UserWidgetInterface;
-
-	/** How much to add to scroll offset based on input key */
-	float AmountToAdd = 15.f;
-
-	/** Max Length a scroll box can scroll */
-	float MaxScrollLength = 0.f;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -141,22 +135,22 @@ public:
 	void SetFocus();
 
 protected:
+	/** Setup widget input functions */
 	virtual bool Initialize() override;
 
+	/** Any behavior after Super is carried out after construction */
 	virtual void NativeConstruct() override;
 
 
 	////////////////////////////////////////////////////////////////////////////////
 	// IUserWidgetInterface Functions (Called by child widgets)
 
-	/** Not needed for this class */
-	virtual void RequestReturnToParentWidget() override { return; }
-
 	/** Switch focus to widget above */
 	virtual void OnNavUpToParent() override;
 
 	/** Switch focus to widget below */
 	virtual void OnNavDownToParent() override;
+
 
 private:
 
@@ -166,6 +160,7 @@ private:
 	void SetScrollBoxInterface();
 
 	void SetControlTypeButton();
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Button Clicked
@@ -231,6 +226,13 @@ private:
 
 	/** Displays correct icons for control type */
 	void SetControlsIcon(UIconsWidget * Icon);
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Focus
+
+	/** Reassign focus to a widget */
+	virtual void ReassignFocus() override;
 
 
 	////////////////////////////////////////////////////////////////////////////////

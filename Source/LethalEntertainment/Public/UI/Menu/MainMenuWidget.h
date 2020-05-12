@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UI/Menu/MenuWidget.h"
-#include "UserWidgetInterface.h"
 #include "MainMenuWidget.generated.h"
 
 class UMenuButtonsWidget;
@@ -13,7 +12,7 @@ class UWidgetSwitcher;
 class UControlsWidget;
 
 UCLASS()
-class LETHALENTERTAINMENT_API UMainMenuWidget : public UMenuWidget, public IUserWidgetInterface
+class LETHALENTERTAINMENT_API UMainMenuWidget : public UMenuWidget
 {
 	GENERATED_BODY()
 	
@@ -67,6 +66,7 @@ private:
 	UControlsWidget * ControlsPanel;
 
 protected:
+	/** Setup widget input functions */
 	virtual bool Initialize() override;
 
 	/** Updates widget anytime it is constructed or edited */
@@ -82,10 +82,7 @@ protected:
 	/** Switches widget back to in game menu from child C++ widget */
 	virtual void RequestReturnToParentWidget() override;
 
-	virtual void OnNavUpToParent() override { return; }
-
-	virtual void OnNavDownToParent() override { return; }
-
+	
 private:
 	////////////////////////////////////////////////////////////////////////////////
 	// Button Clicked
