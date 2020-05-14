@@ -92,14 +92,19 @@ void ULethalGameInstance::LoadGameOverMenu()
 	Menu->Setup();
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Game action functions (Accessed through Menu interface)
-
 void ULethalGameInstance::PauseGame()
 {
 	if (!GetWorld()) { UE_LOG(LogTemp, Warning, TEXT("Can't find World in Game Instance")) return; }
 	GetWorld()->IsPaused() ? UGameplayStatics::SetGamePaused(GetWorld(), false) : UGameplayStatics::SetGamePaused(GetWorld(), true);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Game action functions (Accessed through Menu interface)
+
+void ULethalGameInstance::ResumeGame()
+{
+	ToggleInGameMenu();
 }
 
 void ULethalGameInstance::PlayGame()

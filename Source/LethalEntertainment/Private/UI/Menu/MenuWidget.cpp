@@ -49,6 +49,34 @@ void UMenuWidget::OnLevelRemovedFromWorld(ULevel * InLevel, UWorld * InWorld)
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Inputs
+
+FReply UMenuWidget::NativeOnKeyUp(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)
+{
+	FReply Result = FReply::Unhandled();
+	const FKey Key = InKeyEvent.GetKey();
+
+	if (Key == EKeys::Tab)
+	{
+		EscInput();
+		Result = FReply::Handled();
+	}
+	else if (Key == EKeys::Gamepad_FaceButton_Right)
+	{
+		BackInput();
+		Result = FReply::Handled();
+	}
+	else if (Key == EKeys::Gamepad_Special_Right)
+	{
+		CloseMenuInput();
+		Result = FReply::Handled();
+	}
+
+	return Result;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Focus
 
 FReply UMenuWidget::NativeOnFocusReceived(const FGeometry & InGeometry, const FFocusEvent & InFocusEvent)

@@ -48,6 +48,12 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_MainMenu;
 
+	/** True if not on Pause Panel */
+	bool bIsAdditionalPanelOpen = false;
+
+	/** True if viewing controls */
+	bool bIsControlsPanelOpen = false;
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Controls Panel
@@ -174,5 +180,18 @@ private:
 	/** Sets focus on Button_CancelReturn */
 	UFUNCTION()
 	void ButtonCancelReturnOnHover();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Inputs
+
+	/** Returns back to previous menu or closes menu */
+	virtual void EscInput() override;
+
+	/** Returns back to previous menu */
+	virtual void BackInput() override;
+
+	/** Instantly closes menu */
+	virtual void CloseMenuInput() override;
 	
 };

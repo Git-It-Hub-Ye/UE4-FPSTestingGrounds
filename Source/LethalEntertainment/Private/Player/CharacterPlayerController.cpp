@@ -31,7 +31,7 @@ void ACharacterPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction("PauseGame", IE_Released, this, &ACharacterPlayerController::PauseGameMenu).bExecuteWhenPaused = true;
+	InputComponent->BindAction("PauseGame", IE_Released, this, &ACharacterPlayerController::PauseGameMenu);
 }
 
 void ACharacterPlayerController::FindDeathCameraSpot(FVector & StartLocation)

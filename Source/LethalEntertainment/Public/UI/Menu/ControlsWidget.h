@@ -129,7 +129,7 @@ private:
 
 public:
 	/** Sets user widget interface variable */
-	void SetWidgetInterface(IUserWidgetInterface * UserWidgetInt);
+	void SetUserWidgetInterface(IUserWidgetInterface * UserWidgetInt);
 
 	/** Sets the widget that should recieve focus when menu is first in viewport */
 	void SetFocus();
@@ -231,8 +231,24 @@ private:
 	////////////////////////////////////////////////////////////////////////////////
 	// Focus
 
+	UFUNCTION()
+	void SetScrollBoxFocusedWidget(UWidget * Widget);
+
 	/** Reassign focus to a widget */
 	virtual void ReassignFocus() override;
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Inputs
+
+	/** Returns back to previous menu */
+	virtual void EscInput() override { BackInput(); }
+
+	/** Returns back to previous menu */
+	virtual void BackInput() override;
+
+	/** Instantly closes menu */
+	virtual void CloseMenuInput() override;
 
 
 	////////////////////////////////////////////////////////////////////////////////

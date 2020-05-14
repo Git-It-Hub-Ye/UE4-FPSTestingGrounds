@@ -40,6 +40,7 @@ private:
 	/** Max offset of scroll box */
 	float MaxScrollOffset = 0.f;
 
+	/** Size of scroll box on Y axis */
 	float ScrollBoxSizeY = 0.f;
 
 	/** How much to add to scroll offset based on input key */
@@ -86,6 +87,7 @@ protected:
 	////////////////////////////////////////////////////////////////////////////////
 	// Scroll Inputs
 
+	/** Listens for UP inputs */
 	virtual FReply NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent) override;
 
 private:
@@ -100,6 +102,7 @@ private:
 	// Focus
 
 	/** Activates focused style of scroll bar */
+	UFUNCTION(BlueprintCallable)
 	void SetFocusStyle();
 
 	/** Sets scroll bar style back to default */
@@ -122,7 +125,7 @@ private:
 	void GetMaxScrollOffset(float SizeY);
 
 	/** Set focus when scrolled */
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void UserScrolled();
 	
 };

@@ -105,10 +105,7 @@ void UScrollBoxWidget::GetMaxScrollOffset(float SizeY)
 
 void UScrollBoxWidget::UserScrolled()
 {
-	if (!HasAnyUserFocus())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Scroll"))
-	}
+	SetKeyboardFocus();
 }
 
 FReply UScrollBoxWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)

@@ -101,5 +101,15 @@ private:
 	/** Sets focus on Button_CancelReturn */
 	UFUNCTION()
 	void ButtonCancelReturnOnHover();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Inputs
+
+	/** Returns back to previous menu */
+	virtual void EscInput() override { BackInput(); }
+
+	/** Returns back to previous menu */
+	virtual void BackInput() override;
 	
 };

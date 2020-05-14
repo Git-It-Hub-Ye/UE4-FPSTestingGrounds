@@ -65,6 +65,25 @@ protected:
 
 
 	////////////////////////////////////////////////////////////////////////////////
+	// Inputs
+
+	/** Listens for UP inputs */
+	virtual FReply NativeOnKeyUp(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent) override;
+
+	/** Returns back to previous menu or closes menu */
+	UFUNCTION()
+	virtual void EscInput() { return; }
+
+	/** Returns back to previous menu */
+	UFUNCTION()
+	virtual void BackInput() { return; }
+
+	/** Instantly closes menu */
+	UFUNCTION()
+	virtual void CloseMenuInput() { return; }
+
+
+	////////////////////////////////////////////////////////////////////////////////
 	// Focus
 
 	/** Resets focus back to Name_CurrentFocusedWidget (Widgets base must be set to visible). When widget receives focus, this means a child widget (eg Button) has lost focus */

@@ -14,7 +14,7 @@ bool UMainMenuWidget::Initialize()
 	{
 		Button_Play->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
 		Button_Play->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonPlayOnHover);
-		Button_Play->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetCurrentFocusedWidgetName);
+		Button_Play->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return false; }
 
@@ -46,7 +46,7 @@ bool UMainMenuWidget::Initialize()
 	{
 		Button_Controls->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
 		Button_Controls->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonControlsOnHover);
-		Button_Controls->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetCurrentFocusedWidgetName);
+		Button_Controls->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from MainMenu Widget")) }
 
@@ -57,7 +57,7 @@ void UMainMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from MainMenu Widget")) return; }
-	ControlsPanel->SetWidgetInterface(this);
+	ControlsPanel->SetUserWidgetInterface(this);
 }
 
 void UMainMenuWidget::NativeConstruct()
@@ -86,6 +86,7 @@ void UMainMenuWidget::WantsToQuit()
 {
 	if (!WidgetSwitcher || !QuitMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to QuitMenu in MainMenu Widget")) return; }
 	Name_LastButton = *Button_Quit->GetName();
+	bIsAdditionalPanelOpen = true;
 	WidgetSwitcher->SetActiveWidget(QuitMenu);
 
 	if (!Button_CancelQuit) { UE_LOG(LogTemp, Warning, TEXT("Button_CancelQuit is missing from MainMenu Widget")) return; }
@@ -102,6 +103,7 @@ void UMainMenuWidget::ViewControls()
 {
 	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to ControlsPanel in MainMenu Widget")) return; }
 	Name_LastButton = *Button_Controls->GetName();
+	bIsControlsPanelOpen = true;
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
 	ControlsPanel->SetFocus();
 }
@@ -109,6 +111,8 @@ void UMainMenuWidget::ViewControls()
 void UMainMenuWidget::ReturnToMainMenu()
 {
 	if (!WidgetSwitcher || !MainMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to MainMenu in MainMenu Widget")) return; }
+	bIsControlsPanelOpen = false;
+	bIsAdditionalPanelOpen = false;
 	WidgetSwitcher->SetActiveWidget(MainMenu);
 	SetWidgetToFocus(Name_LastButton);
 }
@@ -146,21 +150,44 @@ void UMainMenuWidget::ButtonCancelQuitOnHover()
 ////////////////////////////////////////////////////////////////////////////////
 // Navigation Functions
 
-void UMainMenuWidget::OnNavigatedToButtonPlay()
+void UMainMenuWidget::OnNavigateToButton()
 {
-	if (!Button_Play) { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return; }
-	ButtonPlayOnHover();
-}
-
-void UMainMenuWidget::OnNavigatedToButtonControls()
-{
-	if (!Button_Controls) { UE_LOG(LogTemp, Warning, TEXT("Button_Controls is missing from MainMenu Widget")) return; }
-	ButtonControlsOnHover();
+	UMenuButtonsWidget * Button = Cast<UMenuButtonsWidget>(GetWidgetFromName(Name_NavToButton));
+	if (!Button) { UE_LOG(LogTemp, Warning, TEXT("Can't Navigate back to buttons from Quit")) return; }
+	Button->SetFocusToButton();
 }
 
 void UMainMenuWidget::OnNavigatedToButtonQuit()
 {
 	if (!Button_Quit) { UE_LOG(LogTemp, Warning, TEXT("Button_Quit is missing from MainMenu Widget")) return; }
+	Name_NavToButton = Name_CurrentFocusedWidget;
 	ButtonOuitOnHover();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Focus
+
+void UMainMenuWidget::SetFocusedWidgetName(UWidget * Widget)
+{
+	SetCurrentFocusedWidgetName(Widget);
+	if (!Widget) { return; }
+	Name_NavToButton = *Widget->GetName();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Inputs
+
+void UMainMenuWidget::EscInput()
+{
+	if (!bIsAdditionalPanelOpen)
+	{
+		WantsToQuit();
+	}
+	else
+	{
+		ReturnToMainMenu();
+	}
 }
 

@@ -28,7 +28,7 @@ public:
 
 	virtual void OuitGame() = 0;
 
-	virtual void PauseGame() = 0;
+	virtual void ResumeGame() = 0;
 
 	virtual void RestartGame() = 0;
 	

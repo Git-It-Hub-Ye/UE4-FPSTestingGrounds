@@ -55,7 +55,7 @@ protected:
 
 	virtual void OuitGame() override;
 
-	virtual void PauseGame() override;
+	virtual void ResumeGame() override;
 
 	virtual void RestartGame() override;
 
@@ -69,5 +69,7 @@ private:
 	void LoadGameOverMenu();
 
 	void LoadMainMenu();
+
+	void PauseGame();
 	
 };

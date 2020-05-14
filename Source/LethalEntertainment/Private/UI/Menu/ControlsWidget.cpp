@@ -82,7 +82,7 @@ void UControlsWidget::SetScrollBoxInterface()
 {
 	if (ScrollBox_MouseKey) 
 	{
-		ScrollBox_MouseKey->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
+		ScrollBox_MouseKey->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetScrollBoxFocusedWidget);
 		ScrollBox_MouseKey->SetUserWidgetInterface(this);
 		ScrollBox_MouseKey->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_MouseKey);
 	}
@@ -90,7 +90,7 @@ void UControlsWidget::SetScrollBoxInterface()
 
 	if (ScrollBox_PS) 
 	{ 
-		ScrollBox_PS->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
+		ScrollBox_PS->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetScrollBoxFocusedWidget);
 		ScrollBox_PS->SetUserWidgetInterface(this);
 		ScrollBox_PS->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_PS);
 	}
@@ -98,7 +98,7 @@ void UControlsWidget::SetScrollBoxInterface()
 
 	if (ScrollBox_XB) 
 	{
-		ScrollBox_XB->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
+		ScrollBox_XB->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetScrollBoxFocusedWidget);
 		ScrollBox_XB->SetUserWidgetInterface(this);
 		ScrollBox_XB->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_XB);
 	}
@@ -113,7 +113,7 @@ void UControlsWidget::SetControlTypeButton()
 	else { UE_LOG(LogTemp, Warning, TEXT("Controller types selection is missing from Controls Widget")) }
 }
 
-void UControlsWidget::SetWidgetInterface(IUserWidgetInterface * UserWidgetInt)
+void UControlsWidget::SetUserWidgetInterface(IUserWidgetInterface * UserWidgetInt)
 {
 	UserWidgetInterface = UserWidgetInt;
 }
@@ -231,8 +231,8 @@ void UControlsWidget::ButtonXBOnHover()
 
 void UControlsWidget::OnNavigatedToScrollMenu()
 {
-	if (!GetCurrentScrollBox() || !GetLocalPlayerController()) { UE_LOG(LogTemp, Warning, TEXT("Unable to SetUserFocus on ScrollBoxWidget from Controls Widget")) return; }
-	GetCurrentScrollBox()->SetUserFocus(GetLocalPlayerController());
+	if (!GetCurrentScrollBox()) { UE_LOG(LogTemp, Warning, TEXT("Unable to Focus on ScrollBoxWidget from Controls Widget")) return; }
+	GetCurrentScrollBox()->SetKeyboardFocus();
 }
 
 void UControlsWidget::OnNavUpToParent()
@@ -268,6 +268,12 @@ void UControlsWidget::SetControlsIcon(UIconsWidget * Icon)
 ////////////////////////////////////////////////////////////////////////////////
 // Focus
 
+void UControlsWidget::SetScrollBoxFocusedWidget(UWidget * Widget)
+{
+	SetCurrentFocusedWidgetName(Widget);
+	if (ConTypePanel && ConTypePanel->GetVisibility() == ESlateVisibility::Visible) { ConTypePanel->SetVisibility(ESlateVisibility::Hidden); }
+}
+
 void UControlsWidget::ReassignFocus()
 {
 	if (ConTypePanel && ConTypePanel->GetVisibility() == ESlateVisibility::Visible)
@@ -279,6 +285,21 @@ void UControlsWidget::ReassignFocus()
 	{
 		SetWidgetToFocus(Name_CurrentFocusedWidget);
 	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Inputs
+
+void UControlsWidget::BackInput()
+{
+	ReturnToPrevious();
+}
+
+void UControlsWidget::CloseMenuInput()
+{
+	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for Controls Widget")) return; }
+	MenuInterface->ResumeGame();
 }
 
 

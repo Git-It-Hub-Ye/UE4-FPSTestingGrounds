@@ -41,6 +41,15 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Quit;
 
+	/** Name of button to navigate back to from quit button */
+	FName Name_NavToButton;
+
+	/** True if not on Main Menu */
+	bool bIsAdditionalPanelOpen = false;
+
+	/** True if viewing controls */
+	bool bIsControlsPanelOpen = false;
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Quit Menu
@@ -137,14 +146,28 @@ private:
 
 	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
 	UFUNCTION(BlueprintCallable)
-	void OnNavigatedToButtonPlay();
-
-	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
-	UFUNCTION(BlueprintCallable)
-	void OnNavigatedToButtonControls();
+	void OnNavigateToButton();
 
 	/** Called from a Blueprint Widget's child widgets navigation (Used for custom navigation) */
 	UFUNCTION(BlueprintCallable)
 	void OnNavigatedToButtonQuit();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Focus
+
+	/** Set current focused widget and Name_NavToButton */
+	UFUNCTION()
+	void SetFocusedWidgetName(UWidget * Widget);
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Inputs
+
+	/** Returns back to previous menu or closes menu */
+	virtual void EscInput() override;
+
+	/** Returns back to previous menu */
+	virtual void BackInput() override { EscInput(); }
 
 };

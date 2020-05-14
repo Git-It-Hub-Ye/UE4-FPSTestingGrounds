@@ -75,7 +75,7 @@ void UGameOverWidget::WantsToReturn()
 
 void UGameOverWidget::CancelReturn()
 {
-	if (!WidgetSwitcher || !ReturnMenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to MenuPanel within GameOverMenu Widget")) return; }
+	if (!WidgetSwitcher || !MenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to MenuPanel within GameOverMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(MenuPanel);
 	SetWidgetToFocus(Name_LastButton);
 }
@@ -108,5 +108,14 @@ void UGameOverWidget::ButtonConfirmReturnOnHover()
 void UGameOverWidget::ButtonCancelReturnOnHover()
 {
 	Button_CancelReturn->SetFocusToButton();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Inputs
+
+void UGameOverWidget::BackInput()
+{
+	CancelReturn();
 }
 
