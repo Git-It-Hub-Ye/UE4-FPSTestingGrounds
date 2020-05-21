@@ -12,6 +12,22 @@ bool UOptionsMenuWidget::Initialize()
 {
 	if (!Super::Initialize()) { return false; }
 
+	if (Button_Apply && Button_Apply->GetButton())
+	{
+		Button_Apply->GetButton()->OnClicked.AddDynamic(this, &UOptionsMenuWidget::ApplyChanges);
+		Button_Apply->GetButton()->OnHovered.AddDynamic(this, &UOptionsMenuWidget::ButtonApplyOnHover);
+		Button_Apply->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Apply is missing from OptionsMenu Widget")) return false; }
+
+	if (Button_Reset && Button_Reset->GetButton())
+	{
+		Button_Reset->GetButton()->OnClicked.AddDynamic(this, &UOptionsMenuWidget::ResetToDefaults);
+		Button_Reset->GetButton()->OnHovered.AddDynamic(this, &UOptionsMenuWidget::ButtonResetOnHover);
+		Button_Reset->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Reset is missing from OptionsMenu Widget")) return false; }
+
 	if (Button_Back && Button_Back->GetButton())
 	{
 		Button_Back->GetButton()->OnClicked.AddDynamic(this, &UOptionsMenuWidget::ReturnToPrevious);
@@ -41,17 +57,9 @@ void UOptionsMenuWidget::SetUserWidgetInterface(IUserWidgetInterface * UserWidge
 void UOptionsMenuWidget::SetInitialValues()
 {
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	if (Slider_MouseSens)
-	{
-		Slider_MouseSens->SetInitialValue(MenuInterface->GetMouseSensitivity());
-	}
-	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_MouseSens is missing from OptionsMenu Widget")) }
-
-	if (Slider_ConSens)
-	{
-		Slider_ConSens->SetInitialValue(MenuInterface->GetMouseSensitivity());
-	}
-	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_ConSens is missing from OptionsMenu Widget")) }
+	MenuInterface->GetCurrentUserValues(Current_MouseSens, Current_ConSens);
+	MenuInterface->GetDefaultUserValues(Default_MouseSens, Default_ConSens);
+	SetUserSettingsValue(Current_MouseSens, Current_ConSens);
 }
 
 void UOptionsMenuWidget::SetFocus()
@@ -59,9 +67,40 @@ void UOptionsMenuWidget::SetFocus()
 	
 }
 
+void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ConSens)
+{
+	if (Slider_MouseSens)
+	{
+		Slider_MouseSens->SetInitialValue(MouseSens);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_MouseSens is missing from OptionsMenu Widget")) }
+
+	if (Slider_ConSens)
+	{
+		Slider_ConSens->SetInitialValue(ConSens);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_ConSens is missing from OptionsMenu Widget")) }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Button Clicked
+
+void UOptionsMenuWidget::ApplyChanges()
+{
+	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
+	if (Slider_MouseSens) { Current_MouseSens = Slider_MouseSens->GetCurrentValue(); }
+	if (Slider_ConSens) { Current_ConSens = Slider_ConSens->GetCurrentValue(); }
+
+	MenuInterface->SetNewUserSettings(Current_MouseSens, Current_ConSens);
+}
+
+void UOptionsMenuWidget::ResetToDefaults()
+{
+	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
+	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ConSens);
+	SetUserSettingsValue(Default_MouseSens, Default_ConSens);
+}
 
 void UOptionsMenuWidget::ReturnToPrevious()
 {
@@ -75,6 +114,16 @@ void UOptionsMenuWidget::ReturnToPrevious()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Button Hover
+
+void UOptionsMenuWidget::ButtonApplyOnHover()
+{
+	Button_Apply->SetFocusToButton();
+}
+
+void UOptionsMenuWidget::ButtonResetOnHover()
+{
+	Button_Reset->SetFocusToButton();
+}
 
 void UOptionsMenuWidget::ButtonBackOnHover()
 {

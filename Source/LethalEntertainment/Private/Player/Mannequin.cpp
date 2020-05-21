@@ -65,11 +65,13 @@ void AMannequin::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ULethalGameInstance * GI = GetWorld() ? Cast<ULethalGameInstance>(GetWorld()->GetGameInstance()) : nullptr;
-	if (GI)
+	if (IsPlayerControlled())
 	{
-		BaseTurnRate = GI->GetControllerSensitivity();
-		BaseLookUpRate = GI->GetControllerSensitivity();
+		ULethalGameInstance * GI = GetWorld() ? Cast<ULethalGameInstance>(GetWorld()->GetGameInstance()) : nullptr;
+		if (GI)
+		{
+			GI->GetCurrentUserValues(BaseTurnRate, BaseLookUpRate);
+		}
 	}
 
 	CurrentHealth = StartingHealth;

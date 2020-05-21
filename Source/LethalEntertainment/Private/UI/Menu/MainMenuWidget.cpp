@@ -80,8 +80,14 @@ void UMainMenuWidget::NativePreConstruct()
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	if (!Button_Play) { UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) return; }
-	Button_Play->SetFocusToButton();
+	if (Button_Play && Button_Play->GetButton())
+	{
+		Button_Play->SetFocusToButton();
+	}
+	else{ UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) }
+	
+	if (!OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("OptionsPanel widget missing from MainMenu Widget")) return; }
+	OptionsPanel->SetInitialValues();
 }
 
 void UMainMenuWidget::RequestReturnToParentWidget()

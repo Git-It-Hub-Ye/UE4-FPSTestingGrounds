@@ -33,11 +33,35 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	USliderWidget * Slider_ConSens;
 
+	/** Allows user to apply changes to options */
+	UPROPERTY(meta = (BindWidget))
+	UMenuButtonsWidget * Button_Apply;
+
+	/** Allows user to reset options back to default */
+	UPROPERTY(meta = (BindWidget))
+	UMenuButtonsWidget * Button_Reset;
+
 	/** Allows user to go back to previous menu */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Back;
 
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Values
+
+	float Default_MouseSens = 0.f;
+
+	float Default_ConSens = 0.f;
+
+	float Current_MouseSens = 0.f;
+
+	float Current_ConSens = 0.f;
+
+
 public:
+	////////////////////////////////////////////////////////////////////////////////
+	// Setup
+
 	/** Sets user widget interface variable */
 	void SetUserWidgetInterface(IUserWidgetInterface * UserWidgetInt);
 
@@ -59,7 +83,22 @@ protected:
 
 private:
 	////////////////////////////////////////////////////////////////////////////////
+	// Setup
+
+	/** Sets values to display */
+	void SetUserSettingsValue(float MouseSens, float ConSens);
+
+
+	////////////////////////////////////////////////////////////////////////////////
 	// Button Clicked
+
+	/** Applys new values to user settings */
+	UFUNCTION()
+	void ApplyChanges();
+
+	/** Resets values back to default */
+	UFUNCTION()
+	void ResetToDefaults();
 
 	/** Returns to previous menu layout */
 	UFUNCTION()
@@ -68,6 +107,14 @@ private:
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Button Hover
+
+	/** Sets focus to Apply button when hovered */
+	UFUNCTION()
+	void ButtonApplyOnHover();
+
+	/** Sets focus to Reset button when hovered */
+	UFUNCTION()
+	void ButtonResetOnHover();
 
 	/** Sets focus to Return button when hovered */
 	UFUNCTION()

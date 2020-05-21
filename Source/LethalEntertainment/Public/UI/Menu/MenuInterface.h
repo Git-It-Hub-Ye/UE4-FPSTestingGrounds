@@ -32,8 +32,10 @@ public:
 
 	virtual void RestartGame() = 0;
 
-	virtual float GetMouseSensitivity() = 0;
+	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Controller_Sensitivity) = 0;
 
-	virtual float GetControllerSensitivity() = 0;
+	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity) = 0;
+
+	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity) = 0;
 	
 };

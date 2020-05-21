@@ -54,6 +54,9 @@ public:
 	/** Sets value of slider to current player sensitivity */
 	void SetInitialValue(float Value);
 
+	/** Return Current Value */
+	float GetCurrentValue() { return FMath::RoundToInt(Value_Current * 100); }
+
 protected:
 	/** Setup widget input functions */
 	virtual bool Initialize() override;

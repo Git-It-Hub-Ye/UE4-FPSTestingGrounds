@@ -83,11 +83,9 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////
-	// Game data functions (can be accessed through Menu interface or other class)
+	// User Settings functions (Accessed through Menu interface and other classes)
 
-	virtual float GetMouseSensitivity() override { return Sensitivity_Mouse; }
-
-	virtual float GetControllerSensitivity() { return Sensitivity_Controller; }
+	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity) override;
 
 protected:
 	virtual void Init() override;
@@ -104,6 +102,14 @@ protected:
 	virtual void ResumeGame() override;
 
 	virtual void RestartGame() override;
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// User Settings functions (Accessed through Menu interface)
+
+	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Controller_Sensitivity) override;
+
+	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity) override;
 
 
 private:

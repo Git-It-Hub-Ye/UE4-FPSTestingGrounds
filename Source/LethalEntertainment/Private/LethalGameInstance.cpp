@@ -140,3 +140,23 @@ void ULethalGameInstance::OuitGame()
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetFirstLocalPlayerController(), EQuitPreference::Quit);
 }
 
+void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Controller_Sensitivity)
+{
+	Sensitivity_Mouse = Mouse_Sensitivity;
+	Sensitivity_Controller = Controller_Sensitivity;
+
+	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Sensitivity_Mouse, Sensitivity_Controller)
+}
+
+void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity)
+{
+	Mouse_Sensitivity = Sensitivity_Mouse;
+	Controller_Sensitivity = Sensitivity_Controller;
+}
+
+void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity)
+{
+	Mouse_Sensitivity = DefaultUserSettings.Default_MouseSens;
+	Controller_Sensitivity = DefaultUserSettings.Default_ConSens;
+}
+
