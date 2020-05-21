@@ -9,6 +9,7 @@
 class UMenuButtonsWidget;
 class UPanelWidget;
 class UWidgetSwitcher;
+class UOptionsMenuWidget;
 class UControlsWidget;
 
 UCLASS()
@@ -32,6 +33,10 @@ private:
 	/** Allows user to start game */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Play;
+
+	/** Allows user to open options panel */
+	UPROPERTY(meta = (BindWidget))
+	UMenuButtonsWidget * Button_Options;
 
 	/** Allows user to open controls panel */
 	UPROPERTY(meta = (BindWidget))
@@ -65,6 +70,14 @@ private:
 	/** Allows user to return to main menu */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_CancelQuit;
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Options Panel
+
+	/** Options panel */
+	UPROPERTY(meta = (BindWidget))
+	UOptionsMenuWidget * OptionsPanel;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -108,6 +121,10 @@ private:
 	UFUNCTION()
 	void QuitGame();
 
+	/** Opens options panel */
+	UFUNCTION()
+	void ViewOptions();
+
 	/** Opens controls panel */
 	UFUNCTION()
 	void ViewControls();
@@ -123,6 +140,10 @@ private:
 	/** Sets focus on Button_Play */
 	UFUNCTION()
 	void ButtonPlayOnHover();
+
+	/** Sets focus on Button_Options */
+	UFUNCTION()
+	void ButtonOptionsOnHover();
 
 	/** Sets focus on Button_Controls */
 	UFUNCTION()

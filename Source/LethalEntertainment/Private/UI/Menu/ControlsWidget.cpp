@@ -9,7 +9,7 @@
 #include "ScrollBoxWidget.h"
 #include "ControlsWidget.h"
 
-#define LOCTEXT_NAMESPACE "PlayerHud"
+#define LOCTEXT_NAMESPACE "Controls"
 
 bool UControlsWidget::Initialize()
 {
@@ -24,7 +24,7 @@ bool UControlsWidget::Initialize()
 		Button_Back->GetButton()->OnHovered.AddDynamic(this, &UControlsWidget::ButtonBackOnHover);
 		Button_Back->OnWidgetFocused.AddUniqueDynamic(this, &UControlsWidget::SetCurrentFocusedWidgetName);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Return is missing from Controls Widget")) return false; }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Back is missing from Controls Widget")) return false; }
 
 	if (Button_ControlType && Button_ControlType->GetButton())
 	{

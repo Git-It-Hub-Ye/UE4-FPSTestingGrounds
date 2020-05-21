@@ -25,6 +25,15 @@ ULethalGameInstance::ULethalGameInstance(const FObjectInitializer & ObjectInitia
 	{
 		GameOverWidget = DefaultGameOverWidget.Class;
 	}
+
+	Sensitivity_Mouse = 45.f;
+	Sensitivity_Controller = 45.f;
+}
+
+void ULethalGameInstance::Init()
+{
+	Sensitivity_Mouse = DefaultUserSettings.Default_MouseSens;
+	Sensitivity_Controller = DefaultUserSettings.Default_ConSens;
 }
 
 

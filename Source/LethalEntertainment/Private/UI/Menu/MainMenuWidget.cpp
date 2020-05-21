@@ -1,6 +1,7 @@
 // Copyright 2018 Stuart McDonald.
 
 #include "LethalEntertainment.h"
+#include "OptionsMenuWidget.h"
 #include "ControlsWidget.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
@@ -42,6 +43,14 @@ bool UMainMenuWidget::Initialize()
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Quit is missing from MainMenu Widget")) return false; }
 
+	if (Button_Options && Button_Options->GetButton())
+	{
+		Button_Options->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewOptions);
+		Button_Options->GetButton()->OnHovered.AddDynamic(this, &UMainMenuWidget::ButtonOptionsOnHover);
+		Button_Options->OnWidgetFocused.AddUniqueDynamic(this, &UMainMenuWidget::SetFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Options is missing from MainMenu Widget")) }
+
 	if (Button_Controls && Button_Controls->GetButton())
 	{
 		Button_Controls->GetButton()->OnClicked.AddDynamic(this, &UMainMenuWidget::ViewControls);
@@ -56,6 +65,14 @@ bool UMainMenuWidget::Initialize()
 void UMainMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
+
+	if (OptionsPanel)
+	{
+		OptionsPanel->SetMenuInterface(MenuInterface);
+		OptionsPanel->SetUserWidgetInterface(this);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("OptionsPanel widget missing from MainMenu Widget")) }
+
 	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from MainMenu Widget")) return; }
 	ControlsPanel->SetUserWidgetInterface(this);
 }
@@ -99,6 +116,14 @@ void UMainMenuWidget::QuitGame()
 	MenuInterface->OuitGame();
 }
 
+void UMainMenuWidget::ViewOptions()
+{
+	if (!WidgetSwitcher || !OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to OptionsPanel within MainMenu Widget")) return; }
+	Name_LastButton = *Button_Options->GetName();
+	WidgetSwitcher->SetActiveWidget(OptionsPanel);
+	OptionsPanel->SetFocus();
+}
+
 void UMainMenuWidget::ViewControls()
 {
 	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to ControlsPanel in MainMenu Widget")) return; }
@@ -124,6 +149,11 @@ void UMainMenuWidget::ReturnToMainMenu()
 void UMainMenuWidget::ButtonPlayOnHover()
 {
 	Button_Play->SetFocusToButton();
+}
+
+void UMainMenuWidget::ButtonOptionsOnHover()
+{
+	Button_Options->SetFocusToButton();
 }
 
 void UMainMenuWidget::ButtonControlsOnHover()

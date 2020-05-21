@@ -1,6 +1,7 @@
 // Copyright 2018 Stuart McDonald.
 
 #include "LethalEntertainment.h"
+#include "OptionsMenuWidget.h"
 #include "ControlsWidget.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
@@ -18,6 +19,14 @@ bool UInGameMenuWidget::Initialize()
 		Button_Resume->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return false; }
+
+	if (Button_Options && Button_Options->GetButton())
+	{
+		Button_Options->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ViewOptions);
+		Button_Options->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonOptionsOnHover);
+		Button_Options->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Options is missing from InGameMenu Widget")) }
 
 	if (Button_Controls && Button_Controls->GetButton())
 	{
@@ -81,6 +90,13 @@ bool UInGameMenuWidget::Initialize()
 void UInGameMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
+	if (OptionsPanel)
+	{
+		OptionsPanel->SetMenuInterface(MenuInterface);
+		OptionsPanel->SetUserWidgetInterface(this);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("OptionsPanel widget missing from InGameMenu Widget")) }
+
 	if (!ControlsPanel){ UE_LOG(LogTemp, Warning, TEXT("ControlsPpanel widget missing from InGameMenu Widget")) return; }
 	ControlsPanel->SetMenuInterface(MenuInterface);
 	ControlsPanel->SetUserWidgetInterface(this);
@@ -89,8 +105,14 @@ void UInGameMenuWidget::NativePreConstruct()
 void UInGameMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	if (!Button_Resume && Button_Resume->GetButton()) { UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) return; }
-	Button_Resume->SetFocusToButton();
+	if (Button_Resume && Button_Resume->GetButton())
+	{
+		Button_Resume->SetFocusToButton();
+	}
+	else{ UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) }
+	
+	if (!OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("OptionsPanel widget missing from InGameMenu Widget")) return; }
+	OptionsPanel->SetInitialValues();
 }
 
 void UInGameMenuWidget::RequestReturnToParentWidget()
@@ -108,11 +130,18 @@ void UInGameMenuWidget::ResumeGame()
 	MenuInterface->ResumeGame();
 }
 
+void UInGameMenuWidget::ViewOptions()
+{
+	if (!WidgetSwitcher || !OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to OptionsPanel within InGameMenu Widget")) return; }
+	Name_LastButton = *Button_Options->GetName();
+	WidgetSwitcher->SetActiveWidget(OptionsPanel);
+	OptionsPanel->SetFocus();
+}
+
 void UInGameMenuWidget::ViewControls()
 {
 	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ControlsPanel within InGameMenu Widget")) return; }
 	Name_LastButton = *Button_Controls->GetName();
-	bIsControlsPanelOpen = true;
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
 	ControlsPanel->SetFocus();
 }
@@ -154,7 +183,6 @@ void UInGameMenuWidget::ReturnToMainMenu()
 void UInGameMenuWidget::ReturnToInGameMenu()
 {
 	if (!WidgetSwitcher || !PausePanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to PausePanel within InGameMenu Widget")) return; }
-	bIsControlsPanelOpen = false;
 	bIsAdditionalPanelOpen = false;
 	WidgetSwitcher->SetActiveWidget(PausePanel);
 	SetWidgetToFocus(Name_LastButton);
@@ -167,6 +195,11 @@ void UInGameMenuWidget::ReturnToInGameMenu()
 void UInGameMenuWidget::ButtonResumeOnHover()
 {
 	Button_Resume->SetFocusToButton();
+}
+
+void UInGameMenuWidget::ButtonOptionsOnHover()
+{
+	Button_Options->SetFocusToButton();
 }
 
 void UInGameMenuWidget::ButtonControlsOnHover()

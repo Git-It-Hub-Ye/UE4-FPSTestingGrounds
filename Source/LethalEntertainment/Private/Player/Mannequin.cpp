@@ -12,6 +12,7 @@
 #include "FX/FootStepFX.h"
 #include "Terrain/Tile.h"
 #include "LethalEntertainmentHUD.h"
+#include "LethalGameInstance.h"
 #include "Mannequin.h"
 
 
@@ -63,6 +64,13 @@ AMannequin::AMannequin(const FObjectInitializer& ObjectInitializer)
 void AMannequin::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ULethalGameInstance * GI = GetWorld() ? Cast<ULethalGameInstance>(GetWorld()->GetGameInstance()) : nullptr;
+	if (GI)
+	{
+		BaseTurnRate = GI->GetControllerSensitivity();
+		BaseLookUpRate = GI->GetControllerSensitivity();
+	}
 
 	CurrentHealth = StartingHealth;
 	StandHeight = GetDefaultHalfHeight();

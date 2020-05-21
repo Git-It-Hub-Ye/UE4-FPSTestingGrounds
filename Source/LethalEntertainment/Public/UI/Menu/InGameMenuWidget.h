@@ -8,6 +8,7 @@
 
 class UPanelWidget;
 class UWidgetSwitcher;
+class UOptionsMenuWidget;
 class UControlsWidget;
 class UMenuButtonsWidget;
 
@@ -36,6 +37,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Resume;
 
+	/** Allows user to open options panel */
+	UPROPERTY(meta = (BindWidget))
+	UMenuButtonsWidget * Button_Options;
+
 	/** Allows user to open controls panel */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Controls;
@@ -51,8 +56,13 @@ private:
 	/** True if not on Pause Panel */
 	bool bIsAdditionalPanelOpen = false;
 
-	/** True if viewing controls */
-	bool bIsControlsPanelOpen = false;
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Options Panel
+
+	/** Options panel */
+	UPROPERTY(meta = (BindWidget))
+	UOptionsMenuWidget * OptionsPanel;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +131,10 @@ private:
 	UFUNCTION()
 	void ResumeGame();
 
+	/** Opens options panel */
+	UFUNCTION()
+	void ViewOptions();
+
 	/** Opens controls panel */
 	UFUNCTION()
 	void ViewControls();
@@ -152,6 +166,10 @@ private:
 	/** Sets focus on Button_Resume */
 	UFUNCTION()
 	void ButtonResumeOnHover();
+
+	/** Sets focus on Button_Options */
+	UFUNCTION()
+	void ButtonOptionsOnHover();
 
 	/** Sets focus on Button_Controls */
 	UFUNCTION()

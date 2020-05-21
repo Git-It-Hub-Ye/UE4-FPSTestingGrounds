@@ -10,6 +10,27 @@
 class UUserWidget;
 class UMenuWidget;
 
+/** Basic data for weapon */
+USTRUCT(BlueprintType)
+struct FDefaultUserSettings {
+	GENERATED_USTRUCT_BODY()
+
+	/** Player default mouse sensitivity */
+	UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ClampMin = 1.f, ClampMax = 100.f))
+	float Default_MouseSens;
+
+	/** Player default controller sensitivity */
+	UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ClampMin = 1.f, ClampMax = 100.f))
+	float Default_ConSens;
+
+	/** Defaults */
+	FDefaultUserSettings()
+	{
+		Default_MouseSens = 60;
+		Default_ConSens = 60;
+	}
+};
+
 UCLASS()
 class LETHALENTERTAINMENT_API ULethalGameInstance : public UGameInstance, public IMenuInterface
 {
@@ -29,11 +50,26 @@ private:
 	/** BP widget for game over menu */
 	TSubclassOf<UUserWidget> GameOverWidget;
 
+	/** InGameMenu variable */
 	UPROPERTY()
 	UMenuWidget * InGameMenu;
 
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Player Variables
+
+	/** Struct contains default user settings (eg. Sensitivity) */
+	FDefaultUserSettings DefaultUserSettings;
+
+	/** Current sensitivity for mouse */
+	float Sensitivity_Mouse;
+
+	/** Current sensitivity for controller */
+	float Sensitivity_Controller;
+
 public:
 	ULethalGameInstance(const FObjectInitializer & ObjectInitializer);
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Display widget request functions
@@ -45,7 +81,17 @@ public:
 
 	void DisplayGameOverMenu();
 
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Game data functions (can be accessed through Menu interface or other class)
+
+	virtual float GetMouseSensitivity() override { return Sensitivity_Mouse; }
+
+	virtual float GetControllerSensitivity() { return Sensitivity_Controller; }
+
 protected:
+	virtual void Init() override;
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Game action functions (Accessed through Menu interface)
 

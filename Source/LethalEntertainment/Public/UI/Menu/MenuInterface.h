@@ -31,5 +31,9 @@ public:
 	virtual void ResumeGame() = 0;
 
 	virtual void RestartGame() = 0;
+
+	virtual float GetMouseSensitivity() = 0;
+
+	virtual float GetControllerSensitivity() = 0;
 	
 };
