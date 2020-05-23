@@ -4,9 +4,14 @@
 #include "Components/Slider.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/Border.h"
 #include "SliderWidget.h"
 
 #define LOCTEXT_NAMESPACE "Value"
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Setup
 
 bool USliderWidget::Initialize()
 {
@@ -21,12 +26,8 @@ bool USliderWidget::Initialize()
 void USliderWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
+	SetBackgroundColour(Colour_Default);
 	SetTextHeading();
-}
-
-void USliderWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
 }
 
 void USliderWidget::SetInitialValue(float Value)
@@ -39,6 +40,33 @@ void USliderWidget::SetInitialValue(float Value)
 	if (!Slider) { UE_LOG(LogTemp, Warning, TEXT("Slider missing from Slider Widget")) return; }
 	Slider->SetValue(Value_Current);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Focus
+
+void USliderWidget::NativeOnAddedToFocusPath(const FFocusEvent & InFocusEvent)
+{
+	Super::NativeOnAddedToFocusPath(InFocusEvent);
+	OnWidgetFocused.Broadcast(this);
+	SetBackgroundColour(Colour_Focus);
+}
+
+void USliderWidget::NativeOnRemovedFromFocusPath(const FFocusEvent & InFocusEvent)
+{
+	Super::NativeOnRemovedFromFocusPath(InFocusEvent);
+	SetBackgroundColour(Colour_Default);
+}
+
+void USliderWidget::SetBackgroundColour(FLinearColor Colour)
+{
+	if (!BackgroundPanel) { UE_LOG(LogTemp, Warning, TEXT("BackgroundPanel missing from Slider Widget")) return; }
+	BackgroundPanel->SetBrushColor(Colour);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Inputs
 
 void USliderWidget::SetNewValue(float Value)
 {
@@ -57,18 +85,45 @@ void USliderWidget::SetTextValue()
 	Text_Value->SetText(FText::AsNumber(FMath::RoundToInt(Value_Current * 100)));
 }
 
+void USliderWidget::UpdateProgressBar(float Value)
+{
+	if (!ProgressBar) { UE_LOG(LogTemp, Warning, TEXT("ProgressBar missing from Slider Widget")) return; }
+	ProgressBar->SetPercent(Value);
+}
+
 void USliderWidget::UpdateValue(float Value)
 {
 	// Clamp Value between 0.01 & 1 (this way between 1 & 100 is displayed to user)
+	Slider->SetValue(FMath::Clamp<float>(Value, 0.01f, 1.f));
 	SetNewValue(FMath::Clamp<float>(Value, 0.01f, 1.f));
 	SetTextValue();
 	UpdateProgressBar(FMath::Clamp<float>(Value, 0.01f, 1.f));
 }
 
-void USliderWidget::UpdateProgressBar(float Value)
+void USliderWidget::AdjustSlider(bool IncreaseSliderValue)
 {
-	if (!ProgressBar) { UE_LOG(LogTemp, Warning, TEXT("ProgressBar missing from Slider Widget")) return; }
-	ProgressBar->SetPercent(Value);
+	if (!Slider) { UE_LOG(LogTemp, Warning, TEXT("Slider missing from Slider Widget")) return; }
+
+	float NewValue = IncreaseSliderValue ? Slider->GetValue() + Slider->StepSize : Slider->GetValue() - Slider->StepSize;
+	UpdateValue(NewValue);
+}
+
+FReply USliderWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)
+{
+	FReply Result = FReply::Unhandled();
+	const FKey Key = InKeyEvent.GetKey();
+
+	if (Key == EKeys::Left || Key == EKeys::Gamepad_DPad_Left || Key == EKeys::Gamepad_LeftStick_Left)
+	{
+		AdjustSlider(false);
+		Result = FReply::Handled();
+	}
+	else if (Key == EKeys::Right || Key == EKeys::Gamepad_DPad_Right || Key == EKeys::Gamepad_LeftStick_Right)
+	{
+		AdjustSlider(true);
+		Result = FReply::Handled();
+	}
+	return Result;
 }
 
 #undef LOCTEXT_NAMESPACE

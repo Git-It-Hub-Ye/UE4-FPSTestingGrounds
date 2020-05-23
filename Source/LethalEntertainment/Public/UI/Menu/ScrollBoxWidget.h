@@ -87,7 +87,7 @@ protected:
 	////////////////////////////////////////////////////////////////////////////////
 	// Scroll Inputs
 
-	/** Listens for UP inputs */
+	/** Listens for down inputs */
 	virtual FReply NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent) override;
 
 private:

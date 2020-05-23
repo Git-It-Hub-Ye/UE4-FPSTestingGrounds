@@ -110,9 +110,6 @@ void UInGameMenuWidget::NativeConstruct()
 		Button_Resume->SetFocusToButton();
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("Button_Resume is missing from InGameMenu Widget")) }
-	
-	if (!OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("OptionsPanel widget missing from InGameMenu Widget")) return; }
-	OptionsPanel->SetInitialValues();
 }
 
 void UInGameMenuWidget::RequestReturnToParentWidget()
@@ -134,6 +131,7 @@ void UInGameMenuWidget::ViewOptions()
 {
 	if (!WidgetSwitcher || !OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to OptionsPanel within InGameMenu Widget")) return; }
 	Name_LastButton = *Button_Options->GetName();
+	OptionsPanel->SetInitialValues();
 	WidgetSwitcher->SetActiveWidget(OptionsPanel);
 	OptionsPanel->SetFocus();
 }

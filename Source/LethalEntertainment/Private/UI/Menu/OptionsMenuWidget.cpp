@@ -12,6 +12,8 @@ bool UOptionsMenuWidget::Initialize()
 {
 	if (!Super::Initialize()) { return false; }
 
+	this->SetVisibility(ESlateVisibility::Visible);
+
 	if (Button_Apply && Button_Apply->GetButton())
 	{
 		Button_Apply->GetButton()->OnClicked.AddDynamic(this, &UOptionsMenuWidget::ApplyChanges);
@@ -42,6 +44,14 @@ bool UOptionsMenuWidget::Initialize()
 void UOptionsMenuWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
+	if (Slider_MouseSens)
+	{
+		Slider_MouseSens->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Slider_MouseSens is missing from OptionsMenu Widget")) }
+
+	if (!Slider_ConSens) { UE_LOG(LogTemp, Warning, TEXT("Slider_ConSens is missing from OptionsMenu Widget")) return; }
+	Slider_ConSens->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
 }
 
 void UOptionsMenuWidget::NativeConstruct()
@@ -64,7 +74,10 @@ void UOptionsMenuWidget::SetInitialValues()
 
 void UOptionsMenuWidget::SetFocus()
 {
-	
+	if (Slider_MouseSens)
+	{
+		Slider_MouseSens->SetKeyboardFocus();
+	}
 }
 
 void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ConSens)
@@ -128,5 +141,20 @@ void UOptionsMenuWidget::ButtonResetOnHover()
 void UOptionsMenuWidget::ButtonBackOnHover()
 {
 	Button_Back->SetFocusToButton();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Inputs
+
+void UOptionsMenuWidget::BackInput()
+{
+	ReturnToPrevious();
+}
+
+void UOptionsMenuWidget::CloseMenuInput()
+{
+	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for OptionsMenu Widget")) return; }
+	MenuInterface->ResumeGame();
 }
 

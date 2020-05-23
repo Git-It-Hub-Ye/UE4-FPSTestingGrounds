@@ -119,5 +119,18 @@ private:
 	/** Sets focus to Return button when hovered */
 	UFUNCTION()
 	void ButtonBackOnHover();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Inputs
+
+	/** Returns back to previous menu */
+	virtual void EscInput() override { BackInput(); }
+
+	/** Returns back to previous menu */
+	virtual void BackInput() override;
+
+	/** Instantly closes menu */
+	virtual void CloseMenuInput() override;
 	
 };
