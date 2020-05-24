@@ -25,9 +25,6 @@ ULethalGameInstance::ULethalGameInstance(const FObjectInitializer & ObjectInitia
 	{
 		GameOverWidget = DefaultGameOverWidget.Class;
 	}
-
-	Sensitivity_Mouse = 45.f;
-	Sensitivity_Controller = 45.f;
 }
 
 void ULethalGameInstance::Init()
@@ -144,8 +141,7 @@ void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Cont
 {
 	Sensitivity_Mouse = Mouse_Sensitivity;
 	Sensitivity_Controller = Controller_Sensitivity;
-
-	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Sensitivity_Mouse, Sensitivity_Controller)
+	OnUserSettingsUpdate.Broadcast(Sensitivity_Mouse, Sensitivity_Controller);
 }
 
 void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity)

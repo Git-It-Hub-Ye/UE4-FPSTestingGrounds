@@ -31,6 +31,9 @@ struct FDefaultUserSettings {
 	}
 };
 
+/** On User Settings Updated Event */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUserSettingsUpdateDelegate, float, AimSens_Mouse, float, AimSens_Controller);
+
 UCLASS()
 class LETHALENTERTAINMENT_API ULethalGameInstance : public UGameInstance, public IMenuInterface
 {
@@ -72,6 +75,13 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////
+	// Delegates
+
+	/** Broadcasts new values to User */
+	FOnUserSettingsUpdateDelegate OnUserSettingsUpdate;
+
+
+	////////////////////////////////////////////////////////////////////////////////
 	// Display widget request functions
 
 	UFUNCTION(BlueprintCallable)
@@ -110,7 +120,6 @@ protected:
 	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Controller_Sensitivity) override;
 
 	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity) override;
-
 
 private:
 	////////////////////////////////////////////////////////////////////////////////

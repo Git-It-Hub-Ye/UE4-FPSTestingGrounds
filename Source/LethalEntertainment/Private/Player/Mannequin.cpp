@@ -58,7 +58,6 @@ AMannequin::AMannequin(const FObjectInitializer& ObjectInitializer)
 	BaseLookUpRate = 45.f;
 	AimingSpeedModifier = 0.5;
 	CrouchingSpeedModifier = 0.5;
-
 }
 
 void AMannequin::BeginPlay()
@@ -71,6 +70,7 @@ void AMannequin::BeginPlay()
 		if (GI)
 		{
 			GI->GetCurrentUserValues(BaseTurnRate, BaseLookUpRate);
+			GI->OnUserSettingsUpdate.AddUniqueDynamic(this, &AMannequin::UpdateSensitivity);
 		}
 	}
 
@@ -488,6 +488,13 @@ void AMannequin::ReloadWeapon()
 	{
 		CurrentWeapon->StartReload();
 	}
+}
+
+void AMannequin::UpdateSensitivity(float AimSens_Mouse, float AimSens_Controller)
+{
+	UE_LOG(LogTemp, Warning, TEXT("YES"))
+	BaseTurnRate = AimSens_Controller;
+	BaseLookUpRate = AimSens_Controller;
 }
 
 

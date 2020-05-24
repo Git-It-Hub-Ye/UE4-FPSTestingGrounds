@@ -421,6 +421,10 @@ private:
 	/** Attemt to reload weapon */
 	void ReloadWeapon();
 
+	/** Sets new Sensitivity values */
+	UFUNCTION()
+	void UpdateSensitivity(float AimSens_Mouse, float AimSens_Controller);
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Weapon
