@@ -31,7 +31,15 @@ private:
 
 	/** Adjustable slider for controller sensitivity */
 	UPROPERTY(meta = (BindWidget))
+	USliderWidget * Slider_ADS_MouseSens;
+
+	/** Adjustable slider for controller sensitivity */
+	UPROPERTY(meta = (BindWidget))
 	USliderWidget * Slider_ConSens;
+
+	/** Adjustable slider for controller sensitivity */
+	UPROPERTY(meta = (BindWidget))
+	USliderWidget * Slider_ADS_ConSens;
 
 	/** Allows user to apply changes to options */
 	UPROPERTY(meta = (BindWidget))
@@ -47,16 +55,35 @@ private:
 
 
 	////////////////////////////////////////////////////////////////////////////////
-	// Values
+	// Default Values
 
+	/** Stores default value for mouse sensitivity */
 	float Default_MouseSens = 0.f;
 
+	/** Stores default value for mouse ADS sensitivity */
+	float Default_ADS_MouseSens = 0.f;
+
+	/** Stores default value for controller sensitivity */
 	float Default_ConSens = 0.f;
 
+	/** Stores default value for controller ADS sensitivity */
+	float Default_ADS_ConSens = 0.f;
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Current Values
+
+	/** Stores current value for mouse sensitivity */
 	float Current_MouseSens = 0.f;
 
+	/** Stores current value for mouse ADS sensitivity */
+	float Current_ADS_MouseSens = 0.f;
+
+	/** Stores current value for controller sensitivity */
 	float Current_ConSens = 0.f;
 
+	/** Stores current value for controller ADS sensitivity */
+	float Current_ADS_ConSens = 0.f;
 
 public:
 	////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +113,7 @@ private:
 	// Setup
 
 	/** Sets values to display */
-	void SetUserSettingsValue(float MouseSens, float ConSens);
+	void SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens);
 
 
 	////////////////////////////////////////////////////////////////////////////////

@@ -139,11 +139,23 @@ private:
 	/** Is character moving on Y-axis */
 	bool bIsMovingRight;
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	float BaseTurnRate;
+	/** Mouse base look rate, in deg/sec. Other scaling may affect final look rate. */
+	float MouseSens_Modifier;
 
-	/** Base lookup rate, in deg/sec. Other scaling may affect final lookup rate. */
-	float BaseLookUpRate;
+	/** Mouse base look rate while aiming, in deg/sec. Other scaling may affect final look rate. */
+	float MouseSens_ADS_Modifier;
+
+	/** Mouse base look rate, in deg/sec. Other scaling may affect final look rate. */
+	float MouseBaseLookRate;
+
+	/** Controller base look rate, in deg/sec. Other scaling may affect final look rate. */
+	float ConSens_Modifier;
+
+	/** Controller base look rate while aiming, in deg/sec. Other scaling may affect final look rate. */
+	float ConSens_ADS_Modifier;
+
+	/** Controller base look rate, in deg/sec. Other scaling may affect final look rate. */
+	float ConBaseLookRate;
 
 	/** Amount to modifiy by while crouching */
 	float CrouchingSpeedModifier;
@@ -423,7 +435,7 @@ private:
 
 	/** Sets new Sensitivity values */
 	UFUNCTION()
-	void UpdateSensitivity(float AimSens_Mouse, float AimSens_Controller);
+	void UpdateSensitivity(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////

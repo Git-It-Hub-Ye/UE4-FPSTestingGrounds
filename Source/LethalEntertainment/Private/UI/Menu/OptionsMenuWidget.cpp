@@ -50,8 +50,20 @@ void UOptionsMenuWidget::NativePreConstruct()
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Slider_MouseSens is missing from OptionsMenu Widget")) }
 
-	if (!Slider_ConSens) { UE_LOG(LogTemp, Warning, TEXT("Slider_ConSens is missing from OptionsMenu Widget")) return; }
-	Slider_ConSens->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	if (Slider_ADS_MouseSens)
+	{
+		Slider_ADS_MouseSens->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Slider_ADS_MouseSens is missing from OptionsMenu Widget")) }
+
+	if (Slider_ConSens)
+	{
+		Slider_ConSens->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Slider_ConSens is missing from OptionsMenu Widget")) }
+
+	if (!Slider_ADS_ConSens) { UE_LOG(LogTemp, Warning, TEXT("Slider_ADS_ConSens is missing from OptionsMenu Widget")) return; }
+	Slider_ADS_ConSens->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
 }
 
 void UOptionsMenuWidget::NativeConstruct()
@@ -67,9 +79,9 @@ void UOptionsMenuWidget::SetUserWidgetInterface(IUserWidgetInterface * UserWidge
 void UOptionsMenuWidget::SetInitialValues()
 {
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	MenuInterface->GetCurrentUserValues(Current_MouseSens, Current_ConSens);
-	MenuInterface->GetDefaultUserValues(Default_MouseSens, Default_ConSens);
-	SetUserSettingsValue(Current_MouseSens, Current_ConSens);
+	MenuInterface->GetCurrentUserValues(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens);
+	MenuInterface->GetDefaultUserValues(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens);
+	SetUserSettingsValue(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens);
 }
 
 void UOptionsMenuWidget::SetFocus()
@@ -80,7 +92,7 @@ void UOptionsMenuWidget::SetFocus()
 	}
 }
 
-void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ConSens)
+void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens)
 {
 	if (Slider_MouseSens)
 	{
@@ -88,11 +100,23 @@ void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ConSens)
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_MouseSens is missing from OptionsMenu Widget")) }
 
+	if (Slider_ADS_MouseSens)
+	{
+		Slider_ADS_MouseSens->SetInitialValue(ADS_MouseSens);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_ADS_MouseSens is missing from OptionsMenu Widget")) }
+
 	if (Slider_ConSens)
 	{
 		Slider_ConSens->SetInitialValue(ConSens);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_ConSens is missing from OptionsMenu Widget")) }
+
+	if (Slider_ADS_ConSens)
+	{
+		Slider_ADS_ConSens->SetInitialValue(ADS_ConSens);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_ADS_ConSens is missing from OptionsMenu Widget")) }
 }
 
 
@@ -102,17 +126,19 @@ void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ConSens)
 void UOptionsMenuWidget::ApplyChanges()
 {
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	if (Slider_MouseSens) { Current_MouseSens = Slider_MouseSens->GetCurrentValue(); }
-	if (Slider_ConSens) { Current_ConSens = Slider_ConSens->GetCurrentValue(); }
+	if (Slider_MouseSens)		{ Current_MouseSens		=	Slider_MouseSens->GetCurrentValue();	 }
+	if (Slider_ADS_MouseSens)	{ Current_ADS_MouseSens =	Slider_ADS_MouseSens->GetCurrentValue(); }
+	if (Slider_ConSens)			{ Current_ConSens		=	Slider_ConSens->GetCurrentValue();		 }
+	if (Slider_ADS_ConSens)		{ Current_ADS_ConSens	=	Slider_ADS_ConSens->GetCurrentValue();	 }
 
-	MenuInterface->SetNewUserSettings(Current_MouseSens, Current_ConSens);
+	MenuInterface->SetNewUserSettings(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens);
 }
 
 void UOptionsMenuWidget::ResetToDefaults()
 {
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ConSens);
-	SetUserSettingsValue(Default_MouseSens, Default_ConSens);
+	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens);
+	SetUserSettingsValue(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens);
 }
 
 void UOptionsMenuWidget::ReturnToPrevious()

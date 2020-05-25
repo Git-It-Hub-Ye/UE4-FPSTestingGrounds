@@ -32,10 +32,10 @@ public:
 
 	virtual void RestartGame() = 0;
 
-	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Controller_Sensitivity) = 0;
+	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity) = 0;
 
-	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity) = 0;
+	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity) = 0;
 
-	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity) = 0;
+	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity) = 0;
 	
 };

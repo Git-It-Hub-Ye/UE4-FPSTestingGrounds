@@ -29,8 +29,10 @@ ULethalGameInstance::ULethalGameInstance(const FObjectInitializer & ObjectInitia
 
 void ULethalGameInstance::Init()
 {
-	Sensitivity_Mouse = DefaultUserSettings.Default_MouseSens;
-	Sensitivity_Controller = DefaultUserSettings.Default_ConSens;
+	Current_MouseSens = DefaultUserSettings.Default_MouseSens;
+	Current_ADS_MouseSens = DefaultUserSettings.Default_ADS_MouseSens;
+	Current_ControllerSens = DefaultUserSettings.Default_ConSens;
+	Current_ADS_ControllerSens = DefaultUserSettings.Default_ADS_ConSens;
 }
 
 
@@ -137,22 +139,28 @@ void ULethalGameInstance::OuitGame()
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetFirstLocalPlayerController(), EQuitPreference::Quit);
 }
 
-void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Controller_Sensitivity)
+void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity)
 {
-	Sensitivity_Mouse = Mouse_Sensitivity;
-	Sensitivity_Controller = Controller_Sensitivity;
-	OnUserSettingsUpdate.Broadcast(Sensitivity_Mouse, Sensitivity_Controller);
+	Current_MouseSens = Mouse_Sensitivity;
+	Current_ADS_MouseSens = Mouse_ADS_Sensitivity;
+	Current_ControllerSens = Controller_Sensitivity;
+	Current_ADS_ControllerSens = Controller_ADS_Sensitivity;
+	OnUserSettingsUpdate.Broadcast(Current_MouseSens, Current_ADS_MouseSens, Current_ControllerSens, Current_ADS_ControllerSens);
 }
 
-void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity)
+void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity)
 {
-	Mouse_Sensitivity = Sensitivity_Mouse;
-	Controller_Sensitivity = Sensitivity_Controller;
+	Mouse_Sensitivity = Current_MouseSens;
+	Mouse_ADS_Sensitivity = Current_ADS_MouseSens;
+	Controller_Sensitivity = Current_ControllerSens;
+	Controller_ADS_Sensitivity = Current_ADS_ControllerSens;
 }
 
-void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float & Controller_Sensitivity)
+void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity)
 {
 	Mouse_Sensitivity = DefaultUserSettings.Default_MouseSens;
+	Mouse_ADS_Sensitivity = DefaultUserSettings.Default_ADS_MouseSens;
 	Controller_Sensitivity = DefaultUserSettings.Default_ConSens;
+	Controller_ADS_Sensitivity = DefaultUserSettings.Default_ADS_ConSens;
 }
 
