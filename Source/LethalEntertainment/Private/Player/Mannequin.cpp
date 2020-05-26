@@ -117,6 +117,14 @@ void AMannequin::Tick(float DeltaSeconds)
 	{
 		IsWeaponBlocked();
 	}
+	if (IsPlayerControlled())
+	{
+		// Calculate rotation lean
+		FRotator NewYawRot = GetActorRotation();
+		float Angle = FMath::FindDeltaAngleDegrees(NewYawRot.Yaw, LastYawRot.Yaw);
+		LeanRate = FMath::FInterpTo(LeanRate, Angle, DeltaSeconds, 6.f);
+		LastYawRot = NewYawRot;
+	}
 }
 
 void AMannequin::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -419,11 +427,6 @@ void AMannequin::ControllerLookUpRate(float Value)
 void AMannequin::ControllerTurnRate(float Value)
 {
 	AddControllerYawInput(Value * ConBaseTurnRate * GetWorld()->GetDeltaSeconds());
-
-	// Calculate rotation difference
-	FRotator NewYawRot = GetActorRotation();
-	LeanRate = FMath::FindDeltaAngleDegrees(NewYawRot.Yaw, LastYawRot.Yaw);
-	LastYawRot = NewYawRot;
 }
 
 void AMannequin::ToggleCrouch()
@@ -664,7 +667,6 @@ void AMannequin::UpdateTile()
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Animation
-
 
 USkeletalMeshComponent * AMannequin::GetAnimationMesh() const 
 {
