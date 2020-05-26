@@ -139,23 +139,35 @@ private:
 	/** Is character moving on Y-axis */
 	bool bIsMovingRight;
 
-	/** Mouse base look rate, in deg/sec. Other scaling may affect final look rate. */
+	/** Mouse base look rate, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
 	float MouseSens_Modifier;
 
-	/** Mouse base look rate while aiming, in deg/sec. Other scaling may affect final look rate. */
+	/** Mouse base look rate while aiming, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
 	float MouseSens_ADS_Modifier;
 
-	/** Mouse base look rate, in deg/sec. Other scaling may affect final look rate. */
+	/** Mouse base look up rate, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
 	float MouseBaseLookRate;
 
-	/** Controller base look rate, in deg/sec. Other scaling may affect final look rate. */
+	/** Mouse base turn rate, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
+	float MouseBaseTurnRate;
+
+	/** Controller base look rate, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
 	float ConSens_Modifier;
 
-	/** Controller base look rate while aiming, in deg/sec. Other scaling may affect final look rate. */
+	/** Controller base look rate while aiming, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
 	float ConSens_ADS_Modifier;
 
-	/** Controller base look rate, in deg/sec. Other scaling may affect final look rate. */
+	/** Controller base look up rate, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
 	float ConBaseLookRate;
+
+	/** Controller base truen rate, in deg/sec. Other scaling may affect final rate. (Default values in Game Instance) */
+	float ConBaseTurnRate;
+
+	/** Invert Y value, true = on : false = off. (Default values in Game Instance) */
+	bool bInvertY;
+
+	/** Invert Y value */
+	float Invert_Value;
 
 	/** Amount to modifiy by while crouching */
 	float CrouchingSpeedModifier;
@@ -409,11 +421,17 @@ private:
 	/** Move character along Y-axis */
 	void MoveRight(float Value);
 
-	/** Change characters view pitch */
-	void LookUpRate(float Value);
+	/** Change characters view pitch with mouse */
+	void MouseLookUpRate(float Value);
 
-	/** Turn character */
-	void TurnRate(float Value);
+	/** Turn character with mouse */
+	void MouseTurnRate(float Value);
+
+	/** Change characters view pitch with controller */
+	void ControllerLookUpRate(float Value);
+
+	/** Turn character with controller */
+	void ControllerTurnRate(float Value);
 
 	/** Make character crouch or stand */
 	void ToggleCrouch();
@@ -433,9 +451,12 @@ private:
 	/** Attemt to reload weapon */
 	void ReloadWeapon();
 
+	/** Updates user sensitivity */
+	void UpdateSensitivity();
+
 	/** Sets new Sensitivity values */
 	UFUNCTION()
-	void UpdateSensitivity(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens);
+	void UpdateSettings(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens, bool bInvert_Y);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////

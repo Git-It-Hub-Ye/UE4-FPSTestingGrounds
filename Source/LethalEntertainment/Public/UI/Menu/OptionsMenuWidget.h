@@ -41,6 +41,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	USliderWidget * Slider_ADS_ConSens;
 
+	/** Allows user to turn off/on invert for y axis */
+	UPROPERTY(meta = (BindWidget))
+	UMenuButtonsWidget * Button_InvertY;
+
 	/** Allows user to apply changes to options */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Apply;
@@ -69,6 +73,9 @@ private:
 	/** Stores default value for controller ADS sensitivity */
 	float Default_ADS_ConSens = 0.f;
 
+	/** Stores default value for Invert Y Axis */
+	bool Default_InvertY = false;
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Current Values
@@ -84,6 +91,9 @@ private:
 
 	/** Stores current value for controller ADS sensitivity */
 	float Current_ADS_ConSens = 0.f;
+
+	/** Stores current value for Invert Y Axis */
+	bool Current_InvertY = false;
 
 public:
 	////////////////////////////////////////////////////////////////////////////////
@@ -113,11 +123,15 @@ private:
 	// Setup
 
 	/** Sets values to display */
-	void SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens);
+	void SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens, bool Invert_Y);
 
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Button Clicked
+
+	/** Toggles invert Y axis off/on */
+	UFUNCTION()
+	void ToggleInvertY();
 
 	/** Applys new values to user settings */
 	UFUNCTION()
@@ -134,6 +148,10 @@ private:
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Button Hover
+
+	/** Sets focus to InvertY button when hovered */
+	UFUNCTION()
+	void ButtonInvertYOnHover();
 
 	/** Sets focus to Apply button when hovered */
 	UFUNCTION()

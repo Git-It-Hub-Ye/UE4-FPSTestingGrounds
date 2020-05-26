@@ -58,6 +58,15 @@ AMannequin::AMannequin(const FObjectInitializer& ObjectInitializer)
 	MouseSens_ADS_Modifier = 50.f;
 	ConSens_Modifier = 50.f;
 	ConSens_ADS_Modifier = 50.f;
+	Invert_Value = 1.f;
+
+	bInvertY = false;
+
+	MouseBaseLookRate = 50.f;
+	MouseBaseTurnRate = 50.f;
+	ConBaseLookRate = 50.f;
+	ConBaseTurnRate = 50.f;
+
 	AimingSpeedModifier = 0.5;
 	CrouchingSpeedModifier = 0.5;
 }
@@ -71,13 +80,12 @@ void AMannequin::BeginPlay()
 		ULethalGameInstance * GI = GetWorld() ? Cast<ULethalGameInstance>(GetWorld()->GetGameInstance()) : nullptr;
 		if (GI)
 		{
-			GI->GetCurrentUserValues(MouseSens_Modifier, MouseSens_ADS_Modifier, ConSens_Modifier, ConSens_ADS_Modifier);
-			GI->OnUserSettingsUpdate.AddUniqueDynamic(this, &AMannequin::UpdateSensitivity);
+			GI->GetCurrentUserValues(MouseSens_Modifier, MouseSens_ADS_Modifier, ConSens_Modifier, ConSens_ADS_Modifier, bInvertY);
+			GI->OnUserSettingsUpdate.AddUniqueDynamic(this, &AMannequin::UpdateSettings);
 		}
-	}
 
-	MouseBaseLookRate = MouseSens_Modifier;
-	ConBaseLookRate = ConSens_Modifier;
+		UpdateSensitivity();
+	}
 
 	CurrentHealth = StartingHealth;
 	StandHeight = GetDefaultHalfHeight();
@@ -342,10 +350,11 @@ void AMannequin::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 	InputComponent->BindAxis("MoveForward", this, &AMannequin::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AMannequin::MoveRight);
-	InputComponent->BindAxis("LookUpRate", this, &AMannequin::LookUpRate);
-	InputComponent->BindAxis("LookUp", this, &AMannequin::AddControllerPitchInput);
-	InputComponent->BindAxis("TurnRate", this, &AMannequin::TurnRate);
-	InputComponent->BindAxis("Turn", this, &AMannequin::AddControllerYawInput);
+	InputComponent->BindAxis("MouseLookUpRate", this, &AMannequin::MouseLookUpRate);
+	InputComponent->BindAxis("MouseTurnRate", this, &AMannequin::MouseTurnRate);
+	InputComponent->BindAxis("ControllerLookUpRate", this, &AMannequin::ControllerLookUpRate);
+	InputComponent->BindAxis("ControllerTurnRate", this, &AMannequin::ControllerTurnRate);
+	
 
 	InputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &AMannequin::ToggleCrouch);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
@@ -392,14 +401,26 @@ void AMannequin::MoveRight(float Value)
 	}
 }
 
-void AMannequin::LookUpRate(float Value)
+void AMannequin::MouseLookUpRate(float Value)
+{
+	AddControllerPitchInput(Value * MouseBaseLookRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AMannequin::MouseTurnRate(float Value)
+{
+	AddControllerYawInput(Value * MouseBaseTurnRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AMannequin::ControllerLookUpRate(float Value)
 {
 	AddControllerPitchInput(Value * ConBaseLookRate * GetWorld()->GetDeltaSeconds());
 }
 
-void AMannequin::TurnRate(float Value)
+void AMannequin::ControllerTurnRate(float Value)
 {
-	AddControllerYawInput(Value * ConBaseLookRate * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(Value * ConBaseTurnRate * GetWorld()->GetDeltaSeconds());
+
+	// Calculate rotation difference
 	FRotator NewYawRot = GetActorRotation();
 	LeanRate = FMath::FindDeltaAngleDegrees(NewYawRot.Yaw, LastYawRot.Yaw);
 	LastYawRot = NewYawRot;
@@ -495,12 +516,26 @@ void AMannequin::ReloadWeapon()
 	}
 }
 
-void AMannequin::UpdateSensitivity(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens)
+void AMannequin::UpdateSensitivity()
+{
+	Invert_Value = bInvertY ? -1.f : 1.f;
+
+	MouseBaseLookRate = MouseSens_Modifier * Invert_Value;
+	MouseBaseTurnRate = MouseSens_Modifier;
+
+	ConBaseLookRate = ConSens_Modifier * Invert_Value;
+	ConBaseTurnRate = ConSens_Modifier;
+}
+
+void AMannequin::UpdateSettings(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens, bool bInvert_Y)
 {
 	MouseSens_Modifier = AimSens_Mouse;
 	MouseSens_ADS_Modifier = ADS_MouseSens;
 	ConSens_Modifier = AimSens_Controller;
 	ConSens_ADS_Modifier = ADS_ConSens;
+	bInvertY = bInvert_Y;
+
+	UpdateSensitivity();
 }
 
 
@@ -528,8 +563,11 @@ void AMannequin::EnableAiming()
 	CurrentWeapon->SetWeaponVisibility(bIsAiming);
 	EnableAimingEffect();
 
-	MouseBaseLookRate = MouseSens_ADS_Modifier;
-	ConBaseLookRate = ConSens_ADS_Modifier;
+	MouseBaseLookRate = MouseSens_ADS_Modifier * Invert_Value;
+	ConBaseLookRate = ConSens_ADS_Modifier * Invert_Value;
+
+	MouseBaseTurnRate = MouseSens_ADS_Modifier;
+	ConBaseTurnRate = ConSens_ADS_Modifier;
 }
 
 void AMannequin::DisableAiming()
@@ -540,8 +578,11 @@ void AMannequin::DisableAiming()
 	CurrentWeapon->SetWeaponVisibility(bIsAiming);
 	DisableAimingEffect();
 
-	MouseBaseLookRate = MouseSens_Modifier;
-	ConBaseLookRate = ConSens_Modifier;
+	MouseBaseLookRate = MouseSens_Modifier * Invert_Value;
+	ConBaseLookRate = ConSens_Modifier * Invert_Value;
+
+	MouseBaseTurnRate = MouseSens_Modifier;
+	ConBaseTurnRate = ConSens_Modifier;
 }
 
 

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Styling/SlateTypes.h"
 #include "Fonts/SlateFontInfo.h"
 #include "SliderWidget.generated.h"
 
@@ -59,7 +58,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock * Text_Value;
 
-	/** Displays option heading */
+	/** Displays option text */
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock * Text_Option;
 

@@ -33,6 +33,7 @@ void ULethalGameInstance::Init()
 	Current_ADS_MouseSens = DefaultUserSettings.Default_ADS_MouseSens;
 	Current_ControllerSens = DefaultUserSettings.Default_ConSens;
 	Current_ADS_ControllerSens = DefaultUserSettings.Default_ADS_ConSens;
+	Current_InvertY = DefaultUserSettings.Default_InvertY;
 }
 
 
@@ -139,28 +140,31 @@ void ULethalGameInstance::OuitGame()
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetFirstLocalPlayerController(), EQuitPreference::Quit);
 }
 
-void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity)
+void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity, bool Invert_Y)
 {
 	Current_MouseSens = Mouse_Sensitivity;
 	Current_ADS_MouseSens = Mouse_ADS_Sensitivity;
 	Current_ControllerSens = Controller_Sensitivity;
 	Current_ADS_ControllerSens = Controller_ADS_Sensitivity;
-	OnUserSettingsUpdate.Broadcast(Current_MouseSens, Current_ADS_MouseSens, Current_ControllerSens, Current_ADS_ControllerSens);
+	Current_InvertY = Invert_Y;
+	OnUserSettingsUpdate.Broadcast(Current_MouseSens, Current_ADS_MouseSens, Current_ControllerSens, Current_ADS_ControllerSens, Current_InvertY);
 }
 
-void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity)
+void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y)
 {
 	Mouse_Sensitivity = Current_MouseSens;
 	Mouse_ADS_Sensitivity = Current_ADS_MouseSens;
 	Controller_Sensitivity = Current_ControllerSens;
 	Controller_ADS_Sensitivity = Current_ADS_ControllerSens;
+	Invert_Y = Current_InvertY;
 }
 
-void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity)
+void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y)
 {
 	Mouse_Sensitivity = DefaultUserSettings.Default_MouseSens;
 	Mouse_ADS_Sensitivity = DefaultUserSettings.Default_ADS_MouseSens;
 	Controller_Sensitivity = DefaultUserSettings.Default_ConSens;
 	Controller_ADS_Sensitivity = DefaultUserSettings.Default_ADS_ConSens;
+	Invert_Y = DefaultUserSettings.Default_InvertY;
 }
 

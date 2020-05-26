@@ -4,8 +4,12 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
 #include "MenuButtonsWidget.h"
+#include "Components/TextBlock.h"
 #include "SliderWidget.h"
 #include "OptionsMenuWidget.h"
+
+
+#define LOCTEXT_NAMESPACE "Options"
 
 
 bool UOptionsMenuWidget::Initialize()
@@ -13,6 +17,14 @@ bool UOptionsMenuWidget::Initialize()
 	if (!Super::Initialize()) { return false; }
 
 	this->SetVisibility(ESlateVisibility::Visible);
+
+	if (Button_InvertY && Button_InvertY->GetButton())
+	{
+		Button_InvertY->GetButton()->OnClicked.AddDynamic(this, &UOptionsMenuWidget::ToggleInvertY);
+		Button_InvertY->GetButton()->OnHovered.AddDynamic(this, &UOptionsMenuWidget::ButtonInvertYOnHover);
+		Button_InvertY->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Apply is missing from OptionsMenu Widget")) return false; }
 
 	if (Button_Apply && Button_Apply->GetButton())
 	{
@@ -79,9 +91,9 @@ void UOptionsMenuWidget::SetUserWidgetInterface(IUserWidgetInterface * UserWidge
 void UOptionsMenuWidget::SetInitialValues()
 {
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	MenuInterface->GetCurrentUserValues(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens);
-	MenuInterface->GetDefaultUserValues(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens);
-	SetUserSettingsValue(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens);
+	MenuInterface->GetCurrentUserValues(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY);
+	MenuInterface->GetDefaultUserValues(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
+	SetUserSettingsValue(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY);
 }
 
 void UOptionsMenuWidget::SetFocus()
@@ -92,7 +104,7 @@ void UOptionsMenuWidget::SetFocus()
 	}
 }
 
-void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens)
+void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens, bool Invert_Y)
 {
 	if (Slider_MouseSens)
 	{
@@ -117,11 +129,34 @@ void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSe
 		Slider_ADS_ConSens->SetInitialValue(ADS_ConSens);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("No Slider_ADS_ConSens is missing from OptionsMenu Widget")) }
+
+	if (Invert_Y && Button_InvertY)
+	{
+		Button_InvertY->GetTextToCustomise()->SetText(LOCTEXT("Invert Y", "On"));
+	}
+	else if (Button_InvertY)
+	{
+		Button_InvertY->GetTextToCustomise()->SetText(LOCTEXT("Invert Y", "Off"));
+	}
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Button Clicked
+
+void UOptionsMenuWidget::ToggleInvertY()
+{
+	if (Current_InvertY)
+	{
+		Current_InvertY = false;
+		Button_InvertY->GetTextToCustomise()->SetText(LOCTEXT("Invert Y", "Off"));
+	}
+	else
+	{
+		Current_InvertY = true;
+		Button_InvertY->GetTextToCustomise()->SetText(LOCTEXT("Invert Y", "On"));
+	}
+}
 
 void UOptionsMenuWidget::ApplyChanges()
 {
@@ -131,14 +166,14 @@ void UOptionsMenuWidget::ApplyChanges()
 	if (Slider_ConSens)			{ Current_ConSens		=	Slider_ConSens->GetCurrentValue();		 }
 	if (Slider_ADS_ConSens)		{ Current_ADS_ConSens	=	Slider_ADS_ConSens->GetCurrentValue();	 }
 
-	MenuInterface->SetNewUserSettings(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens);
+	MenuInterface->SetNewUserSettings(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY);
 }
 
 void UOptionsMenuWidget::ResetToDefaults()
 {
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens);
-	SetUserSettingsValue(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens);
+	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
+	SetUserSettingsValue(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
 }
 
 void UOptionsMenuWidget::ReturnToPrevious()
@@ -153,6 +188,11 @@ void UOptionsMenuWidget::ReturnToPrevious()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Button Hover
+
+void UOptionsMenuWidget::ButtonInvertYOnHover()
+{
+	Button_InvertY->SetFocusToButton();
+}
 
 void UOptionsMenuWidget::ButtonApplyOnHover()
 {
@@ -183,4 +223,6 @@ void UOptionsMenuWidget::CloseMenuInput()
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for OptionsMenu Widget")) return; }
 	MenuInterface->ResumeGame();
 }
+
+#undef LOCTEXT_NAMESPACE
 

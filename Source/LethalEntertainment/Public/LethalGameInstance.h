@@ -27,9 +27,13 @@ struct FDefaultUserSettings {
 	UPROPERTY(EditDefaultsOnly, DisplayName = "Default Controller Sensitivity", Category = "Config", meta = (ClampMin = 1.f, ClampMax = 100.f))
 	float Default_ConSens;
 
-	/** Player default mouse sensitivity while Aiming */
+	/** Player default controller sensitivity while Aiming */
 	UPROPERTY(EditDefaultsOnly, DisplayName = "Default Controller Aiming Sensitivity", Category = "Config", meta = (ClampMin = 1.f, ClampMax = 100.f))
 	float Default_ADS_ConSens;
+
+	/** Player default Invert Y Axis value */
+	UPROPERTY(EditDefaultsOnly, DisplayName = "Default Invert Y Axis", Category = "Config")
+	bool Default_InvertY;
 
 	/** Defaults */
 	FDefaultUserSettings()
@@ -38,11 +42,12 @@ struct FDefaultUserSettings {
 		Default_ADS_MouseSens = 50;
 		Default_ConSens = 50;
 		Default_ADS_ConSens = 50;
+		Default_InvertY = false;
 	}
 };
 
 /** On User Settings Updated Event */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnUserSettingsUpdateDelegate, float, AimSens_Mouse, float, ADS_MouseSens, float, AimSens_Controller, float, ADS_ConSens);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnUserSettingsUpdateDelegate, float, AimSens_Mouse, float, ADS_MouseSens, float, AimSens_Controller, float, ADS_ConSens, bool, InvertY);
 
 UCLASS()
 class LETHALENTERTAINMENT_API ULethalGameInstance : public UGameInstance, public IMenuInterface
@@ -87,6 +92,9 @@ private:
 	/** Current sensitivity for controller while aiming */
 	float Current_ADS_ControllerSens;
 
+	/** Current value for Invert Y Axis */
+	bool Current_InvertY;
+
 public:
 	ULethalGameInstance(const FObjectInitializer & ObjectInitializer);
 
@@ -112,7 +120,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// User Settings functions (Accessed through Menu interface and other classes)
 
-	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity) override;
+	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y) override;
 
 protected:
 	virtual void Init() override;
@@ -134,9 +142,9 @@ protected:
 	////////////////////////////////////////////////////////////////////////////////
 	// User Settings functions (Accessed through Menu interface)
 
-	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity) override;
+	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity, bool Invert_Y) override;
 
-	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity) override;
+	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y) override;
 
 private:
 	////////////////////////////////////////////////////////////////////////////////
