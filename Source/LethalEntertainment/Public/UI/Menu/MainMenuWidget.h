@@ -52,9 +52,6 @@ private:
 	/** True if not on Main Menu */
 	bool bIsAdditionalPanelOpen = false;
 
-	/** True if viewing controls */
-	bool bIsControlsPanelOpen = false;
-
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Quit Menu

@@ -131,6 +131,25 @@ void UControlsWidget::SetFocus()
 	GetCurrentScrollBox()->ResetOffset();
 }
 
+void UControlsWidget::SetScrollBoxType(EControlType IconControlType)
+{
+	Old_ControlType = IconControlType;
+	Current_ControlType = IconControlType;
+
+	if (Current_ControlType == EControlType::MouseAndKeyboard)
+	{
+		ShowMouseKeyInputs();
+	}
+	else if (Current_ControlType == EControlType::PlaystationController)
+	{
+		ShowPSControls();
+	}
+	else if (Current_ControlType == EControlType::XboxController)
+	{
+		ShowXBControls();
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Button Clicked
@@ -158,6 +177,7 @@ void UControlsWidget::ShowMouseKeyInputs()
 
 	Button_ControlType->GetTextToCustomise()->SetText(LOCTEXT("Control Type", "Mouse & Keyboard"));
 	SetControlsIcon(Icon_Key);
+	Current_ControlType = EControlType::MouseAndKeyboard;
 }
 
 void UControlsWidget::ShowPSControls()
@@ -169,6 +189,7 @@ void UControlsWidget::ShowPSControls()
 
 	Button_ControlType->GetTextToCustomise()->SetText(LOCTEXT("Control Type", "Playstation Controller"));
 	SetControlsIcon(Icon_PS);
+	Current_ControlType = EControlType::PlaystationController;
 }
 
 void UControlsWidget::ShowXBControls()
@@ -180,6 +201,7 @@ void UControlsWidget::ShowXBControls()
 
 	Button_ControlType->GetTextToCustomise()->SetText(LOCTEXT("Control Type", "Xbox Controller"));
 	SetControlsIcon(Icon_XB);
+	Current_ControlType = EControlType::XboxController;
 }
 
 void UControlsWidget::ReturnToPrevious()
@@ -191,6 +213,8 @@ void UControlsWidget::ReturnToPrevious()
 	}
 	else if (UserWidgetInterface)
 	{
+		OnControlTypeSet.Broadcast(Current_ControlType);
+		SaveControlType();
 		UserWidgetInterface->RequestReturnToParentWidget();
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("Unable to Return from Controls Widget")) }

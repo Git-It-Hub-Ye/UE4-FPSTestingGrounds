@@ -100,6 +100,7 @@ void UInGameMenuWidget::NativePreConstruct()
 	if (!ControlsPanel){ UE_LOG(LogTemp, Warning, TEXT("ControlsPpanel widget missing from InGameMenu Widget")) return; }
 	ControlsPanel->SetMenuInterface(MenuInterface);
 	ControlsPanel->SetUserWidgetInterface(this);
+	ControlsPanel->OnControlTypeSet.AddUniqueDynamic(this, &UInGameMenuWidget::SetControlType);
 }
 
 void UInGameMenuWidget::NativeConstruct()
@@ -133,7 +134,7 @@ void UInGameMenuWidget::ViewOptions()
 	Name_LastButton = *Button_Options->GetName();
 	OptionsPanel->SetInitialValues();
 	WidgetSwitcher->SetActiveWidget(OptionsPanel);
-	OptionsPanel->SetFocus();
+	OptionsPanel->SetFocus(Current_ControlType);
 }
 
 void UInGameMenuWidget::ViewControls()
@@ -142,6 +143,7 @@ void UInGameMenuWidget::ViewControls()
 	Name_LastButton = *Button_Controls->GetName();
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
 	ControlsPanel->SetFocus();
+	ControlsPanel->SetScrollBoxType(Current_ControlType);
 }
 
 void UInGameMenuWidget::WantsToRestart()

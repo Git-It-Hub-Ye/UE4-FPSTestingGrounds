@@ -1,4 +1,4 @@
-// Copyright 2018 Stuart McDonald.
+// Copyright 2018 - 2020 Stuart McDonald.
 
 #include "LethalEntertainment.h"
 #include "OptionsMenuWidget.h"
@@ -74,7 +74,9 @@ void UMainMenuWidget::NativePreConstruct()
 	else { UE_LOG(LogTemp, Warning, TEXT("OptionsPanel widget missing from MainMenu Widget")) }
 
 	if (!ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Control panel widget missing from MainMenu Widget")) return; }
+	ControlsPanel->SetMenuInterface(MenuInterface);
 	ControlsPanel->SetUserWidgetInterface(this);
+	ControlsPanel->OnControlTypeSet.AddUniqueDynamic(this, &UMainMenuWidget::SetControlType);
 }
 
 void UMainMenuWidget::NativeConstruct()
@@ -85,9 +87,6 @@ void UMainMenuWidget::NativeConstruct()
 		Button_Play->SetFocusToButton();
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("Button_Play is missing from MainMenu Widget")) }
-	
-	if (!OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("OptionsPanel widget missing from MainMenu Widget")) return; }
-	OptionsPanel->SetInitialValues();
 }
 
 void UMainMenuWidget::RequestReturnToParentWidget()
@@ -126,23 +125,23 @@ void UMainMenuWidget::ViewOptions()
 {
 	if (!WidgetSwitcher || !OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to OptionsPanel within MainMenu Widget")) return; }
 	Name_LastButton = *Button_Options->GetName();
+	OptionsPanel->SetInitialValues();
 	WidgetSwitcher->SetActiveWidget(OptionsPanel);
-	OptionsPanel->SetFocus();
+	OptionsPanel->SetFocus(Current_ControlType);
 }
 
 void UMainMenuWidget::ViewControls()
 {
 	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to ControlsPanel in MainMenu Widget")) return; }
 	Name_LastButton = *Button_Controls->GetName();
-	bIsControlsPanelOpen = true;
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
 	ControlsPanel->SetFocus();
+	ControlsPanel->SetScrollBoxType(Current_ControlType);
 }
 
 void UMainMenuWidget::ReturnToMainMenu()
 {
 	if (!WidgetSwitcher || !MainMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to MainMenu in MainMenu Widget")) return; }
-	bIsControlsPanelOpen = false;
 	bIsAdditionalPanelOpen = false;
 	WidgetSwitcher->SetActiveWidget(MainMenu);
 	SetWidgetToFocus(Name_LastButton);

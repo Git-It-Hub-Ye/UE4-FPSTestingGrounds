@@ -8,6 +8,12 @@
 #include "UserWidgetInterface.h"
 #include "MenuWidget.generated.h"
 
+UENUM()
+enum class EControlType : uint8 {
+	MouseAndKeyboard = 0,
+	PlaystationController = 1,
+	XboxController = 2
+};
 
 UCLASS()
 class LETHALENTERTAINMENT_API UMenuWidget : public UUserWidget, public IUserWidgetInterface
@@ -15,7 +21,6 @@ class LETHALENTERTAINMENT_API UMenuWidget : public UUserWidget, public IUserWidg
 	GENERATED_BODY()
 	
 protected:
-
 	////////////////////////////////////////////////////////////////////////////////
 	// Menu Data
 
@@ -27,6 +32,12 @@ protected:
 
 	/** Stores name of current widget with user focus (Used to reset focus on widget, whenever focus is lost) */
 	FName Name_CurrentFocusedWidget = "None";
+
+	/** Current control type */
+	EControlType Current_ControlType;
+
+	/** Current control type */
+	EControlType Old_ControlType;
 
 public:
 
@@ -42,6 +53,8 @@ public:
 	/** Sets menu interface variable */
 	void SetMenuInterface(IMenuInterface * MenuInt);
 
+	/** Sets current saved control type */
+	void SetInitialControlType(EControlType NewControlType);
 
 protected:
 	/** Called when level is removed and will remove widget from viewport */
@@ -109,4 +122,12 @@ protected:
 
 	/** Gets the player controller for this widget */
 	APlayerController * GetLocalPlayerController();
+
+	/** Sets control type enum */
+	UFUNCTION()
+	void SetControlType(EControlType NewControlType);
+
+	/** If needed tells game to save new control type */
+	void SaveControlType();
+
 };

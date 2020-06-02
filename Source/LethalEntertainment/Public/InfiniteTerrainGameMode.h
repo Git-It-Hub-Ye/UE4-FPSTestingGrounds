@@ -6,6 +6,7 @@
 #include "InfiniteTerrainGameMode.generated.h"
 
 class ATile;
+class ULethalSaveGame;
 
 UCLASS()
 class LETHALENTERTAINMENT_API AInfiniteTerrainGameMode : public AGameModeBase
@@ -33,6 +34,20 @@ private:
 	/** Number of tiles player has entered */
 	int32 Score;
 
+	/** Highest Number of tiles player has entered */
+	int32 HighScore;
+
+	/** Save slot name */
+	FString SaveSlot1 = FString(TEXT("SaveLot1"));
+
+	/** Save class variable */
+	UPROPERTY()
+	ULethalSaveGame * SaveGameRef;
+
+	/** The class for save game */
+	UPROPERTY(EditDefaultsOnly, Category = "Classes")
+	TSubclassOf<ULethalSaveGame> SaveGameClass;
+
 public:
 	AInfiniteTerrainGameMode();
 
@@ -51,8 +66,12 @@ public:
 	void GameOver(APlayerController * PC);
 
 	/** Get current player score */
-	UFUNCTION(BlueprintPure, Category = "Game")
+	UFUNCTION(BlueprintPure, Category = "Score")
 	int32 GetScore() const { return Score; }
+
+	/** Get current player score */
+	UFUNCTION(BlueprintPure, Category = "Score")
+	int32 GetHighScore() const { return HighScore; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -60,5 +79,11 @@ protected:
 private:
 	/** Adds each nav mesh instance to pool */
 	void AddToPool(class ANavMeshBoundsVolume * VolumeToAdd);
+
+	/** Gets save game class */
+	void LoadGameData();
+
+	/** Sets save game class */
+	void SaveGameData();
 	
 };

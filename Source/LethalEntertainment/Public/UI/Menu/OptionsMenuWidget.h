@@ -8,6 +8,7 @@
 
 class UMenuButtonsWidget;
 class USliderWidget;
+class UIconsWidget;
 
 /**
  * Allows user to view and change settings
@@ -56,6 +57,22 @@ private:
 	/** Allows user to go back to previous menu */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Back;
+
+	/** Switches between different menu icons depending on control type */
+	UPROPERTY(meta = (BindWidget))
+	UWidgetSwitcher * WidgetSwitcherIcons;
+
+	/** Back icon for keyboard */
+	UPROPERTY(meta = (BindWidget))
+	UIconsWidget * Icon_Key;
+
+	/** Back icon for PS controller */
+	UPROPERTY(meta = (BindWidget))
+	UIconsWidget * Icon_PS;
+
+	/** Back icon for XB Controller */
+	UPROPERTY(meta = (BindWidget))
+	UIconsWidget * Icon_XB;
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +123,7 @@ public:
 	void SetInitialValues();
 
 	/** Sets the widget that should recieve focus when menu is first in viewport */
-	void SetFocus();
+	void SetFocus(EControlType IconControlType);
 
 protected:
 	/** Setup widget input functions */
@@ -115,15 +132,18 @@ protected:
 	/** Updates widget anytime it is constructed or edited */
 	virtual void NativePreConstruct() override;
 
-	/** Any behavior after Super is carried out after construction */
-	virtual void NativeConstruct() override;
-
 private:
 	////////////////////////////////////////////////////////////////////////////////
 	// Setup
 
 	/** Sets values to display */
 	void SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens, bool Invert_Y);
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Display
+
+	void SetControlsIcon(UIconsWidget * Icon);
 
 
 	////////////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,8 @@
 
 class UUserWidget;
 class UMenuWidget;
+class ULethalSaveGame;
+enum class EControlType : uint8;
 
 /** Basic data for weapon */
 USTRUCT(BlueprintType)
@@ -34,6 +36,9 @@ struct FDefaultUserSettings {
 	/** Player default Invert Y Axis value */
 	UPROPERTY(EditDefaultsOnly, DisplayName = "Default Invert Y Axis", Category = "Config")
 	bool Default_InvertY;
+
+	/** Player default control type */
+	EControlType Default_ControlType;
 
 	/** Defaults */
 	FDefaultUserSettings()
@@ -95,6 +100,24 @@ private:
 	/** Current value for Invert Y Axis */
 	bool Current_InvertY;
 
+	/** Current selected control type */
+	EControlType Current_ControlType;
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Save
+
+	/** Save slot name */
+	FString SaveSlot1 = FString(TEXT("SaveLot1"));
+
+	/** Save class variable */
+	UPROPERTY()
+	ULethalSaveGame * SaveGameRef;
+
+	/** The class for save game */
+	UPROPERTY(EditDefaultsOnly, Category = "Classes")
+	TSubclassOf<ULethalSaveGame> SaveGameClass;
+
 public:
 	ULethalGameInstance(const FObjectInitializer & ObjectInitializer);
 
@@ -146,6 +169,8 @@ protected:
 
 	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y) override;
 
+	virtual void SetNewControlType(EControlType NewControlType) override;
+
 private:
 	////////////////////////////////////////////////////////////////////////////////
 	// Load widget functions
@@ -157,5 +182,21 @@ private:
 	void LoadMainMenu();
 
 	void PauseGame();
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Save
+
+	/** Gets save game class */
+	void LoadGameData();
+
+	/** Save new user settings */
+	void SaveUserSettingsData();
+
+	/** Save control type */
+	void SaveControlTypeData();
+
+	/** Creates save game class */
+	void CreateSaveGameData();
 	
 };

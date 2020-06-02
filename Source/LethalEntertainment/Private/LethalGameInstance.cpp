@@ -3,11 +3,13 @@
 #include "LethalEntertainment.h"
 #include "Menu/MenuWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/GameModeBase.h"
+#include "Game/LethalSaveGame.h"
 #include "LethalGameInstance.h"
 
 ULethalGameInstance::ULethalGameInstance(const FObjectInitializer & ObjectInitializer)
 {
+	SaveGameClass = ULethalSaveGame::StaticClass();
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> DefaultMainMenuWidget(TEXT("/Game/Dynamic/UI/Menus/WBP_MainMenu"));
 	if (DefaultMainMenuWidget.Class)
 	{
@@ -25,15 +27,30 @@ ULethalGameInstance::ULethalGameInstance(const FObjectInitializer & ObjectInitia
 	{
 		GameOverWidget = DefaultGameOverWidget.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<ULethalSaveGame> DefaultSaveGameClass(TEXT("/Game/Dynamic/Blueprints/BP_SaveGame"));
+	if (DefaultSaveGameClass.Class)
+	{
+		SaveGameClass = DefaultSaveGameClass.Class;
+	}
 }
 
 void ULethalGameInstance::Init()
 {
-	Current_MouseSens = DefaultUserSettings.Default_MouseSens;
-	Current_ADS_MouseSens = DefaultUserSettings.Default_ADS_MouseSens;
-	Current_ControllerSens = DefaultUserSettings.Default_ConSens;
-	Current_ADS_ControllerSens = DefaultUserSettings.Default_ADS_ConSens;
-	Current_InvertY = DefaultUserSettings.Default_InvertY;
+	if (UGameplayStatics::DoesSaveGameExist(SaveSlot1, 0)) 
+	{ 
+		LoadGameData();
+	}
+	else
+	{
+		Current_MouseSens = DefaultUserSettings.Default_MouseSens;
+		Current_ADS_MouseSens = DefaultUserSettings.Default_ADS_MouseSens;
+		Current_ControllerSens = DefaultUserSettings.Default_ConSens;
+		Current_ADS_ControllerSens = DefaultUserSettings.Default_ADS_ConSens;
+		Current_InvertY = DefaultUserSettings.Default_InvertY;
+		Current_ControlType = DefaultUserSettings.Default_ControlType;
+		CreateSaveGameData();
+	}
 }
 
 
@@ -76,6 +93,7 @@ void ULethalGameInstance::LoadMainMenu()
 	// Instance implements menu interface
 	Menu->SetMenuInterface(this);
 	Menu->Setup();
+	Menu->SetInitialControlType(Current_ControlType);
 }
 
 void ULethalGameInstance::LoadInGameMenu()
@@ -88,6 +106,7 @@ void ULethalGameInstance::LoadInGameMenu()
 	InGameMenu->SetMenuInterface(this);
 	PauseGame();
 	InGameMenu->Setup();
+	InGameMenu->SetInitialControlType(Current_ControlType);
 }
 
 void ULethalGameInstance::LoadGameOverMenu()
@@ -148,6 +167,7 @@ void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Mous
 	Current_ADS_ControllerSens = Controller_ADS_Sensitivity;
 	Current_InvertY = Invert_Y;
 	OnUserSettingsUpdate.Broadcast(Current_MouseSens, Current_ADS_MouseSens, Current_ControllerSens, Current_ADS_ControllerSens, Current_InvertY);
+	SaveUserSettingsData();
 }
 
 void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y)
@@ -166,5 +186,71 @@ void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float 
 	Controller_Sensitivity = DefaultUserSettings.Default_ConSens;
 	Controller_ADS_Sensitivity = DefaultUserSettings.Default_ADS_ConSens;
 	Invert_Y = DefaultUserSettings.Default_InvertY;
+}
+
+void ULethalGameInstance::SetNewControlType(EControlType NewControlType)
+{
+	Current_ControlType = NewControlType;
+	SaveControlTypeData();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Save
+
+void ULethalGameInstance::LoadGameData()
+{
+	SaveGameRef = Cast<ULethalSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlot1, 0));
+	if (SaveGameRef)
+	{
+		Current_MouseSens = SaveGameRef->Saved_MouseSens;
+		Current_ADS_MouseSens = SaveGameRef->Saved_ADS_MouseSens;
+		Current_ControllerSens = SaveGameRef->Saved_ConSens;
+		Current_ADS_ControllerSens = SaveGameRef->Saved_ADS_ConSens;
+		Current_InvertY = SaveGameRef->Saved_InvertY;
+		Current_ControlType = SaveGameRef->Saved_ControlType;
+	}
+}
+
+void ULethalGameInstance::SaveUserSettingsData()
+{
+	if (!SaveGameRef->IsValidLowLevel())
+	{
+		CreateSaveGameData();
+	}
+	else if (SaveGameRef->IsValidLowLevel())
+	{
+		SaveGameRef->Saved_InvertY = Current_InvertY;
+		SaveGameRef->Saved_MouseSens = Current_MouseSens;
+		SaveGameRef->Saved_ADS_MouseSens = Current_ADS_MouseSens;
+		SaveGameRef->Saved_ConSens = Current_ControllerSens;
+		SaveGameRef->Saved_ADS_ConSens = Current_ADS_ControllerSens;
+		UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveSlot1, 0);
+	}
+}
+
+void ULethalGameInstance::SaveControlTypeData()
+{
+	if (!SaveGameRef->IsValidLowLevel())
+	{
+		CreateSaveGameData();
+	}
+	else if (SaveGameRef->IsValidLowLevel())
+	{
+		SaveGameRef->Saved_ControlType = Current_ControlType;
+		UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveSlot1, 0);
+	}
+}
+
+void ULethalGameInstance::CreateSaveGameData()
+{
+	if (SaveGameClass)
+	{
+		SaveGameRef = Cast<ULethalSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameClass));
+		if (SaveGameRef)
+		{
+			UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveSlot1, 0);
+		}
+	}
 }
 

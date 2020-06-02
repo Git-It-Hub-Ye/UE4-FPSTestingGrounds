@@ -6,6 +6,7 @@
 #include "MenuButtonsWidget.h"
 #include "Components/TextBlock.h"
 #include "SliderWidget.h"
+#include "IconsWidget.h"
 #include "OptionsMenuWidget.h"
 
 
@@ -78,11 +79,6 @@ void UOptionsMenuWidget::NativePreConstruct()
 	Slider_ADS_ConSens->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
 }
 
-void UOptionsMenuWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-}
-
 void UOptionsMenuWidget::SetUserWidgetInterface(IUserWidgetInterface * UserWidgetInt)
 {
 	UserWidgetInterface = UserWidgetInt;
@@ -96,11 +92,26 @@ void UOptionsMenuWidget::SetInitialValues()
 	SetUserSettingsValue(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY);
 }
 
-void UOptionsMenuWidget::SetFocus()
+void UOptionsMenuWidget::SetFocus(EControlType IconControlType)
 {
-	if (Slider_MouseSens)
+	Current_ControlType = IconControlType;
+
+	if (Current_ControlType == EControlType::MouseAndKeyboard)
 	{
-		Slider_MouseSens->SetKeyboardFocus();
+		SetControlsIcon(Icon_Key);
+	}
+	else if (Current_ControlType == EControlType::PlaystationController)
+	{
+		SetControlsIcon(Icon_PS);
+	}
+	else if (Current_ControlType == EControlType::XboxController)
+	{
+		SetControlsIcon(Icon_XB);
+	}
+
+	if (Button_InvertY)
+	{
+		Button_InvertY->SetFocusToButton();
 	}
 }
 
@@ -138,6 +149,16 @@ void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSe
 	{
 		Button_InvertY->GetTextToCustomise()->SetText(LOCTEXT("Invert Y", "Off"));
 	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Display
+
+void UOptionsMenuWidget::SetControlsIcon(UIconsWidget * Icon)
+{
+	if (!WidgetSwitcherIcons || !Icon) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch Controls Icon in Controls Widget")) return; }
+	WidgetSwitcherIcons->SetActiveWidget(Icon);
 }
 
 

@@ -8,6 +8,7 @@
 #include "Player/CharacterPlayerController.h"
 #include "LethalGameInstance.h"
 #include "LethalEntertainmentHUD.h"
+#include "Game/LethalSaveGame.h"
 #include "InfiniteTerrainGameMode.h"
 
 
@@ -17,8 +18,17 @@ AInfiniteTerrainGameMode::AInfiniteTerrainGameMode()
 
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/Dynamic/Character/Behaviour/BP_PlayerPawn"));
-	DefaultPawnClass = PlayerPawnClassFinder.Class;
+	if (PlayerPawnClassFinder.Class)
+	{
+		DefaultPawnClass = PlayerPawnClassFinder.Class;
+	}
 
+	static ConstructorHelpers::FClassFinder<ULethalSaveGame> DefaultSaveGameClass(TEXT("/Game/Dynamic/Blueprints/BP_SaveGame"));
+	if (DefaultSaveGameClass.Class)
+	{
+		SaveGameClass = DefaultSaveGameClass.Class;
+	}
+	
 	// use our custom HUD class
 	HUDClass = ALethalEntertainmentHUD::StaticClass();
 
@@ -27,10 +37,20 @@ AInfiniteTerrainGameMode::AInfiniteTerrainGameMode()
 	InitialTilesToSpawn = 1;
 	SpawnTileTransform.SetLocation(FVector(0.f, 0.f, 0.f));
 	Score = 0;
+	HighScore = 0;
 }
 
 void AInfiniteTerrainGameMode::BeginPlay()
 {
+	if (UGameplayStatics::DoesSaveGameExist(SaveSlot1, 0))
+	{
+		LoadGameData();
+	}
+	else
+	{
+		SaveGameData();
+	}
+
 	PopulateBoundsVolumePool();
 	for (int32 i = 0; i < InitialTilesToSpawn; i++)
 	{
@@ -72,12 +92,47 @@ void AInfiniteTerrainGameMode::PlayerConqueredTile()
 
 void AInfiniteTerrainGameMode::GameOver(APlayerController * PC)
 {
+	if (Score > HighScore) 
+	{ 
+		HighScore = Score; 
+		SaveGameData(); 
+	}
+
 	if (!PC) { return; }
 	ULethalGameInstance * GI = Cast<ULethalGameInstance>(GetGameInstance());
 
 	if (GI)
 	{
 		GI->DisplayGameOverMenu();
+	}
+}
+
+void AInfiniteTerrainGameMode::LoadGameData()
+{
+	SaveGameRef = Cast<ULethalSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlot1, 0));
+	if (SaveGameRef)
+	{
+		HighScore = SaveGameRef->Saved_Highscore;
+	}
+}
+
+void AInfiniteTerrainGameMode::SaveGameData()
+{
+	if (!SaveGameRef->IsValidLowLevel())
+	{
+		if (SaveGameClass)
+		{
+			SaveGameRef = Cast<ULethalSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameClass));
+			if (SaveGameRef)
+			{
+				UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveSlot1, 0);
+			}
+		}
+	}
+	else if (SaveGameRef->IsValidLowLevel())
+	{
+		SaveGameRef->Saved_Highscore = HighScore;
+		UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveSlot1, 0);
 	}
 }
 

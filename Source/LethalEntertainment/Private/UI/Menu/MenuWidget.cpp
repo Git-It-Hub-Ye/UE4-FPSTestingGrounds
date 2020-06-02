@@ -13,6 +13,12 @@ void UMenuWidget::SetMenuInterface(IMenuInterface * MenuInt)
 	MenuInterface = MenuInt;
 }
 
+void UMenuWidget::SetInitialControlType(EControlType NewControlType)
+{
+	Old_ControlType = NewControlType;
+	Current_ControlType = NewControlType;
+}
+
 void UMenuWidget::Setup()
 {
 	this->AddToViewport();
@@ -119,5 +125,19 @@ APlayerController * UMenuWidget::GetLocalPlayerController()
 {
 	APlayerController * PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
 	return PC;
+}
+
+void UMenuWidget::SetControlType(EControlType NewControlType)
+{
+	Current_ControlType = NewControlType;
+}
+
+void UMenuWidget::SaveControlType()
+{
+	if (Old_ControlType != Current_ControlType)
+	{
+		if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for Menu Widget")) return; }
+		MenuInterface->SetNewControlType(Current_ControlType);
+	}
 }
 

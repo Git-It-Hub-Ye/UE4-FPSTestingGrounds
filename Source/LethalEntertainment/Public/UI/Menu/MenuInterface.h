@@ -13,8 +13,10 @@ class UMenuInterface : public UInterface
 	GENERATED_BODY()
 };
 
+enum class EControlType : uint8;
+
 /**
- * 
+ * Communicate between game classes and Menus
  */
 class LETHALENTERTAINMENT_API IMenuInterface
 {
@@ -37,5 +39,7 @@ public:
 	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y) = 0;
 
 	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y) = 0;
+
+	virtual void SetNewControlType(EControlType NewControlType) = 0;
 	
 };

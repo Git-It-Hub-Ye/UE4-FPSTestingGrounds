@@ -38,6 +38,8 @@ struct FScrollBoxData {
 	}
 };
 
+/** On Control Type Changed Event */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FControlTypeDelegate, EControlType, NewControlType);
 
 /**
  * Displays mouse/key bindings and gamepad controls
@@ -131,8 +133,14 @@ public:
 	/** Sets user widget interface variable */
 	void SetUserWidgetInterface(IUserWidgetInterface * UserWidgetInt);
 
+	/** Broadcast when control type is changed */
+	FControlTypeDelegate OnControlTypeSet;
+
 	/** Sets the widget that should recieve focus when menu is first in viewport */
 	void SetFocus();
+
+	/** Sets Controls type in scroll box */
+	void SetScrollBoxType(EControlType IconControlType);
 
 protected:
 	/** Setup widget input functions */
