@@ -24,6 +24,9 @@ protected:
 	////////////////////////////////////////////////////////////////////////////////
 	// Menu Data
 
+	/** World */
+	UWorld * MenuWorld;
+
 	/** Calls interface functions (These functions should be overriden by game instance) */
 	IMenuInterface * MenuInterface;
 

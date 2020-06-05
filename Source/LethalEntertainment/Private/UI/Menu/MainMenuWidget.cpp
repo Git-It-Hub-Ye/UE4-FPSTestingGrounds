@@ -100,12 +100,16 @@ void UMainMenuWidget::RequestReturnToParentWidget()
 
 void UMainMenuWidget::PlayGame()
 {
+	Button_Play->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for MainMenu Widget")) return; }
 	MenuInterface->PlayGame();
 }
 
 void UMainMenuWidget::WantsToQuit()
 {
+	Button_Quit->PlayPressedSound();
+
 	if (!WidgetSwitcher || !QuitMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to QuitMenu in MainMenu Widget")) return; }
 	Name_LastButton = *Button_Quit->GetName();
 	bIsAdditionalPanelOpen = true;
@@ -117,12 +121,16 @@ void UMainMenuWidget::WantsToQuit()
 
 void UMainMenuWidget::QuitGame()
 {
+	Button_ConfirmQuit->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for MainMenu Widget")) return; }
 	MenuInterface->OuitGame();
 }
 
 void UMainMenuWidget::ViewOptions()
 {
+	Button_Options->PlayPressedSound();
+
 	if (!WidgetSwitcher || !OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to OptionsPanel within MainMenu Widget")) return; }
 	Name_LastButton = *Button_Options->GetName();
 	OptionsPanel->SetInitialValues();
@@ -132,6 +140,8 @@ void UMainMenuWidget::ViewOptions()
 
 void UMainMenuWidget::ViewControls()
 {
+	Button_Controls->PlayPressedSound();
+
 	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to ControlsPanel in MainMenu Widget")) return; }
 	Name_LastButton = *Button_Controls->GetName();
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
@@ -141,6 +151,8 @@ void UMainMenuWidget::ViewControls()
 
 void UMainMenuWidget::ReturnToMainMenu()
 {
+	Button_CancelQuit->PlayPressedSound();
+
 	if (!WidgetSwitcher || !MainMenu) { UE_LOG(LogTemp, Warning, TEXT("Unable to switch to MainMenu in MainMenu Widget")) return; }
 	bIsAdditionalPanelOpen = false;
 	WidgetSwitcher->SetActiveWidget(MainMenu);

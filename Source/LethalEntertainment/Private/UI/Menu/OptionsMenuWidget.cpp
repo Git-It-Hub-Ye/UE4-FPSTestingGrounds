@@ -167,6 +167,8 @@ void UOptionsMenuWidget::SetControlsIcon(UIconsWidget * Icon)
 
 void UOptionsMenuWidget::ToggleInvertY()
 {
+	Button_InvertY->PlayPressedSound();
+	ButtonInvertYOnHover();
 	if (Current_InvertY)
 	{
 		Current_InvertY = false;
@@ -181,6 +183,8 @@ void UOptionsMenuWidget::ToggleInvertY()
 
 void UOptionsMenuWidget::ApplyChanges()
 {
+	Button_Apply->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
 	if (Slider_MouseSens)		{ Current_MouseSens		=	Slider_MouseSens->GetCurrentValue();	 }
 	if (Slider_ADS_MouseSens)	{ Current_ADS_MouseSens =	Slider_ADS_MouseSens->GetCurrentValue(); }
@@ -192,6 +196,8 @@ void UOptionsMenuWidget::ApplyChanges()
 
 void UOptionsMenuWidget::ResetToDefaults()
 {
+	Button_Reset->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
 	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
 	SetUserSettingsValue(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
@@ -199,6 +205,8 @@ void UOptionsMenuWidget::ResetToDefaults()
 
 void UOptionsMenuWidget::ReturnToPrevious()
 {
+	Button_Back->PlayPressedSound();
+
 	if (UserWidgetInterface)
 	{
 		UserWidgetInterface->RequestReturnToParentWidget();

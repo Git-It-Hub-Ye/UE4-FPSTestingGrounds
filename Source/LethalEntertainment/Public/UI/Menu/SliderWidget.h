@@ -50,6 +50,10 @@ private:
 	UPROPERTY(EditAnywhere, DisplayName = "Focused Background Colour", Category = "Config")
 	FLinearColor Colour_Focus;
 
+	/** On hover sound FX */
+	UPROPERTY(EditAnywhere, DisplayName = "Focus Sound", Category = "Config")
+	USoundBase * OnFocusSound;
+
 	
 	////////////////////////////////////////////////////////////////////////////////
 	// Text
@@ -145,5 +149,12 @@ private:
 
 	/** Adds a value to slider */
 	void AdjustSlider(bool IncreaseSliderValue);
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// SFX
+
+	/** Plays focus sound */
+	void PlayFocusSound();
 
 };

@@ -56,6 +56,7 @@ void UMenuButtonsWidget::NativeOnAddedToFocusPath(const FFocusEvent & InFocusEve
 {
 	Super::NativeOnAddedToFocusPath(InFocusEvent);
 	OnWidgetFocused.Broadcast(this);
+	PlayHoverSound();
 	SetOnHoverStyle();	
 }
 
@@ -73,6 +74,30 @@ void UMenuButtonsWidget::SetOnHoverStyle()
 void UMenuButtonsWidget::SetUnhoverStyle()
 {
 	Button_Main->SetStyle(Style_Default);
+}
+
+void UMenuButtonsWidget::PlayPressedSound()
+{
+	if (!OnPressedSound) { UE_LOG(LogTemp, Warning, TEXT("Pressed Sound missing from Button Widget")) return; }
+	UGameplayStatics::PlaySound2D(this, OnPressedSound);
+}
+
+void UMenuButtonsWidget::PlayHoverSound()
+{
+	if (!OnHoverSound) { UE_LOG(LogTemp, Warning, TEXT("Hover Sound missing from Button Widget")) return; }
+	UGameplayStatics::PlaySound2D(this, OnHoverSound);
+}
+
+float UMenuButtonsWidget::GetPressedSoundDuration()
+{
+	float Duration = 0.2f;
+
+	if (OnPressedSound) 
+	{
+		Duration = OnPressedSound->Duration;
+	}
+
+	return Duration;
 }
 
 

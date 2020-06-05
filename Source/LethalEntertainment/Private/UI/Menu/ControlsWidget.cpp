@@ -71,7 +71,6 @@ void UControlsWidget::NativeConstruct()
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ConTypePanel is missing from GameOverMenu Widget")) }
 	SetScrollBoxInterface();
-	SetControlTypeButton();
 }
 
 
@@ -103,14 +102,6 @@ void UControlsWidget::SetScrollBoxInterface()
 		ScrollBox_XB->SetSizeYOfScrollBox(ScrollBoxData.SizeY_ScrollBox_XB);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ScrollBox_XB missing from Controls Widget")) }
-}
-
-void UControlsWidget::SetControlTypeButton()
-{
-	if (Button_MouseKey) { ShowMouseKeyInputs(); }
-	else if (Button_PS) { ShowPSControls(); }
-	else if (Button_XB) { ShowXBControls(); }
-	else { UE_LOG(LogTemp, Warning, TEXT("Controller types selection is missing from Controls Widget")) }
 }
 
 void UControlsWidget::SetUserWidgetInterface(IUserWidgetInterface * UserWidgetInt)
@@ -156,6 +147,8 @@ void UControlsWidget::SetScrollBoxType(EControlType IconControlType)
 
 void UControlsWidget::SelectControlType()
 {
+	Button_ControlType->PlayPressedSound();
+
 	if (!ConTypePanel) { UE_LOG(LogTemp, Warning, TEXT("ConTypePanel is missing from Controls Widget")) return; }
 	if (ConTypePanel->Visibility == ESlateVisibility::Visible)
 	{
@@ -170,6 +163,8 @@ void UControlsWidget::SelectControlType()
 
 void UControlsWidget::ShowMouseKeyInputs()
 {
+	Button_MouseKey->PlayPressedSound();
+
 	Name_CurrentControlType = *Button_MouseKey->GetName();
 	ConTypePanel->SetVisibility(ESlateVisibility::Hidden);
 	
@@ -182,6 +177,8 @@ void UControlsWidget::ShowMouseKeyInputs()
 
 void UControlsWidget::ShowPSControls()
 {
+	Button_PS->PlayPressedSound();
+
 	Name_CurrentControlType = *Button_PS->GetName();
 	ConTypePanel->SetVisibility(ESlateVisibility::Hidden);
 	
@@ -194,6 +191,8 @@ void UControlsWidget::ShowPSControls()
 
 void UControlsWidget::ShowXBControls()
 {
+	Button_XB->PlayPressedSound();
+
 	Name_CurrentControlType = *Button_XB->GetName();
 	ConTypePanel->SetVisibility(ESlateVisibility::Hidden);
 
@@ -206,6 +205,8 @@ void UControlsWidget::ShowXBControls()
 
 void UControlsWidget::ReturnToPrevious()
 {
+	Button_Back->PlayPressedSound();
+
 	if (ConTypePanel && ConTypePanel->GetVisibility() == ESlateVisibility::Visible)
 	{
 		ConTypePanel->SetVisibility(ESlateVisibility::Hidden);

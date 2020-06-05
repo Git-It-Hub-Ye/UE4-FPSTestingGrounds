@@ -44,7 +44,7 @@ bool UInGameMenuWidget::Initialize()
 
 		if (Button_ConfirmRestart && Button_ConfirmRestart->GetButton())
 		{
-			Button_ConfirmRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::RestartGame);
+			Button_ConfirmRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ConfirmRestart);
 			Button_ConfirmRestart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonConfirmRestartOnHover);
 			Button_ConfirmRestart->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
@@ -52,7 +52,7 @@ bool UInGameMenuWidget::Initialize()
 
 		if (Button_CancelRestart && Button_CancelRestart->GetButton())
 		{
-			Button_CancelRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
+			Button_CancelRestart->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::CancelRestart);
 			Button_CancelRestart->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonCancelRestartOnHover);
 			Button_CancelRestart->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
@@ -68,7 +68,7 @@ bool UInGameMenuWidget::Initialize()
 
 		if (Button_ConfirmReturn && Button_ConfirmReturn->GetButton())
 		{
-			Button_ConfirmReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToMainMenu);
+			Button_ConfirmReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ConfirmReturn);
 			Button_ConfirmReturn->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonConfirmReturnOnHover);
 			Button_ConfirmReturn->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
@@ -76,7 +76,7 @@ bool UInGameMenuWidget::Initialize()
 
 		if (Button_CancelReturn && Button_CancelReturn->GetButton())
 		{
-			Button_CancelReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::ReturnToInGameMenu);
+			Button_CancelReturn->GetButton()->OnClicked.AddDynamic(this, &UInGameMenuWidget::CancelReturn);
 			Button_CancelReturn->GetButton()->OnHovered.AddDynamic(this, &UInGameMenuWidget::ButtonCancelReturnOnHover);
 			Button_CancelReturn->OnWidgetFocused.AddUniqueDynamic(this, &UInGameMenuWidget::SetCurrentFocusedWidgetName);
 		}
@@ -124,12 +124,16 @@ void UInGameMenuWidget::RequestReturnToParentWidget()
 
 void UInGameMenuWidget::ResumeGame()
 {
+	Button_Resume->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for InGameMenu Widget")) return; }
 	MenuInterface->ResumeGame();
 }
 
 void UInGameMenuWidget::ViewOptions()
 {
+	Button_Options->PlayPressedSound();
+
 	if (!WidgetSwitcher || !OptionsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to OptionsPanel within InGameMenu Widget")) return; }
 	Name_LastButton = *Button_Options->GetName();
 	OptionsPanel->SetInitialValues();
@@ -139,6 +143,8 @@ void UInGameMenuWidget::ViewOptions()
 
 void UInGameMenuWidget::ViewControls()
 {
+	Button_Controls->PlayPressedSound();
+
 	if (!WidgetSwitcher || !ControlsPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ControlsPanel within InGameMenu Widget")) return; }
 	Name_LastButton = *Button_Controls->GetName();
 	WidgetSwitcher->SetActiveWidget(ControlsPanel);
@@ -148,6 +154,8 @@ void UInGameMenuWidget::ViewControls()
 
 void UInGameMenuWidget::WantsToRestart()
 {
+	Button_Restart->PlayPressedSound();
+
 	if (!WidgetSwitcher || !RestartPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to RestartPanel within InGameMenu Widget")) return; }
 	Name_LastButton = *Button_Restart->GetName();
 	bIsAdditionalPanelOpen = true;
@@ -157,14 +165,24 @@ void UInGameMenuWidget::WantsToRestart()
 	Button_CancelRestart->SetFocusToButton();
 }
 
-void UInGameMenuWidget::RestartGame()
+void UInGameMenuWidget::CancelRestart()
 {
+	Button_CancelRestart->PlayPressedSound();
+	ReturnToInGameMenu();
+}
+
+void UInGameMenuWidget::ConfirmRestart()
+{
+	Button_ConfirmRestart->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for InGameMenu Widget")) return; }
 	MenuInterface->RestartGame();
 }
 
 void UInGameMenuWidget::WantsToReturn()
 {
+	Button_MainMenu->PlayPressedSound();
+
 	if (!WidgetSwitcher || !ReturnMenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ReturnMenuPanel within InGameMenu Widget")) return; }
 	Name_LastButton = *Button_MainMenu->GetName();
 	bIsAdditionalPanelOpen = true;
@@ -174,8 +192,15 @@ void UInGameMenuWidget::WantsToReturn()
 	Button_CancelReturn->SetFocusToButton();
 }
 
-void UInGameMenuWidget::ReturnToMainMenu()
+void UInGameMenuWidget::CancelReturn()
 {
+	Button_CancelReturn->PlayPressedSound();
+	ReturnToInGameMenu();
+}
+
+void UInGameMenuWidget::ConfirmReturn()
+{
+	Button_ConfirmReturn->PlayPressedSound();
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for InGameMenu Widget")) return; }
 	MenuInterface->ReturnToMainMenu();
 }

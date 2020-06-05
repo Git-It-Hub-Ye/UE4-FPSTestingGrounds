@@ -50,6 +50,7 @@ void USliderWidget::NativeOnAddedToFocusPath(const FFocusEvent & InFocusEvent)
 	Super::NativeOnAddedToFocusPath(InFocusEvent);
 	OnWidgetFocused.Broadcast(this);
 	SetBackgroundColour(Colour_Focus);
+	PlayFocusSound();
 }
 
 void USliderWidget::NativeOnRemovedFromFocusPath(const FFocusEvent & InFocusEvent)
@@ -93,6 +94,8 @@ void USliderWidget::UpdateProgressBar(float Value)
 
 void USliderWidget::UpdateValue(float Value)
 {
+	if (Value_Current == FMath::Clamp<float>(Value, 0.01f, 1.f)) { return; }
+
 	// Clamp Value between 0.01 & 1 (this way between 1 & 100 is displayed to user)
 	Slider->SetValue(FMath::Clamp<float>(Value, 0.01f, 1.f));
 	SetNewValue(FMath::Clamp<float>(Value, 0.01f, 1.f));
@@ -124,6 +127,16 @@ FReply USliderWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEv
 		Result = FReply::Handled();
 	}
 	return Result;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// SFX
+
+void USliderWidget::PlayFocusSound()
+{
+	if (!OnFocusSound) { UE_LOG(LogTemp, Warning, TEXT("Focus Sound missing from Button Widget")) return; }
+	UGameplayStatics::PlaySound2D(this, OnFocusSound);
 }
 
 #undef LOCTEXT_NAMESPACE

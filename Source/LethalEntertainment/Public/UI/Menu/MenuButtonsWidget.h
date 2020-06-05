@@ -10,6 +10,7 @@
 
 class UButton;
 class UTextBlock;
+class USoundBase;
 
 /** On Focused Event */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFocusButtonDelegate, UWidget*, Widget);
@@ -48,6 +49,14 @@ private:
 	/** Used to set style */
 	FButtonStyle Style_Focused;
 
+	/** On pressed sound FX */
+	UPROPERTY(EditAnywhere, DisplayName = "Pressed Sound", Category = "Button")
+	USoundBase * OnPressedSound;
+
+	/** On hover sound FX */
+	UPROPERTY(EditAnywhere, DisplayName = "Hover Sound", Category = "Button")
+	USoundBase * OnHoverSound;
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Text
@@ -85,6 +94,12 @@ public:
 	/** Broadcasts to Menus */
 	FFocusButtonDelegate OnWidgetFocused;
 
+	/** Plays pressed sound */
+	void PlayPressedSound();
+
+	/** Returns duration of pressed sound */
+	float GetPressedSoundDuration();
+
 protected:
 	/** Updates widget anytime it is constructed or edited */
 	virtual void NativePreConstruct() override;
@@ -107,5 +122,8 @@ private:
 
 	/** Sets button style back to default */
 	void SetUnhoverStyle();
+
+	/** Plays hover sound */
+	void PlayHoverSound();
 	
 };

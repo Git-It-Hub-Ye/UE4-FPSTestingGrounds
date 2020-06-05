@@ -143,20 +143,27 @@ private:
 	UFUNCTION()
 	void WantsToRestart();
 
+	/** Returns back to in game menu */
+	UFUNCTION()
+	void CancelRestart();
+
 	/** Restarts game */
 	UFUNCTION()
-	void RestartGame();
+	void ConfirmRestart();
 
 	/** Opens return menu */
 	UFUNCTION()
 	void WantsToReturn();
 
-	/** Returns back to main menu */
-	UFUNCTION()
-	void ReturnToMainMenu();
-
 	/** Returns back to in game menu */
 	UFUNCTION()
+	void CancelReturn();
+
+	/** Returns back to main menu */
+	UFUNCTION()
+	void ConfirmReturn();
+
+	/** Returns back to in game menu */
 	void ReturnToInGameMenu();
 
 

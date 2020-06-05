@@ -59,12 +59,16 @@ void UGameOverWidget::NativeConstruct()
 
 void UGameOverWidget::RestartGame()
 {
+	Button_Restart->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for GameOverMenu Widget")) return; }
 	MenuInterface->RestartGame();
 }
 
 void UGameOverWidget::WantsToReturn()
 {
+	Button_MainMenu->PlayPressedSound();
+
 	if (!WidgetSwitcher || !ReturnMenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to ReturnMenuPanel within GameOverMenu Widget")) return; }
 	Name_LastButton = *Button_MainMenu->GetName();
 	WidgetSwitcher->SetActiveWidget(ReturnMenuPanel);
@@ -75,6 +79,8 @@ void UGameOverWidget::WantsToReturn()
 
 void UGameOverWidget::CancelReturn()
 {
+	Button_CancelReturn->PlayPressedSound();
+
 	if (!WidgetSwitcher || !MenuPanel) { UE_LOG(LogTemp, Warning, TEXT("Unable to Switch to MenuPanel within GameOverMenu Widget")) return; }
 	WidgetSwitcher->SetActiveWidget(MenuPanel);
 	SetWidgetToFocus(Name_LastButton);
@@ -82,6 +88,8 @@ void UGameOverWidget::CancelReturn()
 
 void UGameOverWidget::ReturnToMainMenu()
 {
+	Button_ConfirmReturn->PlayPressedSound();
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for GameOverMenu Widget")) return; }
 	MenuInterface->ReturnToMainMenu();
 }
