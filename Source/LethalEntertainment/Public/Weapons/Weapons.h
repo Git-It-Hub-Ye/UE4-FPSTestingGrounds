@@ -12,6 +12,7 @@ class AMannequin;
 class UAudioComponent;
 class UParticleSystemComponent;
 class UTimelineComponent;
+class UForceFeedbackEffect;
 class UCameraShake;
 class USoundBase;
 
@@ -309,6 +310,10 @@ private:
 	
 	////////////////////////////////////////////////////////////////////////////////
 	// FX
+
+	/** Controller vibration on firing */
+	UPROPERTY(EditDefaultsOnly, Category = "FX")
+	UForceFeedbackEffect * FireForceFeedback;
 
 	/** Camera shake on firing */
 	UPROPERTY(EditDefaultsOnly, Category = "FX")

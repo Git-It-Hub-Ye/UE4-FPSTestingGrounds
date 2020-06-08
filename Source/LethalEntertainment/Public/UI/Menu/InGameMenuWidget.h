@@ -33,6 +33,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UPanelWidget * PausePanel;
 
+	/** Loading panel that will be visible to user */
+	UPROPERTY(meta = (BindWidget))
+	UUserWidget * LoadingScreen;
+
 	/** Allows user to resume game */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Resume;

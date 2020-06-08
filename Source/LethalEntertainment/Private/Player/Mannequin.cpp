@@ -235,12 +235,18 @@ float AMannequin::TakeDamage(float DamageAmount, FDamageEvent const & DamageEven
 
 void AMannequin::PlayDamagedEffects()
 {
-	ACharacterPlayerController * PC = Cast<ACharacterPlayerController>(this->GetController());
+	CharacterDamaged();
 
-	if (PC)
+	ACharacterPlayerController * PC = Cast<ACharacterPlayerController>(this->GetController());
+	if (!PC) { return; }
+
+	if (DamageCamShakeBP)
 	{
-		CharacterDamaged();
 		PC->ClientPlayCameraShake(DamageCamShakeBP);
+	}
+	if (DamageForceFeedback)
+	{
+		PC->ClientPlayForceFeedback(DamageForceFeedback, false, false, "Character");
 	}
 }
 

@@ -31,6 +31,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UPanelWidget * MenuPanel;
 
+	/** Loading panel that will be visible to user */
+	UPROPERTY(meta = (BindWidget))
+	UUserWidget * LoadingScreen;
+
 	/** Allows user to restart game */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Restart;

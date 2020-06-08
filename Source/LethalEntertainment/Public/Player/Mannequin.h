@@ -10,6 +10,7 @@
 class AWeapons;
 class AFootStepFX;
 class ATile;
+class UForceFeedbackEffect;
 
 UENUM()
 enum class ECharacterType : uint8 {
@@ -197,6 +198,10 @@ private:
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// FX
+
+	/** Controller vibration on damage */
+	UPROPERTY(EditDefaultsOnly, Category = "FX")
+	UForceFeedbackEffect * DamageForceFeedback;
 
 	/** Spawn Sound */
 	UPROPERTY(EditAnywhere, Category = "FX")

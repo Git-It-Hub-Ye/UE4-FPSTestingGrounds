@@ -302,6 +302,11 @@ void AWeapons::OnFirePlayerBehaviour()
 	{
 		PC->ClientPlayCameraShake(FireCamShakeBP);
 
+		if (FireForceFeedback)
+		{
+			PC->ClientPlayForceFeedback(FireForceFeedback, false, false, "Weapon");
+		}
+
 		bHasRecoveredRecoil = false;
 		RecoilPitch = FMath::RandRange(WeaponData.RecoilPitch * 0.5, WeaponData.RecoilPitch) * -1;
 		RecoilYaw = FMath::RandRange(WeaponData.RecoilLeft, WeaponData.RecoilRight);

@@ -175,6 +175,11 @@ void UInGameMenuWidget::ConfirmRestart()
 {
 	Button_ConfirmRestart->PlayPressedSound();
 
+	if (WidgetSwitcher && LoadingScreen)
+	{
+		WidgetSwitcher->SetActiveWidget(LoadingScreen);
+	}
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for InGameMenu Widget")) return; }
 	MenuInterface->RestartGame();
 }
@@ -201,6 +206,12 @@ void UInGameMenuWidget::CancelReturn()
 void UInGameMenuWidget::ConfirmReturn()
 {
 	Button_ConfirmReturn->PlayPressedSound();
+
+	if (WidgetSwitcher && LoadingScreen)
+	{
+		WidgetSwitcher->SetActiveWidget(LoadingScreen);
+	}
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for InGameMenu Widget")) return; }
 	MenuInterface->ReturnToMainMenu();
 }

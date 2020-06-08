@@ -61,6 +61,11 @@ void UGameOverWidget::RestartGame()
 {
 	Button_Restart->PlayPressedSound();
 
+	if (WidgetSwitcher && LoadingScreen)
+	{
+		WidgetSwitcher->SetActiveWidget(LoadingScreen);
+	}
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for GameOverMenu Widget")) return; }
 	MenuInterface->RestartGame();
 }
@@ -89,6 +94,11 @@ void UGameOverWidget::CancelReturn()
 void UGameOverWidget::ReturnToMainMenu()
 {
 	Button_ConfirmReturn->PlayPressedSound();
+
+	if (WidgetSwitcher && LoadingScreen)
+	{
+		WidgetSwitcher->SetActiveWidget(LoadingScreen);
+	}
 
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for GameOverMenu Widget")) return; }
 	MenuInterface->ReturnToMainMenu();

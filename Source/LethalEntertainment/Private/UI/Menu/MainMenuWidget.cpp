@@ -102,6 +102,11 @@ void UMainMenuWidget::PlayGame()
 {
 	Button_Play->PlayPressedSound();
 
+	if (WidgetSwitcher && LoadingScreen)
+	{
+		WidgetSwitcher->SetActiveWidget(LoadingScreen);
+	}
+
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("No MenuInterface for MainMenu Widget")) return; }
 	MenuInterface->PlayGame();
 }
