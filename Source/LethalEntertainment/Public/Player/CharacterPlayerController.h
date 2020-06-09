@@ -13,6 +13,10 @@ class LETHALENTERTAINMENT_API ACharacterPlayerController : public APlayerControl
 {
 	GENERATED_BODY()
 
+public:
+	/** Controller vibration */
+	bool bVibrateController = true;
+
 protected:
 	/** Team id */
 	FGenericTeamId TeamId;
@@ -46,6 +50,9 @@ public:
 
 	/** Get the hud */
 	ALethalEntertainmentHUD * GetPlayerHud() const;
+
+	/** Return bVibrateController */
+	bool IsVibrationEnabled() const { return bVibrateController; }
 
 protected:
 	/** Unpossess controller on death */

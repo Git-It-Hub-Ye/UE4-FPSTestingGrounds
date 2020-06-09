@@ -48,7 +48,8 @@ void ULethalGameInstance::Init()
 		Current_ControllerSens = DefaultUserSettings.Default_ConSens;
 		Current_ADS_ControllerSens = DefaultUserSettings.Default_ADS_ConSens;
 		Current_InvertY = DefaultUserSettings.Default_InvertY;
-		Current_ControlType = DefaultUserSettings.Default_ControlType;
+		Current_Vibration = DefaultUserSettings.Default_Vibration;
+		Current_ControlType = EControlType::MouseAndKeyboard;
 		CreateSaveGameData();
 	}
 }
@@ -159,33 +160,36 @@ void ULethalGameInstance::OuitGame()
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetFirstLocalPlayerController(), EQuitPreference::Quit);
 }
 
-void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity, bool Invert_Y)
+void ULethalGameInstance::SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity, bool Invert_Y, bool Vibration)
 {
 	Current_MouseSens = Mouse_Sensitivity;
 	Current_ADS_MouseSens = Mouse_ADS_Sensitivity;
 	Current_ControllerSens = Controller_Sensitivity;
 	Current_ADS_ControllerSens = Controller_ADS_Sensitivity;
 	Current_InvertY = Invert_Y;
-	OnUserSettingsUpdate.Broadcast(Current_MouseSens, Current_ADS_MouseSens, Current_ControllerSens, Current_ADS_ControllerSens, Current_InvertY);
+	Current_Vibration = Vibration;
+	OnUserSettingsUpdate.Broadcast(Current_MouseSens, Current_ADS_MouseSens, Current_ControllerSens, Current_ADS_ControllerSens, Current_InvertY, Current_Vibration);
 	SaveUserSettingsData();
 }
 
-void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y)
+void ULethalGameInstance::GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y, bool & Vibration)
 {
 	Mouse_Sensitivity = Current_MouseSens;
 	Mouse_ADS_Sensitivity = Current_ADS_MouseSens;
 	Controller_Sensitivity = Current_ControllerSens;
 	Controller_ADS_Sensitivity = Current_ADS_ControllerSens;
 	Invert_Y = Current_InvertY;
+	Vibration = Current_Vibration;
 }
 
-void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y)
+void ULethalGameInstance::GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y, bool & Vibration)
 {
 	Mouse_Sensitivity = DefaultUserSettings.Default_MouseSens;
 	Mouse_ADS_Sensitivity = DefaultUserSettings.Default_ADS_MouseSens;
 	Controller_Sensitivity = DefaultUserSettings.Default_ConSens;
 	Controller_ADS_Sensitivity = DefaultUserSettings.Default_ADS_ConSens;
 	Invert_Y = DefaultUserSettings.Default_InvertY;
+	Vibration = DefaultUserSettings.Default_Vibration;
 }
 
 void ULethalGameInstance::SetNewControlType(EControlType NewControlType)
@@ -208,6 +212,7 @@ void ULethalGameInstance::LoadGameData()
 		Current_ControllerSens = SaveGameRef->Saved_ConSens;
 		Current_ADS_ControllerSens = SaveGameRef->Saved_ADS_ConSens;
 		Current_InvertY = SaveGameRef->Saved_InvertY;
+		Current_Vibration = SaveGameRef->Saved_Vibration;
 		Current_ControlType = SaveGameRef->Saved_ControlType;
 	}
 }
@@ -221,6 +226,7 @@ void ULethalGameInstance::SaveUserSettingsData()
 	else if (SaveGameRef->IsValidLowLevel())
 	{
 		SaveGameRef->Saved_InvertY = Current_InvertY;
+		SaveGameRef->Saved_Vibration = Current_Vibration;
 		SaveGameRef->Saved_MouseSens = Current_MouseSens;
 		SaveGameRef->Saved_ADS_MouseSens = Current_ADS_MouseSens;
 		SaveGameRef->Saved_ConSens = Current_ControllerSens;

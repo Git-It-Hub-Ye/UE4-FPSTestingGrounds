@@ -77,10 +77,11 @@ void AMannequin::BeginPlay()
 
 	if (IsPlayerControlled())
 	{
+		ACharacterPlayerController * PC = Cast<ACharacterPlayerController>(this->GetController());
 		ULethalGameInstance * GI = GetWorld() ? Cast<ULethalGameInstance>(GetWorld()->GetGameInstance()) : nullptr;
-		if (GI)
+		if (PC && GI)
 		{
-			GI->GetCurrentUserValues(MouseSens_Modifier, MouseSens_ADS_Modifier, ConSens_Modifier, ConSens_ADS_Modifier, bInvertY);
+			GI->GetCurrentUserValues(MouseSens_Modifier, MouseSens_ADS_Modifier, ConSens_Modifier, ConSens_ADS_Modifier, bInvertY, PC->bVibrateController);
 			GI->OnUserSettingsUpdate.AddUniqueDynamic(this, &AMannequin::UpdateSettings);
 		}
 
@@ -536,13 +537,19 @@ void AMannequin::UpdateSensitivity()
 	ConBaseTurnRate = ConSens_Modifier;
 }
 
-void AMannequin::UpdateSettings(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens, bool bInvert_Y)
+void AMannequin::UpdateSettings(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens, bool bInvert_Y, bool bVibrate)
 {
 	MouseSens_Modifier = AimSens_Mouse;
 	MouseSens_ADS_Modifier = ADS_MouseSens;
 	ConSens_Modifier = AimSens_Controller;
 	ConSens_ADS_Modifier = ADS_ConSens;
 	bInvertY = bInvert_Y;
+
+	ACharacterPlayerController * PC = Cast<ACharacterPlayerController>(this->GetController());
+	if (PC)
+	{
+		PC->bVibrateController = bVibrate;
+	}
 
 	UpdateSensitivity();
 }

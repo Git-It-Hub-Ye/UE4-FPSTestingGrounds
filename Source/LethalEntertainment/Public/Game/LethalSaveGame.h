@@ -19,9 +19,13 @@ class LETHALENTERTAINMENT_API ULethalSaveGame : public USaveGame
 	
 public:
 
-	/** Player default mouse sensitivity */
+	/** Player default invert Y axis setting */
 	UPROPERTY(EditDefaultsOnly, DisplayName = "Player Invert Y Axis", Category = "Config")
 	bool Saved_InvertY = false;
+
+	/** Player default controller vibration setting */
+	UPROPERTY(EditDefaultsOnly, DisplayName = "Player Controller Vibration", Category = "Config")
+	bool Saved_Vibration = true;
 
 	/** Player default mouse sensitivity */
 	UPROPERTY(EditDefaultsOnly, DisplayName = "Player Mouse Sensitivity", Category = "Config", meta = (ClampMin = 1.f, ClampMax = 100.f))

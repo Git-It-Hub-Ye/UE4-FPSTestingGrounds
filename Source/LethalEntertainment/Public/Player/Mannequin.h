@@ -461,7 +461,7 @@ private:
 
 	/** Sets new Sensitivity values */
 	UFUNCTION()
-	void UpdateSettings(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens, bool bInvert_Y);
+	void UpdateSettings(float AimSens_Mouse, float ADS_MouseSens, float AimSens_Controller, float ADS_ConSens, bool bInvert_Y, bool bVibrate);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////

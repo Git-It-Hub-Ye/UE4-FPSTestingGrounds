@@ -302,7 +302,7 @@ void AWeapons::OnFirePlayerBehaviour()
 	{
 		PC->ClientPlayCameraShake(FireCamShakeBP);
 
-		if (FireForceFeedback)
+		if (FireForceFeedback && PC->IsVibrationEnabled())
 		{
 			PC->ClientPlayForceFeedback(FireForceFeedback, false, false, "Weapon");
 		}

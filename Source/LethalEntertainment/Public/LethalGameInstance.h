@@ -37,6 +37,10 @@ struct FDefaultUserSettings {
 	UPROPERTY(EditDefaultsOnly, DisplayName = "Default Invert Y Axis", Category = "Config")
 	bool Default_InvertY;
 
+	/** Player default Invert Y Axis value */
+	UPROPERTY(EditDefaultsOnly, DisplayName = "Default Invert Y Axis", Category = "Config")
+	bool Default_Vibration;
+
 	/** Player default control type */
 	EControlType Default_ControlType;
 
@@ -48,11 +52,12 @@ struct FDefaultUserSettings {
 		Default_ConSens = 50;
 		Default_ADS_ConSens = 50;
 		Default_InvertY = false;
+		Default_Vibration = true;
 	}
 };
 
 /** On User Settings Updated Event */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnUserSettingsUpdateDelegate, float, AimSens_Mouse, float, ADS_MouseSens, float, AimSens_Controller, float, ADS_ConSens, bool, InvertY);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnUserSettingsUpdateDelegate, float, AimSens_Mouse, float, ADS_MouseSens, float, AimSens_Controller, float, ADS_ConSens, bool, InvertY, bool, Vibration);
 
 UCLASS()
 class LETHALENTERTAINMENT_API ULethalGameInstance : public UGameInstance, public IMenuInterface
@@ -100,6 +105,9 @@ private:
 	/** Current value for Invert Y Axis */
 	bool Current_InvertY;
 
+	/** Current value for vibration */
+	bool Current_Vibration;
+
 	/** Current selected control type */
 	EControlType Current_ControlType;
 
@@ -143,7 +151,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// User Settings functions (Accessed through Menu interface and other classes)
 
-	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y) override;
+	virtual void GetCurrentUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y, bool & Vibration) override;
 
 protected:
 	virtual void Init() override;
@@ -165,9 +173,9 @@ protected:
 	////////////////////////////////////////////////////////////////////////////////
 	// User Settings functions (Accessed through Menu interface)
 
-	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity, bool Invert_Y) override;
+	virtual void SetNewUserSettings(float Mouse_Sensitivity, float Mouse_ADS_Sensitivity, float Controller_Sensitivity, float Controller_ADS_Sensitivity, bool Invert_Y, bool Vibration) override;
 
-	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y) override;
+	virtual void GetDefaultUserValues(float & Mouse_Sensitivity, float & Mouse_ADS_Sensitivity, float & Controller_Sensitivity, float & Controller_ADS_Sensitivity, bool & Invert_Y, bool & Vibration) override;
 
 	virtual void SetNewControlType(EControlType NewControlType) override;
 

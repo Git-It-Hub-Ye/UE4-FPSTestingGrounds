@@ -46,6 +46,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_InvertY;
 
+	/** Allows user to turn off/on vibration for controller */
+	UPROPERTY(meta = (BindWidget))
+	UMenuButtonsWidget * Button_Vibration;
+
 	/** Allows user to apply changes to options */
 	UPROPERTY(meta = (BindWidget))
 	UMenuButtonsWidget * Button_Apply;
@@ -93,6 +97,9 @@ private:
 	/** Stores default value for Invert Y Axis */
 	bool Default_InvertY = false;
 
+	/** Stores default value for controller vibration */
+	bool Default_Vibration = true;
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Current Values
@@ -111,6 +118,9 @@ private:
 
 	/** Stores current value for Invert Y Axis */
 	bool Current_InvertY = false;
+
+	/** Stores current value for vibration */
+	bool Current_Vibration = false;
 
 public:
 	////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +147,7 @@ private:
 	// Setup
 
 	/** Sets values to display */
-	void SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens, bool Invert_Y);
+	void SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens, bool Invert_Y, bool Vibration);
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +162,10 @@ private:
 	/** Toggles invert Y axis off/on */
 	UFUNCTION()
 	void ToggleInvertY();
+
+	/** Toggles controller vibration off/on */
+	UFUNCTION()
+	void ToggleVibration();
 
 	/** Applys new values to user settings */
 	UFUNCTION()
@@ -172,6 +186,10 @@ private:
 	/** Sets focus to InvertY button when hovered */
 	UFUNCTION()
 	void ButtonInvertYOnHover();
+
+	/** Sets focus to Vibration button when hovered */
+	UFUNCTION()
+	void ButtonVibrationOnHover();
 
 	/** Sets focus to Apply button when hovered */
 	UFUNCTION()

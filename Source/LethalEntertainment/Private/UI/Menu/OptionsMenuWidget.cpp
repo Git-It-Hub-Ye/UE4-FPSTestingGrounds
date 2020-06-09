@@ -25,7 +25,15 @@ bool UOptionsMenuWidget::Initialize()
 		Button_InvertY->GetButton()->OnHovered.AddDynamic(this, &UOptionsMenuWidget::ButtonInvertYOnHover);
 		Button_InvertY->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("Button_Apply is missing from OptionsMenu Widget")) return false; }
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_InvertY is missing from OptionsMenu Widget")) return false; }
+
+	if (Button_Vibration && Button_Vibration->GetButton())
+	{
+		Button_Vibration->GetButton()->OnClicked.AddDynamic(this, &UOptionsMenuWidget::ToggleVibration);
+		Button_Vibration->GetButton()->OnHovered.AddDynamic(this, &UOptionsMenuWidget::ButtonVibrationOnHover);
+		Button_Vibration->OnWidgetFocused.AddUniqueDynamic(this, &UOptionsMenuWidget::SetCurrentFocusedWidgetName);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("Button_Vibration is missing from OptionsMenu Widget")) return false; }
 
 	if (Button_Apply && Button_Apply->GetButton())
 	{
@@ -87,9 +95,9 @@ void UOptionsMenuWidget::SetUserWidgetInterface(IUserWidgetInterface * UserWidge
 void UOptionsMenuWidget::SetInitialValues()
 {
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	MenuInterface->GetCurrentUserValues(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY);
-	MenuInterface->GetDefaultUserValues(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
-	SetUserSettingsValue(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY);
+	MenuInterface->GetCurrentUserValues(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY, Current_Vibration);
+	MenuInterface->GetDefaultUserValues(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY, Default_Vibration);
+	SetUserSettingsValue(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY, Current_Vibration);
 }
 
 void UOptionsMenuWidget::SetFocus(EControlType IconControlType)
@@ -115,7 +123,7 @@ void UOptionsMenuWidget::SetFocus(EControlType IconControlType)
 	}
 }
 
-void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens, bool Invert_Y)
+void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSens, float ConSens, float ADS_ConSens, bool Invert_Y, bool Vibration)
 {
 	if (Slider_MouseSens)
 	{
@@ -149,6 +157,19 @@ void UOptionsMenuWidget::SetUserSettingsValue(float MouseSens, float ADS_MouseSe
 	{
 		Button_InvertY->GetTextToCustomise()->SetText(LOCTEXT("Invert Y", "Off"));
 	}
+
+	Current_InvertY = Invert_Y;
+
+	if (Vibration && Button_Vibration)
+	{
+		Button_Vibration->GetTextToCustomise()->SetText(LOCTEXT("Vibration", "On"));
+	}
+	else if (Button_Vibration)
+	{
+		Button_Vibration->GetTextToCustomise()->SetText(LOCTEXT("Vibration", "Off"));
+	}
+
+	Current_Vibration = Vibration;
 }
 
 
@@ -169,6 +190,7 @@ void UOptionsMenuWidget::ToggleInvertY()
 {
 	Button_InvertY->PlayPressedSound();
 	ButtonInvertYOnHover();
+
 	if (Current_InvertY)
 	{
 		Current_InvertY = false;
@@ -178,6 +200,23 @@ void UOptionsMenuWidget::ToggleInvertY()
 	{
 		Current_InvertY = true;
 		Button_InvertY->GetTextToCustomise()->SetText(LOCTEXT("Invert Y", "On"));
+	}
+}
+
+void UOptionsMenuWidget::ToggleVibration()
+{
+	Button_Vibration->PlayPressedSound();
+	ButtonVibrationOnHover();
+
+	if (Current_Vibration)
+	{
+		Current_Vibration = false;
+		Button_Vibration->GetTextToCustomise()->SetText(LOCTEXT("Vibration", "Off"));
+	}
+	else
+	{
+		Current_Vibration = true;
+		Button_Vibration->GetTextToCustomise()->SetText(LOCTEXT("Vibration", "On"));
 	}
 }
 
@@ -191,7 +230,7 @@ void UOptionsMenuWidget::ApplyChanges()
 	if (Slider_ConSens)			{ Current_ConSens		=	Slider_ConSens->GetCurrentValue();		 }
 	if (Slider_ADS_ConSens)		{ Current_ADS_ConSens	=	Slider_ADS_ConSens->GetCurrentValue();	 }
 
-	MenuInterface->SetNewUserSettings(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY);
+	MenuInterface->SetNewUserSettings(Current_MouseSens, Current_ADS_MouseSens, Current_ConSens, Current_ADS_ConSens, Current_InvertY, Current_Vibration);
 }
 
 void UOptionsMenuWidget::ResetToDefaults()
@@ -199,8 +238,8 @@ void UOptionsMenuWidget::ResetToDefaults()
 	Button_Reset->PlayPressedSound();
 
 	if (!MenuInterface) { UE_LOG(LogTemp, Warning, TEXT("MenuInterface is missing from OptionsMenu Widget")) return; }
-	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
-	SetUserSettingsValue(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY);
+	MenuInterface->SetNewUserSettings(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY, Default_Vibration);
+	SetUserSettingsValue(Default_MouseSens, Default_ADS_MouseSens, Default_ConSens, Default_ADS_ConSens, Default_InvertY, Default_Vibration);
 }
 
 void UOptionsMenuWidget::ReturnToPrevious()
@@ -221,6 +260,11 @@ void UOptionsMenuWidget::ReturnToPrevious()
 void UOptionsMenuWidget::ButtonInvertYOnHover()
 {
 	Button_InvertY->SetFocusToButton();
+}
+
+void UOptionsMenuWidget::ButtonVibrationOnHover()
+{
+	Button_Vibration->SetFocusToButton();
 }
 
 void UOptionsMenuWidget::ButtonApplyOnHover()
