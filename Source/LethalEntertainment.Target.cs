@@ -1,4 +1,4 @@
-// Copyright 2018 Stuart McDonald.
+// Copyright 2018 - 2020 Stuart McDonald.
 
 using UnrealBuildTool;
 using System.Collections.Generic;

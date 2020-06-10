@@ -1,4 +1,4 @@
-// Copyright 2018 Stuart McDonald.
+// Copyright 2018 - 2020 Stuart McDonald.
 
 #include "LethalEntertainment.h"
 #include "MenuButtonsWidget.h"
@@ -62,7 +62,7 @@ FReply UMenuWidget::NativeOnKeyUp(const FGeometry & InGeometry, const FKeyEvent 
 	FReply Result = FReply::Unhandled();
 	const FKey Key = InKeyEvent.GetKey();
 
-	if (Key == EKeys::Tab)
+	if (Key == EKeys::Escape)
 	{
 		EscInput();
 		Result = FReply::Handled();
