@@ -1,4 +1,4 @@
-// Copyright 2018 - 2020 Stuart McDonald.
+// Copyright 2018 - 2021 Stuart McDonald.
 
 #ifndef __LETHALENTERTAINMENT_H__
 #define __LETHALENTERTAINMENT_H__
